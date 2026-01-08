@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@picocss/pico@latest/css/pico.colors.min.css"
+    />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <!-- Common Styles - Reusable across apps -->
+    <style id="common-styles">
+      /* Super media query - overrides ALL Pico media queries */
+      @media all {
+        :host, :root {
+          /* Typography */
+          --pico-font-size: 14px; /* $font-size-base */
+          --pico-line-height: 1.3;
+          --pico-font-family: "Inter", sans-serif; /* $primary-font-family */
+
+          /* Form elements */
+          --pico-form-element-spacing-vertical: 8px; /* $gutter-normal */
+          --pico-form-element-spacing-horizontal: 8px; /* $gutter-normal */
+
+          /* Border radius */
+          --pico-border-radius: 4px; /* $corner-base */
+          --pico-border-width: 1px;
+
+          /* Spacing */
+          --pico-spacing: 8px; /* $gutter-normal */
+
+          /* Colors - Graphite palette */
+          --graphite-50: #eaeaea;
+          --graphite-75: #aaaaaa;
+          --graphite-100: #878787;
+          --graphite-200: #535353;
+          --graphite-300: #303030;
+          --graphite-400: #222222;
+          --graphite-500: #1d1d1d;
+
+          /* Primary colors */
+          --primary-color: #00d1d1;
+          --green-color: #18e09a;
+          --red-color: #f95741;
+
+          /* Borders */
+          --pico-border-color: #535353; /* $graphite-200 / $control-border-color */
+          --layer-border: #535353; /* $graphite-200 / $control-border-color */
+          --layer-border-hover: #aaaaaa; /* $graphite-75 / $control-highlight-border-color */
+
+          /* Background colors */
+          --pico-background-color: #303030; /* $page-background */
+          --pico-card-background-color: #303030; /* $page-background */
+          --pico-card-border-color: #535353; /* $graphite-200 / $control-border-color */
+          --pico-color: white; /* $primary-text-color */
+          --pico-muted-color: #aaaaaa; /* $graphite-75 */
+
+          /* Form element colors */
+          --pico-form-element-background-color: #222222; /* $control-background-color / $graphite-400 */
+          --pico-form-element-border-color: #535353; /* $control-border-color / $graphite-200 */
+          --pico-form-element-color: white; /* $control-text-color */
+          --pico-form-element-placeholder-color: #aaaaaa; /* $graphite-75 */
+          --pico-form-element-active-background-color: #303030; /* $control-focus-background-color / $graphite-300 */
+          --pico-form-element-active-border-color: #aaaaaa; /* $control-highlight-border-color / $graphite-75 */
+          --pico-form-element-focus-color: white; /* $control-text-color */
+          --pico-form-element-disabled-opacity: 0.65;
+
+          /* Button colors */
+          --pico-primary-background: #222222; /* $button-background-color / $graphite-400 */
+          --pico-primary-hover-background: #303030; /* $button-hover-background-color / $graphite-300 */
+          --pico-primary-focus-background: #303030; /* $button-hover-background-color / $graphite-300 */
+          --pico-primary-border: #535353; /* $button-border-color / $graphite-200 */
+          --pico-primary-hover-border: #aaaaaa; /* $graphite-75 */
+
+          /* Control colors (custom) */
+          --control-background: #222222; /* $control-background-color / $graphite-400 */
+          --control-focus-background: #303030; /* $control-focus-background-color / $graphite-300 */
+          --control-text-color: white; /* $control-text-color */
+        }
+      }
+
+      /* Style the shadow DOM host */
+      :host {
+        display: block;
+        margin: 0;
+        background-color: #303030;
+        color: white;
+        min-height: 100vh;
+      }
+
+      body {
+        margin: 0;
+        background-color: #303030;
+        color: white;
+      }
+
+      #app {
+        font-family: var(--pico-font-family);
+        font-size: var(--pico-font-size);
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: #303030;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        overflow-y: auto;
+      }
+
+      .templates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 8px;
+        padding: 12px;
+      }
+
+      .loading-more {
+        text-align: center;
+        padding: 1rem;
+        color: var(--pico-muted-color);
+      }
+
+      /* Button styling */
+      button,
+      [type="submit"],
+      [type="button"],
+      [role="button"] {
+        display: block;
+        margin: 12px auto; /* $gutter-large */
+        padding: var(--pico-form-element-spacing-vertical) 16px; /* $gutter-huge for horizontal */
+        font-size: 13px; /* $button-font-size / $font-size-small */
+        font-weight: bold;
+        background-color: var(--graphite-400); /* $button-background-color */
+        color: var(--graphite-50); /* $button-text-color */
+        border: 1px solid var(--graphite-200); /* $button-border-color */
+        border-radius: var(--pico-border-radius);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      button:hover:not(:disabled),
+      [type="submit"]:hover:not(:disabled),
+      [type="button"]:hover:not(:disabled),
+      [role="button"]:hover:not(:disabled) {
+        background-color: var(--graphite-300); /* $button-hover-background-color */
+        border-color: var(--graphite-75); /* $control-highlight-border-color */
+        color: white; /* $button-hover-text-color */
+        transform: translateY(-2px);
+      }
+
+      button:disabled,
+      [type="submit"]:disabled,
+      [type="button"]:disabled,
+      [role="button"]:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* Explicit input styling to ensure dark background */
+      input[type="text"],
+      input[type="search"],
+      textarea,
+      select {
+        padding: 8px 10px;
+        font-size: 14px;
+        background-color: var(--graphite-500);
+        color: white;
+        border: 1px solid var(--graphite-200);
+        border-radius: 6px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+      }
+
+      input[type="text"]:focus,
+      input[type="search"]:focus,
+      textarea:focus,
+      select:focus {
+        background-color: var(--graphite-400);
+        border-color: var(--graphite-100);
+        outline: none;
+      }
+
+      input[type="text"]::placeholder,
+      input[type="search"]::placeholder,
+      textarea::placeholder {
+        color: var(--graphite-75);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 100px;
+        font-family: inherit;
+      }
+
+      select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23aaaaaa' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px;
+      }
+    </style>
+
+    <!-- App-Specific Styles -->
+    <style id="app-styles">
+      .search-container {
+        border-bottom: 1px solid var(--graphite-300);
+        padding: 8px 12px;
+        background-color: var(--graphite-600);
+      }
+
+      .search-container input {
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      .current-templates {
+        padding: 8px 12px;
+        margin-bottom: 0;
+        background-color: var(--graphite-600);
+        border-bottom: 1px solid var(--graphite-300);
+        flex-shrink: 0;
+      }
+
+      .current-templates h2 {
+        font-size: 14px;
+        font-weight: bold;
+        margin: 0 0 8px 0;
+        color: white;
+      }
+
+      .current-templates-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        width: 100%;
+      }
+
+      .template-chip {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 8px 28px 8px 8px;
+        background-color: var(--graphite-500);
+        border: 1px solid var(--graphite-200);
+        border-radius: 6px;
+        font-size: 13px;
+        color: white;
+        min-width: 0;
+        overflow: hidden;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+        position: relative;
+      }
+
+      .template-chip:hover {
+        background-color: var(--graphite-400);
+        border-color: var(--graphite-100);
+      }
+
+      .template-chip img {
+        width: 32px;
+        height: 32px;
+        object-fit: cover;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+
+      .template-chip .template-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .template-chip .template-name {
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+      }
+
+      .template-chip .weight-control {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .template-chip .weight-value {
+        font-size: 13px;
+        color: white;
+        min-width: 32px;
+        text-align: right;
+        font-weight: 500;
+      }
+
+      .template-chip input[type="range"] {
+        flex: 1;
+        height: 4px;
+        background: var(--graphite-200);
+        border-radius: 2px;
+        outline: none;
+        -webkit-appearance: none;
+        appearance: none;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .template-chip input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        background: transparent;
+        border-radius: 2px;
+      }
+
+      .template-chip input[type="range"]::-moz-range-track {
+        width: 100%;
+        height: 4px;
+        background: transparent;
+        border-radius: 2px;
+        border: none;
+      }
+
+      .template-chip input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        background: var(--graphite-75);
+        cursor: pointer;
+        border-radius: 50%;
+        margin-top: -7px;
+        transition: background 0.2s ease;
+      }
+
+      .template-chip input[type="range"]::-webkit-slider-thumb:hover {
+        background: var(--graphite-50);
+      }
+
+      .template-chip input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        background: var(--graphite-75);
+        cursor: pointer;
+        border-radius: 50%;
+        border: none;
+        transition: background 0.2s ease;
+      }
+
+      .template-chip input[type="range"]::-moz-range-thumb:hover {
+        background: var(--graphite-50);
+      }
+
+      .template-chip .remove-btn {
+        background: none;
+        border: none;
+        color: var(--pico-muted-color);
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+        font-size: 20px;
+        line-height: 1;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-family: Arial, sans-serif;
+        font-weight: normal;
+        position: absolute;
+        top: 4px;
+        right: 4px;
+      }
+
+      .template-chip .remove-btn:hover {
+        color: var(--red-color);
+        background: none;
+        transform: none;
+      }
+
+      .template-chip .remove-btn:active {
+        transform: scale(0.9);
+      }
+
+      input[type="text"].searching {
+        opacity: 0.8;
+      }
+
+      /* Pico will handle article (card) styling via global variables */
+      article {
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        padding: 0;
+        background-color: #303030 !important; /* Force card background */
+        border-color: #535353 !important; /* Force card border */
+      }
+
+      article:hover {
+        transform: translateY(-4px);
+      }
+
+      article img,
+      article video {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+      }
+
+      article > footer {
+        margin: 0;
+      }
+
+      article h3 {
+        margin: 0;
+        padding: 4px;
+        font-size: 13px; /* $font-size-small */
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-size: 1.2rem;
+      }
+
+      .error {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: #ff6b6b;
+        font-size: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/x-template" id="app-tpl">
+      <div v-if="error" class="error">
+        {{ error }}
+      </div>
+      <template v-else>
+        <div v-if="currentTemplates.length > 0" class="current-templates">
+          <div class="current-templates-list">
+            <div
+              v-for="(template, index) in currentTemplates"
+              :key="index"
+              class="template-chip"
+            >
+              <img
+                v-if="template.thumbnail"
+                :src="template.thumbnail"
+                :alt="template.name"
+              />
+              <div class="template-info">
+                <div class="template-name">{{ template.name }}</div>
+                <div class="weight-control">
+                  <input
+                    type="range"
+                    :value="template.weight"
+                    @input="updateWeight(index, $event.target.value)"
+                    min="0"
+                    max="2"
+                    step="0.1"
+                  />
+                  <span class="weight-value">{{ template.weight.toFixed(1) }}</span>
+                </div>
+              </div>
+              <button
+                class="remove-btn"
+                @click="removeTemplate(index)"
+                title="Remove template"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="search-container">
+          <input
+            type="text"
+            :class="{ searching: loading }"
+            v-model="searchQuery"
+            @input="handleSearch"
+            placeholder="Search templates..."
+          />
+        </div>
+        <div v-if="loading && templates.length === 0" class="loading">
+          Loading templates...
+        </div>
+        <template v-else>
+          <div class="templates-grid">
+            <article
+              v-for="template in templates"
+              :key="template.id"
+              @click="selectTemplate(template)"
+            >
+              <template v-if="template.lastVersion?.metadata?.samples?.[0]?.preview">
+                <video
+                  v-if="template.lastVersion.metadata.samples[0].preview.type === 'video'"
+                  :src="template.lastVersion.metadata.samples[0].preview.url"
+                  autoplay
+                  loop
+                  muted
+                  playsinline
+                />
+                <img
+                  v-else
+                  :src="template.lastVersion.metadata.samples[0].preview.url"
+                  :alt="template.name"
+                />
+              </template>
+              <footer>
+                <h3 :title="template.name">
+                  {{ template.name }}
+                </h3>
+              </footer>
+            </article>
+          </div>
+          <button
+            v-if="hasMore"
+            @click="loadMore"
+            :disabled="loadingMore"
+          >
+            {{ loadingMore ? 'Loading...' : 'Load More' }}
+          </button>
+          <div v-else class="loading-more">
+            No more templates
+          </div>
+        </template>
+      </template>
+    </script>
+
+    <div id="app"></div>
+
+    <script type="module">
+      const piper = window.Piper?.create() || {
+        appRoot: document,
+        meta: {},
+        inputs: {
+          prompt: "cat walking on the Mars",
+          templates: JSON.stringify([
+            {
+              type: 'lora',
+              name: 'Wallace & Gromit',
+              fullFileName: 'wallace-gromit.safetensors',
+              trainedWords: ['Wallace', 'Gromit'],
+              thumbnail: 'https://placehold.co/600x400',
+              weight: 0.5,
+            }
+          ])
+        },
+        save({ templates }) {
+          console.log(templates);
+        },
+        close() {
+          // nothing
+        },
+      };
+
+      const { createApp, defineComponent, ref, onMounted } = Vue;
+
+      const App = defineComponent({
+        template: piper.appRoot.querySelector("#app-tpl").textContent,
+        setup() {
+          console.log("Setup called");
+          const templates = ref([]);
+          const currentTemplates = ref(JSON.parse(piper.inputs.templates || "[]"));
+          const loading = ref(true);
+          const loadingMore = ref(false);
+          const error = ref(null);
+          const cursor = ref(null);
+          const pageSize = 40;
+          const hasMore = ref(true);
+          const searchQuery = ref("");
+          let searchTimeout = null;
+
+          // Fetch templates from API
+          const fetchTemplates = async (isLoadMore = false) => {
+            try {
+              if (isLoadMore) {
+                loadingMore.value = true;
+              } else {
+                loading.value = true;
+              }
+              error.value = null;
+
+              let url = `https://artworks.ai/api/v2/models?baseModel=sdxl&top=${pageSize}`;
+
+              // Add cursor if loading more and we have a cursor
+              if (isLoadMore && cursor.value) {
+                url += `&cursor=${encodeURIComponent(cursor.value)}`;
+              }
+
+              // Add search query if present
+              if (searchQuery.value.trim()) {
+                url += `&q=${encodeURIComponent(searchQuery.value.trim())}`;
+              }
+              console.log("Fetching templates from:", url);
+
+              const response = await fetch(url);
+
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+
+              const data = await response.json();
+              console.log("Fetched templates:", data);
+              console.log("Templates count:", data.length);
+
+              if (isLoadMore) {
+                templates.value = [...templates.value, ...data];
+              } else {
+                templates.value = data;
+              }
+
+              // Get cursor from the last template for next page
+              if (data.length > 0) {
+                const lastTemplate = data[data.length - 1];
+
+                // Create cursor object with id and sort
+                const cursorObj = {
+                  id: lastTemplate.id,
+                  sort: lastTemplate.sort,
+                };
+
+                // Encode cursor as Base64 JSON
+                const cursorJson = JSON.stringify(cursorObj);
+                cursor.value = btoa(cursorJson);
+
+                console.log(
+                  "Last template:",
+                  lastTemplate.id,
+                  "sort:",
+                  lastTemplate.sort
+                );
+                console.log("Cursor object:", cursorObj);
+                console.log("Encoded cursor:", cursor.value);
+              }
+
+              // Check if there are more templates to load
+              // Only set hasMore to false if we got 0 results or less than page size
+              if (data.length === 0 || data.length < pageSize) {
+                hasMore.value = false;
+                console.log("No more templates available");
+              } else {
+                console.log(
+                  `Got ${data.length} templates, more may be available`
+                );
+              }
+            } catch (err) {
+              error.value = `Failed to load templates: ${err.message}`;
+              console.error("Error fetching templates:", err);
+            } finally {
+              loading.value = false;
+              loadingMore.value = false;
+              console.log(
+                "Loading finished. Total templates:",
+                templates.value.length
+              );
+            }
+          };
+
+          // Handle search input with debounce
+          const handleSearch = () => {
+            // Clear existing timeout
+            if (searchTimeout) {
+              clearTimeout(searchTimeout);
+            }
+
+            // Set new timeout to debounce search
+            searchTimeout = setTimeout(() => {
+              console.log("Searching for:", searchQuery.value);
+              // Reset cursor and hasMore for new search
+              cursor.value = null;
+              hasMore.value = true;
+              // Don't clear templates here to prevent jumping
+              // fetchTemplates will replace them
+              fetchTemplates(false);
+            }, 500); // Wait 500ms after user stops typing
+          };
+
+          // Load more templates
+          const loadMore = () => {
+            console.log("Load More clicked!");
+            console.log("loadingMore:", loadingMore.value);
+            console.log("loading:", loading.value);
+            console.log("hasMore:", hasMore.value);
+
+            if (!loadingMore.value && !loading.value && hasMore.value) {
+              console.log("Calling fetchTemplates(true)...");
+              fetchTemplates(true);
+            } else {
+              console.log("Conditions not met for loading more");
+            }
+          };
+
+          // Select a template
+          const selectTemplate = (template) => {
+            console.log("Selected template:", template);
+
+            // Get trained words from template metadata
+            const trainedWords =
+              template.lastVersion?.metadata?.trainedWords || [];
+            console.log("Trained words:", trainedWords);
+
+            // Get the file name from the last version
+            const fullFileName = template.lastVersion.fullFileName;
+            console.log("File name:", fullFileName);
+
+            // Get thumbnail from preview
+            const thumbnail = template.lastVersion?.metadata?.samples?.[0]?.preview?.url || null;
+
+            // Create template object to add to the array
+            const newTemplate = {
+              type: 'lora',
+              name: template.name,
+              fullFileName,
+              trainedWords,
+              thumbnail,
+              weight: 1.0,
+            };
+
+            console.log("Adding template to array:", newTemplate);
+
+            // Add template to current templates array
+            currentTemplates.value = [...currentTemplates.value, newTemplate];
+
+            // Scroll to top of the app container
+            const container = document.querySelector('#app');
+            if (container) {
+              container.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Save the updated templates array using piper
+            piper.save({ templates: JSON.stringify(currentTemplates.value, null, 2) });
+            piper.close();
+          };
+
+          // Remove a template from current templates
+          const removeTemplate = (index) => {
+            console.log("Removing template at index:", index);
+            currentTemplates.value = currentTemplates.value.filter((_, i) => i !== index);
+
+            // Save the updated templates array
+            piper.save({ templates: JSON.stringify(currentTemplates.value, null, 2) });
+          };
+
+          // Update weight of a template
+          const updateWeight = (index, value) => {
+            const weight = parseFloat(value);
+            console.log(`Updating template ${index} weight to:`, weight);
+
+            // Update the weight in the array
+            currentTemplates.value = currentTemplates.value.map((template, i) =>
+              i === index ? { ...template, weight } : template
+            );
+
+            // Save the updated templates array
+            piper.save({ templates: JSON.stringify(currentTemplates.value, null, 2) });
+          };
+
+          // Fetch templates on mount
+          onMounted(() => {
+            console.log("Component mounted");
+            fetchTemplates();
+          });
+
+          return {
+            templates,
+            currentTemplates,
+            loading,
+            loadingMore,
+            error,
+            hasMore,
+            searchQuery,
+            handleSearch,
+            loadMore,
+            selectTemplate,
+            removeTemplate,
+            updateWeight,
+          };
+        },
+      });
+
+      console.log("Creating app...");
+      const app = createApp(App);
+      console.log("Mounting app...");
+      app.mount(piper.appRoot.querySelector('#app'));
+      console.log("App mounted");
+    </script>
+  </body>
+</html>
