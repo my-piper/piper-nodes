@@ -14,204 +14,6 @@
     />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-    <!-- Common Styles - Reusable across apps -->
-    <style id="common-styles">
-      /* Super media query - overrides ALL Pico media queries */
-      @media all {
-        :host, :root {
-          /* Typography */
-          --pico-font-size: 14px; /* $font-size-base */
-          --pico-line-height: 1.3;
-          --pico-font-family: "Inter", sans-serif; /* $primary-font-family */
-
-          /* Form elements */
-          --pico-form-element-spacing-vertical: 8px; /* $gutter-normal */
-          --pico-form-element-spacing-horizontal: 8px; /* $gutter-normal */
-
-          /* Border radius */
-          --pico-border-radius: 4px; /* $corner-base */
-          --pico-border-width: 1px;
-
-          /* Spacing */
-          --pico-spacing: 8px; /* $gutter-normal */
-
-          /* Colors - Graphite palette */
-          --graphite-50: #eaeaea;
-          --graphite-75: #aaaaaa;
-          --graphite-100: #878787;
-          --graphite-200: #535353;
-          --graphite-300: #303030;
-          --graphite-400: #222222;
-          --graphite-500: #1d1d1d;
-
-          /* Primary colors */
-          --primary-color: #00d1d1;
-          --green-color: #18e09a;
-          --red-color: #f95741;
-
-          /* Borders */
-          --pico-border-color: #535353; /* $graphite-200 / $control-border-color */
-          --layer-border: #535353; /* $graphite-200 / $control-border-color */
-          --layer-border-hover: #aaaaaa; /* $graphite-75 / $control-highlight-border-color */
-
-          /* Background colors */
-          --pico-background-color: #303030; /* $page-background */
-          --pico-card-background-color: #303030; /* $page-background */
-          --pico-card-border-color: #535353; /* $graphite-200 / $control-border-color */
-          --pico-color: white; /* $primary-text-color */
-          --pico-muted-color: #aaaaaa; /* $graphite-75 */
-
-          /* Form element colors */
-          --pico-form-element-background-color: #222222; /* $control-background-color / $graphite-400 */
-          --pico-form-element-border-color: #535353; /* $control-border-color / $graphite-200 */
-          --pico-form-element-color: white; /* $control-text-color */
-          --pico-form-element-placeholder-color: #aaaaaa; /* $graphite-75 */
-          --pico-form-element-active-background-color: #303030; /* $control-focus-background-color / $graphite-300 */
-          --pico-form-element-active-border-color: #aaaaaa; /* $control-highlight-border-color / $graphite-75 */
-          --pico-form-element-focus-color: white; /* $control-text-color */
-          --pico-form-element-disabled-opacity: 0.65;
-
-          /* Button colors */
-          --pico-primary-background: #222222; /* $button-background-color / $graphite-400 */
-          --pico-primary-hover-background: #303030; /* $button-hover-background-color / $graphite-300 */
-          --pico-primary-focus-background: #303030; /* $button-hover-background-color / $graphite-300 */
-          --pico-primary-border: #535353; /* $button-border-color / $graphite-200 */
-          --pico-primary-hover-border: #aaaaaa; /* $graphite-75 */
-
-          /* Control colors (custom) */
-          --control-background: #222222; /* $control-background-color / $graphite-400 */
-          --control-focus-background: #303030; /* $control-focus-background-color / $graphite-300 */
-          --control-text-color: white; /* $control-text-color */
-        }
-      }
-
-      /* Style the shadow DOM host */
-      :host {
-        display: block;
-        margin: 0;
-        background-color: #303030;
-        color: white;
-        min-height: 100vh;
-      }
-
-      body {
-        margin: 0;
-        background-color: #303030;
-        color: white;
-      }
-
-      #app {
-        font-family: var(--pico-font-family);
-        font-size: var(--pico-font-size);
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        height: 100vh;
-        background-color: #303030;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        overflow-y: auto;
-      }
-
-      .templates-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 8px;
-        padding: 12px;
-      }
-
-      .loading-more {
-        text-align: center;
-        padding: 1rem;
-        color: var(--pico-muted-color);
-      }
-
-      /* Button styling */
-      button,
-      [type="submit"],
-      [type="button"],
-      [role="button"] {
-        display: block;
-        margin: 12px auto; /* $gutter-large */
-        padding: var(--pico-form-element-spacing-vertical) 16px; /* $gutter-huge for horizontal */
-        font-size: 13px; /* $button-font-size / $font-size-small */
-        font-weight: bold;
-        background-color: var(--graphite-400); /* $button-background-color */
-        color: var(--graphite-50); /* $button-text-color */
-        border: 1px solid var(--graphite-200); /* $button-border-color */
-        border-radius: var(--pico-border-radius);
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      button:hover:not(:disabled),
-      [type="submit"]:hover:not(:disabled),
-      [type="button"]:hover:not(:disabled),
-      [role="button"]:hover:not(:disabled) {
-        background-color: var(--graphite-300); /* $button-hover-background-color */
-        border-color: var(--graphite-75); /* $control-highlight-border-color */
-        color: white; /* $button-hover-text-color */
-        transform: translateY(-2px);
-      }
-
-      button:disabled,
-      [type="submit"]:disabled,
-      [type="button"]:disabled,
-      [role="button"]:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      /* Explicit input styling to ensure dark background */
-      input[type="text"],
-      input[type="search"],
-      textarea,
-      select {
-        padding: 8px 10px;
-        font-size: 14px;
-        background-color: var(--graphite-500);
-        color: white;
-        border: 1px solid var(--graphite-200);
-        border-radius: 6px;
-        width: 100%;
-        box-sizing: border-box;
-        transition: border-color 0.2s ease, background-color 0.2s ease;
-      }
-
-      input[type="text"]:focus,
-      input[type="search"]:focus,
-      textarea:focus,
-      select:focus {
-        background-color: var(--graphite-400);
-        border-color: var(--graphite-100);
-        outline: none;
-      }
-
-      input[type="text"]::placeholder,
-      input[type="search"]::placeholder,
-      textarea::placeholder {
-        color: var(--graphite-75);
-      }
-
-      textarea {
-        resize: vertical;
-        min-height: 100px;
-        font-family: inherit;
-      }
-
-      select {
-        cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23aaaaaa' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 12px center;
-        padding-right: 36px;
-      }
-    </style>
-
-    <!-- App-Specific Styles -->
     <style id="app-styles">
       .search-container {
         border-bottom: 1px solid var(--graphite-300);
@@ -578,6 +380,7 @@
         close() {
           // nothing
         },
+        mode: "dev",
       };
 
       const { createApp, defineComponent, ref, onMounted } = Vue;
@@ -804,6 +607,13 @@
           };
         },
       });
+
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = piper.mode === 'dev'
+        ? './../ui.css'
+        : 'https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@f2e6410/nodes/ui.css';
+      piper.appRoot.prepend(link);
 
       console.log("Creating app...");
       const app = createApp(App);

@@ -16,21 +16,11 @@
 
     <style id="app-styles">
       .models-container {
-        padding: 16px;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: var(--pico-spacing);
+        margin: var(--pico-spacing);
         height: 100vh;
-        overflow: hidden;
-      }
-
-      .search-box {
-        flex-shrink: 0;
-      }
-
-      .search-box input {
-        width: 100%;
-        box-sizing: border-box;
       }
 
       .table-wrapper {
@@ -39,18 +29,10 @@
         overflow-x: auto;
       }
 
-      .models-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
-        table-layout: fixed;
-      }
-
       .models-table th {
         background-color: var(--graphite-400);
         color: white;
-        padding: 12px 8px;
-        text-align: left;
+        padding: var(--pico-spacing);
         border-bottom: 2px solid var(--graphite-200);
         position: sticky;
         top: 0;
@@ -67,11 +49,11 @@
         display: inline-block;
         margin-left: 4px;
         font-size: 10px;
-        opacity: 0.7;
+        opacity: 0.5;
       }
 
       .models-table td {
-        padding: 10px 8px;
+        padding: var(--pico-spacing);
         border-bottom: 1px solid var(--graphite-300);
       }
 
@@ -86,7 +68,7 @@
       }
 
       .col-context {
-        width: 200px;
+        width: 100px;
         text-align: right;
       }
 
@@ -97,33 +79,6 @@
       .models-table tbody tr {
         cursor: pointer;
         transition: background-color 0.15s ease;
-        background-color: transparent;
-      }
-
-      .models-table tbody tr:hover {
-        background-color: #3a3a3a !important;
-      }
-
-      .models-table tbody tr:hover td {
-        background-color: #3a3a3a !important;
-      }
-
-      .vision-badge {
-        display: inline-block;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: bold;
-      }
-
-      .vision-yes {
-        background-color: var(--green-color);
-        color: var(--graphite-500);
-      }
-
-      .vision-no {
-        background-color: var(--graphite-300);
-        color: var(--graphite-75);
       }
 
       .no-results {
@@ -154,13 +109,13 @@
                   </span>
                 </th>
                 <th @click="sortBy('in')" class="col-input">
-                  Input $ for 1M tokens
+                  Input | $ 1M tokens
                   <span v-if="sortKey === 'in'" class="sort-indicator">
                     {{ sortOrder === 'asc' ? '▲' : '▼' }}
                   </span>
                 </th>
                 <th @click="sortBy('out')" class="col-output">
-                  Output $ for 1M tokens
+                  Output | $ 1M tokens
                   <span v-if="sortKey === 'out'" class="sort-indicator">
                     {{ sortOrder === 'asc' ? '▲' : '▼' }}
                   </span>
@@ -181,12 +136,15 @@
             </thead>
             <tbody>
               <tr v-for="(model, name) in sortedModels" :key="name" @click="selectModel(name)">
-                <td>{{ name }}</td>
+                <td>
+                  <div>{{ model.title || name }}</div>
+                  <small v-if="model.title" style="opacity: 0.6;">{{ name }}</small>
+                </td>
                 <td class="col-input">{{ model.in }}</td>
                 <td class="col-output">{{ model.out }}</td>
                 <td class="col-context">{{ formatContext(model.context) }}</td>
                 <td class="col-vision">
-                  <span :class="['vision-badge', model.vision ? 'vision-yes' : 'vision-no']">
+                  <span :class="['badge', model.vision ? 'green' : 'gray']">
                     {{ model.vision ? 'Yes' : 'No' }}
                   </span>
                 </td>
@@ -204,7 +162,7 @@
 
     <script type="module">
       const piper = window.Piper?.create() || {
-        appRoot: document,
+        appRoot: document.body,
         meta: {},
         inputs: {
           count: 0,
@@ -220,1065 +178,1237 @@
 
       const MODELS = {
         "x-ai/grok-4.1-fast": {
+          title: "Grok 4.1 Fast",
           in: 0.2,
           out: 0.5,
           context: 2000000,
           vision: true,
         },
         "x-ai/grok-4-fast": {
+          title: "Grok 4 Fast",
           in: 0.2,
           out: 0.5,
           context: 2000000,
           vision: true,
         },
         "x-ai/grok-code-fast-1": {
+          title: "Grok Code Fast 1",
           in: 0.2,
           out: 1.5,
           context: 256000,
           vision: false,
         },
-        "x-ai/grok-4": { in: 3, out: 15, context: 256000, vision: true },
-        "x-ai/grok-3": { in: 3, out: 15, context: 131072, vision: false },
+        "x-ai/grok-4": { title: "Grok 4", in: 3, out: 15, context: 256000, vision: true },
+        "x-ai/grok-3": { title: "Grok 3", in: 3, out: 15, context: 131072, vision: false },
         "x-ai/grok-3-mini": {
+          title: "Grok 3 Mini",
           in: 0.3,
           out: 0.5,
           context: 131072,
           vision: false,
         },
         "deepseek/deepseek-v3.2-speciale": {
+          title: "DeepSeek v3.2 Speciale",
           in: 0.27,
           out: 0.41,
           context: 163840,
           vision: false,
         },
         "deepseek/deepseek-v3.2": {
+          title: "DeepSeek v3.2",
           in: 0.26,
           out: 0.39,
           context: 163840,
           vision: false,
         },
         "deepseek/deepseek-v3.2-exp": {
+          title: "DeepSeek v3.2 Experimental",
           in: 0.21,
           out: 0.32,
           context: 163840,
           vision: false,
         },
         "deepseek/deepseek-v3.1-terminus:exacto": {
+          title: "DeepSeek v3.1 Terminus Exacto",
           in: 0.21,
           out: 0.79,
           context: 163840,
           vision: false,
         },
         "deepseek/deepseek-v3.1-terminus": {
+          title: "DeepSeek v3.1 Terminus",
           in: 0.21,
           out: 0.79,
           context: 163840,
           vision: false,
         },
         "deepseek/deepseek-chat-v3.1": {
+          title: "DeepSeek Chat v3.1",
           in: 0.15,
           out: 0.75,
           context: 8192,
           vision: false,
         },
         "deepseek/deepseek-v3-0324": {
+          title: "DeepSeek v3 (0324)",
           in: 0.2,
           out: 0.88,
           context: 163840,
           vision: false,
         },
         "deepseek/deepseek-chat": {
+          title: "DeepSeek Chat",
           in: 0.3,
           out: 1.2,
           context: 163840,
           vision: false,
         },
         "deepseek/deepseek-r1-0528-qwen3-8b": {
+          title: "DeepSeek R1 Qwen3 8B (0528)",
           in: 0.02,
           out: 0.1,
           context: 32768,
           vision: false,
         },
         "deepseek/deepseek-r1-0528": {
+          title: "DeepSeek R1 (0528)",
           in: 0.4,
           out: 1.75,
           context: 163840,
           vision: false,
         },
         "deepseek/deepseek-r1": {
+          title: "DeepSeek R1",
           in: 0.3,
           out: 1.2,
           context: 163840,
           vision: false,
         },
         "deepseek/deepseek-r1-distill-qwen-32b": {
+          title: "DeepSeek R1 Distill Qwen 32B",
           in: 0.24,
           out: 0.24,
           context: 64000,
           vision: false,
         },
         "deepseek/deepseek-r1-distill-qwen-14b": {
+          title: "DeepSeek R1 Distill Qwen 14B",
           in: 0.12,
           out: 0.12,
           context: 32768,
           vision: false,
         },
         "deepseek/deepseek-r1-distill-llama-70b": {
+          title: "DeepSeek R1 Distill Llama 70B",
           in: 0.03,
           out: 0.13,
           context: 131072,
           vision: false,
         },
         "deepseek/deepseek-prover-v2": {
+          title: "DeepSeek Prover v2",
           in: 0.5,
           out: 2.18,
           context: 163840,
           vision: false,
         },
         "meta-llama/llama-guard-4-12b": {
+          title: "Llama Guard 4 12B",
           in: 0.18,
           out: 0.18,
           context: 163840,
           vision: true,
         },
         "meta-llama/llama-4-maverick": {
+          title: "Llama 4 Maverick",
           in: 0.15,
           out: 0.6,
           context: 1048576,
           vision: true,
         },
         "meta-llama/llama-4-scout": {
+          title: "Llama 4 Scout",
           in: 0.08,
           out: 0.3,
           context: 327680,
           vision: true,
         },
         "meta-llama/llama-3.2-90b-vision-instruct": {
+          title: "Llama 3.2 90B Vision Instruct",
           in: 0.35,
           out: 0.4,
           context: 32768,
           vision: true,
         },
         "meta-llama/llama-3.2-11b-vision-instruct": {
+          title: "Llama 3.2 11B Vision Instruct",
           in: 0.049,
           out: 0.049,
           context: 131072,
           vision: true,
         },
         "meta-llama/llama-3.1-405b": {
+          title: "Llama 3.1 405B",
           in: 4,
           out: 4,
           context: 32768,
           vision: false,
         },
         "meta-llama/llama-3.1-405b-instruct": {
+          title: "Llama 3.1 405B Instruct",
           in: 3.5,
           out: 3.5,
           context: 130815,
           vision: false,
         },
         "meta-llama/llama-3.1-405b-instruct:free": {
+          title: "Llama 3.1 405B Instruct (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: false,
         },
         "meta-llama/llama-3.1-70b-instruct": {
+          title: "Llama 3.1 70B Instruct",
           in: 0.4,
           out: 0.4,
           context: 131072,
           vision: false,
         },
         "meta-llama/llama-3-70b-instruct": {
+          title: "Llama 3 70B Instruct",
           in: 0.3,
           out: 0.4,
           context: 8192,
           vision: false,
         },
         "meta-llama/llama-3.3-70b-instruct": {
+          title: "Llama 3.3 70B Instruct",
           in: 0.1,
           out: 0.32,
           context: 131072,
           vision: false,
         },
         "meta-llama/llama-3.3-70b-instruct:free": {
+          title: "Llama 3.3 70B Instruct (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: false,
         },
         "meta-llama/llama-guard-2-8b": {
+          title: "Llama Guard 2 8B",
           in: 0.2,
           out: 0.2,
           context: 8192,
           vision: false,
         },
         "meta-llama/llama-guard-3-8b": {
+          title: "Llama Guard 3 8B",
           in: 0.02,
           out: 0.06,
           context: 131072,
           vision: false,
         },
         "meta-llama/llama-3-8b-instruct": {
+          title: "Llama 3 8B Instruct",
           in: 0.03,
           out: 0.06,
           context: 8192,
           vision: false,
         },
         "meta-llama/llama-3.1-8b-instruct": {
+          title: "Llama 3.1 8B Instruct",
           in: 0.02,
           out: 0.03,
           context: 131072,
           vision: false,
         },
         "meta-llama/llama-3.2-1b-instruct": {
+          title: "Llama 3.2 1B Instruct",
           in: 0.027,
           out: 0.2,
           context: 60000,
           vision: false,
         },
         "meta-llama/llama-3.2-3b-instruct": {
+          title: "Llama 3.2 3B Instruct",
           in: 0.02,
           out: 0.02,
           context: 131072,
           vision: false,
         },
         "meta-llama/llama-3.2-3b-instruct:free": {
+          title: "Llama 3.2 3B Instruct (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: false,
         },
         "mistralai/mistral-large-2512": {
+          title: "Mistral Large 2512",
           in: 0.5,
           out: 1.5,
           context: 262144,
           vision: true,
         },
         "mistralai/mistral-medium-3.1": {
+          title: "Mistral Medium 3.1",
           in: 0.4,
           out: 2,
           context: 131072,
           vision: true,
         },
         "mistralai/mistral-medium-3": {
+          title: "Mistral Medium 3",
           in: 0.4,
           out: 2,
           context: 131072,
           vision: true,
         },
         "mistralai/ministral-14b-2512": {
+          title: "Ministral 14B 2512",
           in: 0.2,
           out: 0.2,
           context: 262144,
           vision: true,
         },
         "mistralai/ministral-8b-2512": {
+          title: "Ministral 8B 2512",
           in: 0.15,
           out: 0.15,
           context: 262144,
           vision: true,
         },
         "mistralai/ministral-3b-2512": {
+          title: "Ministral 3B 2512",
           in: 0.1,
           out: 0.1,
           context: 131072,
           vision: true,
         },
         "mistralai/mistral-small-3.2-24b-instruct": {
+          title: "Mistral Small 3.2 24B Instruct",
           in: 0.06,
           out: 0.18,
           context: 131072,
           vision: true,
         },
         "mistralai/mistral-small-3.1-24b-instruct": {
+          title: "Mistral Small 3.1 24B Instruct",
           in: 0.03,
           out: 0.11,
           context: 131072,
           vision: true,
         },
         "mistralai/pixtral-large-2411": {
+          title: "Pixtral Large 2411",
           in: 2,
           out: 6,
           context: 131072,
           vision: true,
         },
         "mistralai/pixtral-12b": {
+          title: "Pixtral 12B",
           in: 0.1,
           out: 0.1,
           context: 32768,
           vision: true,
         },
         "mistralai/mistral-small-3.1-24b-instruct:free": {
+          title: "Mistral Small 3.1 24B Instruct (Free)",
           in: 0,
           out: 0,
           context: 128000,
           vision: true,
         },
         "mistralai/mistral-large-2411": {
+          title: "Mistral Large 2411",
           in: 2,
           out: 6,
           context: 131072,
           vision: false,
         },
         "mistralai/mistral-large-2407": {
+          title: "Mistral Large 2407",
           in: 2,
           out: 6,
           context: 131072,
           vision: false,
         },
         "mistralai/mistral-large": {
+          title: "Mistral Large",
           in: 2,
           out: 6,
           context: 128000,
           vision: false,
         },
         "mistralai/mixtral-8x22b-instruct": {
+          title: "Mixtral 8x22B Instruct",
           in: 2,
           out: 6,
           context: 65536,
           vision: false,
         },
         "mistralai/mixtral-8x7b-instruct": {
+          title: "Mixtral 8x7B Instruct",
           in: 0.54,
           out: 0.54,
           context: 32768,
           vision: false,
         },
         "mistralai/devstral-medium": {
+          title: "Devstral Medium",
           in: 0.4,
           out: 2,
           context: 131072,
           vision: false,
         },
         "mistralai/codestral-2508": {
+          title: "Codestral 2508",
           in: 0.3,
           out: 0.9,
           context: 256000,
           vision: false,
         },
         "mistralai/mistral-tiny": {
+          title: "Mistral Tiny",
           in: 0.25,
           out: 0.25,
           context: 32768,
           vision: false,
         },
         "mistralai/mistral-7b-instruct-v0.3": {
+          title: "Mistral 7B Instruct v0.3",
           in: 0.2,
           out: 0.2,
           context: 32768,
           vision: false,
         },
         "mistralai/mistral-7b-instruct-v0.2": {
+          title: "Mistral 7B Instruct v0.2",
           in: 0.2,
           out: 0.2,
           context: 32768,
           vision: false,
         },
         "mistralai/mistral-saba": {
+          title: "Mistral Saba",
           in: 0.2,
           out: 0.6,
           context: 32768,
           vision: false,
         },
         "mistralai/mistral-7b-instruct-v0.1": {
+          title: "Mistral 7B Instruct v0.1",
           in: 0.11,
           out: 0.19,
           context: 2824,
           vision: false,
         },
         "mistralai/voxtral-small-24b-2507": {
+          title: "Voxtral Small 24B 2507",
           in: 0.1,
           out: 0.3,
           context: 32000,
           vision: false,
         },
         "mistralai/ministral-8b": {
+          title: "Ministral 8B",
           in: 0.1,
           out: 0.1,
           context: 131072,
           vision: false,
         },
         "mistralai/mistral-small-creative": {
+          title: "Mistral Small Creative",
           in: 0.1,
           out: 0.3,
           context: 32768,
           vision: false,
         },
         "mistralai/devstral-small": {
+          title: "Devstral Small",
           in: 0.07,
           out: 0.28,
           context: 128000,
           vision: false,
         },
         "mistralai/devstral-small-2505": {
+          title: "Devstral Small 2505",
           in: 0.06,
           out: 0.12,
           context: 128000,
           vision: false,
         },
         "mistralai/devstral-2512": {
+          title: "Devstral 2512",
           in: 0.05,
           out: 0.22,
           context: 262144,
           vision: false,
         },
         "mistralai/ministral-3b": {
+          title: "Ministral 3B",
           in: 0.04,
           out: 0.04,
           context: 131072,
           vision: false,
         },
         "mistralai/mistral-small-24b-instruct-2501": {
+          title: "Mistral Small 24B Instruct 2501",
           in: 0.03,
           out: 0.11,
           context: 32768,
           vision: false,
         },
         "mistralai/mistral-7b-instruct": {
+          title: "Mistral 7B Instruct",
           in: 0.028,
           out: 0.054,
           context: 32768,
           vision: false,
         },
         "mistralai/mistral-nemo": {
+          title: "Mistral Nemo",
           in: 0.02,
           out: 0.04,
           context: 131072,
           vision: false,
         },
         "mistralai/devstral-2512:free": {
+          title: "Devstral 2512 (Free)",
           in: 0,
           out: 0,
           context: 262144,
           vision: false,
         },
         "mistralai/mistral-7b-instruct:free": {
+          title: "Mistral 7B Instruct (Free)",
           in: 0,
           out: 0,
           context: 32768,
           vision: false,
         },
         "openai/gpt-5.2-pro": {
+          title: "GPT-5.2 Pro",
           in: 21,
           out: 168,
           context: 400000,
           vision: true,
         },
-        "openai/gpt-5.2": { in: 1.75, out: 14, context: 400000, vision: true },
+        "openai/gpt-5.2": { title: "GPT-5.2", in: 1.75, out: 14, context: 400000, vision: true },
         "openai/gpt-5.2-chat": {
+          title: "GPT-5.2 Chat",
           in: 1.75,
           out: 14,
           context: 128000,
           vision: true,
         },
         "openai/gpt-5.1-codex-max": {
+          title: "GPT-5.1 Codex Max",
           in: 1.25,
           out: 10,
           context: 400000,
           vision: true,
         },
-        "openai/gpt-5.1": { in: 1.25, out: 10, context: 400000, vision: true },
+        "openai/gpt-5.1": { title: "GPT-5.1", in: 1.25, out: 10, context: 400000, vision: true },
         "openai/gpt-5.1-chat": {
+          title: "GPT-5.1 Chat",
           in: 1.25,
           out: 10,
           context: 128000,
           vision: true,
         },
         "openai/gpt-5.1-codex": {
+          title: "GPT-5.1 Codex",
           in: 1.25,
           out: 10,
           context: 400000,
           vision: true,
         },
         "openai/gpt-5.1-codex-mini": {
+          title: "GPT-5.1 Codex Mini",
           in: 0.25,
           out: 2,
           context: 400000,
           vision: true,
         },
         "openai/gpt-oss-safeguard-20b": {
+          title: "GPT OSS Safeguard 20B",
           in: 0.075,
           out: 0.3,
           context: 131072,
           vision: false,
         },
         "openai/gpt-5-image-mini": {
+          title: "GPT-5 Image Mini",
           in: 2.5,
           out: 2,
           context: 400000,
           vision: true,
         },
         "openai/gpt-5-image": {
+          title: "GPT-5 Image",
           in: 10,
           out: 10,
           context: 400000,
           vision: true,
         },
         "openai/o3-deep-research": {
+          title: "o3 Deep Research",
           in: 10,
           out: 40,
           context: 200000,
           vision: true,
         },
         "openai/o4-mini-deep-research": {
+          title: "o4-mini Deep Research",
           in: 2,
           out: 8,
           context: 200000,
           vision: true,
         },
-        "openai/gpt-5-pro": { in: 15, out: 120, context: 400000, vision: true },
+        "openai/gpt-5-pro": { title: "GPT-5 Pro", in: 15, out: 120, context: 400000, vision: true },
         "openai/gpt-5-codex": {
+          title: "GPT-5 Codex",
           in: 1.25,
           out: 10,
           context: 400000,
           vision: true,
         },
         "openai/gpt-4o-audio-preview": {
+          title: "GPT-4o Audio Preview",
           in: 2.5,
           out: 10,
           context: 128000,
           vision: true,
         },
         "openai/gpt-5-chat": {
+          title: "GPT-5 Chat",
           in: 1.25,
           out: 10,
           context: 128000,
           vision: true,
         },
-        "openai/gpt-5": { in: 1.25, out: 10, context: 400000, vision: true },
+        "openai/gpt-5": { title: "GPT-5", in: 1.25, out: 10, context: 400000, vision: true },
         "openai/gpt-5-mini": {
+          title: "GPT-5 Mini",
           in: 0.25,
           out: 2,
           context: 400000,
           vision: true,
         },
         "openai/gpt-5-nano": {
+          title: "GPT-5 Nano",
           in: 0.05,
           out: 0.4,
           context: 400000,
           vision: true,
         },
         "openai/gpt-oss-120b:free": {
+          title: "GPT OSS 120B (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: false,
         },
         "openai/gpt-oss-120b": {
+          title: "GPT OSS 120B",
           in: 0.039,
           out: 0.19,
           context: 131072,
           vision: false,
         },
         "openai/gpt-oss-120b:exacto": {
+          title: "GPT OSS 120B (Exacto)",
           in: 0.039,
           out: 0.19,
           context: 131072,
           vision: false,
         },
         "openai/gpt-oss-20b:free": {
+          title: "GPT OSS 20B (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: false,
         },
         "openai/gpt-oss-20b": {
+          title: "GPT OSS 20B",
           in: 0.03,
           out: 0.14,
           context: 131072,
           vision: false,
         },
-        "openai/o3-pro": { in: 20, out: 80, context: 200000, vision: true },
-        "openai/codex-mini": { in: 1.5, out: 6, context: 200000, vision: true },
+        "openai/o3-pro": { title: "o3 Pro", in: 20, out: 80, context: 200000, vision: true },
+        "openai/codex-mini": { title: "Codex Mini", in: 1.5, out: 6, context: 200000, vision: true },
         "openai/o4-mini-high": {
+          title: "o4-mini High",
           in: 1.1,
           out: 4.4,
           context: 200000,
           vision: true,
         },
-        "openai/o3": { in: 2, out: 8, context: 200000, vision: true },
-        "openai/o4-mini": { in: 1.1, out: 4.4, context: 200000, vision: true },
-        "openai/gpt-4.1": { in: 2, out: 8, context: 1047576, vision: true },
+        "openai/o3": { title: "o3", in: 2, out: 8, context: 200000, vision: true },
+        "openai/o4-mini": { title: "o4-mini", in: 1.1, out: 4.4, context: 200000, vision: true },
+        "openai/gpt-4.1": { title: "GPT-4.1", in: 2, out: 8, context: 1047576, vision: true },
         "openai/gpt-4.1-mini": {
+          title: "GPT-4.1 Mini",
           in: 0.4,
           out: 1.6,
           context: 1047576,
           vision: true,
         },
         "openai/gpt-4.1-nano": {
+          title: "GPT-4.1 Nano",
           in: 0.1,
           out: 0.4,
           context: 1047576,
           vision: true,
         },
-        "openai/o1-pro": { in: 150, out: 600, context: 200000, vision: true },
+        "openai/o1-pro": { title: "o1 Pro", in: 150, out: 600, context: 200000, vision: true },
         "openai/o3-mini-high": {
+          title: "o3-mini High",
           in: 1.1,
           out: 4.4,
           context: 200000,
           vision: false,
         },
-        "openai/o3-mini": { in: 1.1, out: 4.4, context: 200000, vision: false },
-        "openai/o1": { in: 15, out: 60, context: 200000, vision: true },
+        "openai/o3-mini": { title: "o3-mini", in: 1.1, out: 4.4, context: 200000, vision: false },
+        "openai/o1": { title: "o1", in: 15, out: 60, context: 200000, vision: true },
         "openai/gpt-4o-mini-search-preview": {
+          title: "GPT-4o Mini Search Preview",
           in: 0.15,
           out: 0.6,
           context: 128000,
           vision: false,
         },
         "openai/gpt-4o-search-preview": {
+          title: "GPT-4o Search Preview",
           in: 2.5,
           out: 10,
           context: 128000,
           vision: false,
         },
         "openai/gpt-4-turbo": {
+          title: "GPT-4 Turbo",
           in: 10,
           out: 30,
           context: 128000,
           vision: true,
         },
         "openai/gpt-3.5-turbo-0613": {
+          title: "GPT-3.5 Turbo (0613)",
           in: 1,
           out: 2,
           context: 4095,
           vision: false,
         },
         "openai/gpt-4-turbo-preview": {
+          title: "GPT-4 Turbo Preview",
           in: 10,
           out: 30,
           context: 128000,
           vision: false,
         },
         "openai/gpt-4-1106-preview": {
+          title: "GPT-4 (1106) Preview",
           in: 10,
           out: 30,
           context: 128000,
           vision: false,
         },
         "openai/gpt-3.5-turbo-instruct": {
+          title: "GPT-3.5 Turbo Instruct",
           in: 1.5,
           out: 2,
           context: 4095,
           vision: false,
         },
         "openai/gpt-3.5-turbo-16k": {
+          title: "GPT-3.5 Turbo 16K",
           in: 3,
           out: 4,
           context: 16385,
           vision: false,
         },
-        "openai/gpt-4-0314": { in: 30, out: 60, context: 8191, vision: false },
-        "openai/gpt-4": { in: 30, out: 60, context: 8191, vision: false },
+        "openai/gpt-4-0314": { title: "GPT-4 (0314)", in: 30, out: 60, context: 8191, vision: false },
+        "openai/gpt-4": { title: "GPT-4", in: 30, out: 60, context: 8191, vision: false },
         "openai/gpt-3.5-turbo": {
+          title: "GPT-3.5 Turbo",
           in: 0.5,
           out: 1.5,
           context: 16385,
           vision: false,
         },
         "openai/gpt-4o-2024-11-20": {
+          title: "GPT-4o (2024-11-20)",
           in: 2.5,
           out: 10,
           context: 128000,
           vision: true,
         },
         "openai/chatgpt-4o-latest": {
+          title: "ChatGPT-4o Latest",
           in: 5,
           out: 15,
           context: 128000,
           vision: true,
         },
         "openai/gpt-4o-2024-08-06": {
+          title: "GPT-4o (2024-08-06)",
           in: 2.5,
           out: 10,
           context: 128000,
           vision: true,
         },
         "openai/gpt-4o-mini-2024-07-18": {
+          title: "GPT-4o Mini (2024-07-18)",
           in: 0.15,
           out: 0.6,
           context: 128000,
           vision: true,
         },
         "openai/gpt-4o-mini": {
+          title: "GPT-4o Mini",
           in: 0.15,
           out: 0.6,
           context: 128000,
           vision: true,
         },
         "openai/gpt-4o-2024-05-13": {
+          title: "GPT-4o (2024-05-13)",
           in: 5,
           out: 15,
           context: 128000,
           vision: true,
         },
-        "openai/gpt-4o": { in: 2.5, out: 10, context: 128000, vision: true },
+        "openai/gpt-4o": { title: "GPT-4o", in: 2.5, out: 10, context: 128000, vision: true },
         "openai/gpt-4o:extended": {
+          title: "GPT-4o Extended",
           in: 6,
           out: 18,
           context: 128000,
           vision: true,
         },
-        "anthropic/claude-opus-4.5": { in: 5, out: 25, context: 200000 },
-        "anthropic/claude-haiku-4.5": { in: 1, out: 5, context: 200000 },
-        "anthropic/claude-sonnet-4.5": { in: 3, out: 15, context: 1000000 },
-        "anthropic/claude-opus-4.1": { in: 15, out: 75, context: 200000 },
-        "anthropic/claude-opus-4": { in: 15, out: 75, context: 200000 },
-        "anthropic/claude-sonnet-4": { in: 3, out: 15, context: 1000000 },
-        "anthropic/claude-3.7-sonnet": { in: 3, out: 15, context: 200000 },
-        "anthropic/claude-3.5-haiku": { in: 0.8, out: 4, context: 200000 },
-        "anthropic/claude-3.5-sonnet": { in: 6, out: 30, context: 200000 },
-        "anthropic/claude-3-haiku": { in: 0.25, out: 1.25, context: 200000 },
-        "anthropic/claude-3-opus": { in: 15, out: 75, context: 200000 },
+        "anthropic/claude-opus-4.5": { title: "Claude Opus 4.5", in: 5, out: 25, context: 200000 },
+        "anthropic/claude-haiku-4.5": { title: "Claude Haiku 4.5", in: 1, out: 5, context: 200000 },
+        "anthropic/claude-sonnet-4.5": { title: "Claude Sonnet 4.5", in: 3, out: 15, context: 1000000 },
+        "anthropic/claude-opus-4.1": { title: "Claude Opus 4.1", in: 15, out: 75, context: 200000 },
+        "anthropic/claude-opus-4": { title: "Claude Opus 4", in: 15, out: 75, context: 200000 },
+        "anthropic/claude-sonnet-4": { title: "Claude Sonnet 4", in: 3, out: 15, context: 1000000 },
+        "anthropic/claude-3.7-sonnet": { title: "Claude 3.7 Sonnet", in: 3, out: 15, context: 200000 },
+        "anthropic/claude-3.5-haiku": { title: "Claude 3.5 Haiku", in: 0.8, out: 4, context: 200000 },
+        "anthropic/claude-3.5-sonnet": { title: "Claude 3.5 Sonnet", in: 6, out: 30, context: 200000 },
+        "anthropic/claude-3-haiku": { title: "Claude 3 Haiku", in: 0.25, out: 1.25, context: 200000 },
+        "anthropic/claude-3-opus": { title: "Claude 3 Opus", in: 15, out: 75, context: 200000 },
         "google/gemini-3-flash-preview": {
+          title: "Gemini 3 Flash Preview",
           in: 0.5,
           out: 3,
           context: 1048576,
           vision: true,
         },
         "google/gemini-3-pro-image-preview": {
+          title: "Gemini 3 Pro Image Preview",
           in: 2,
           out: 12,
           context: 65536,
           vision: true,
         },
         "google/gemini-3-pro-preview": {
+          title: "Gemini 3 Pro Preview",
           in: 2,
           out: 12,
           context: 1048576,
           vision: true,
         },
         "google/gemini-2.5-pro": {
+          title: "Gemini 2.5 Pro",
           in: 1.25,
           out: 10,
           context: 1048576,
           vision: true,
         },
         "google/gemini-2.5-flash": {
+          title: "Gemini 2.5 Flash",
           in: 0.3,
           out: 2.5,
           context: 1048576,
           vision: true,
         },
         "google/gemini-2.5-flash-image": {
+          title: "Gemini 2.5 Flash Image",
           in: 0.3,
           out: 2.5,
           context: 32768,
           vision: true,
         },
         "google/gemini-2.5-flash-lite": {
+          title: "Gemini 2.5 Flash Lite",
           in: 0.1,
           out: 0.4,
           context: 1048576,
           vision: true,
         },
         "google/gemini-2.0-flash-001": {
+          title: "Gemini 2.0 Flash (001)",
           in: 0.1,
           out: 0.4,
           context: 1048576,
           vision: true,
         },
         "google/gemini-2.0-flash-lite-001": {
+          title: "Gemini 2.0 Flash Lite (001)",
           in: 0.075,
           out: 0.3,
           context: 1048576,
           vision: true,
         },
         "google/gemini-2.0-flash-exp:free": {
+          title: "Gemini 2.0 Flash Experimental (Free)",
           in: 0,
           out: 0,
           context: 1048576,
           vision: true,
         },
         "google/gemma-3-27b-it": {
+          title: "Gemma 3 27B IT",
           in: 0.04,
           out: 0.15,
           context: 96000,
           vision: true,
         },
         "google/gemma-3-27b-it:free": {
+          title: "Gemma 3 27B IT (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: true,
         },
         "google/gemma-3-12b-it": {
+          title: "Gemma 3 12B IT",
           in: 0.03,
           out: 0.1,
           context: 131072,
           vision: true,
         },
         "google/gemma-3-12b-it:free": {
+          title: "Gemma 3 12B IT (Free)",
           in: 0,
           out: 0,
           context: 32768,
           vision: true,
         },
         "google/gemma-3-4b-it": {
+          title: "Gemma 3 4B IT",
           in: 0.01703,
           out: 0.06815,
           context: 96000,
           vision: true,
         },
         "google/gemma-3-4b-it:free": {
+          title: "Gemma 3 4B IT (Free)",
           in: 0,
           out: 0,
           context: 32768,
           vision: true,
         },
         "google/gemma-3n-e4b-it": {
+          title: "Gemma 3N E4B IT",
           in: 0.02,
           out: 0.04,
           context: 32768,
           vision: false,
         },
         "google/gemma-3n-e4b-it:free": {
+          title: "Gemma 3N E4B IT (Free)",
           in: 0,
           out: 0,
           context: 8192,
           vision: false,
         },
         "google/gemma-3n-e2b-it:free": {
+          title: "Gemma 3N E2B IT (Free)",
           in: 0,
           out: 0,
           context: 8192,
           vision: false,
         },
         "google/gemma-2-27b-it": {
+          title: "Gemma 2 27B IT",
           in: 0.65,
           out: 0.65,
           context: 8192,
           vision: false,
         },
         "google/gemma-2-9b-it": {
+          title: "Gemma 2 9B IT",
           in: 0.03,
           out: 0.09,
           context: 8192,
           vision: false,
         },
         "qwen/qwen3-vl-32b-instruct": {
+          title: "Qwen3 VL 32B Instruct",
           in: 0.5,
           out: 1.5,
           context: 262144,
           vision: true,
         },
         "qwen/qwen3-vl-8b-thinking": {
+          title: "Qwen3 VL 8B Thinking",
           in: 0.18,
           out: 2.1,
           context: 256000,
           vision: true,
         },
         "qwen/qwen3-vl-8b-instruct": {
+          title: "Qwen3 VL 8B Instruct",
           in: 0.064,
           out: 0.4,
           context: 131072,
           vision: true,
         },
         "qwen/qwen3-vl-30b-a3b-thinking": {
+          title: "Qwen3 VL 30B A3B Thinking",
           in: 0.16,
           out: 0.8,
           context: 131072,
           vision: true,
         },
         "qwen/qwen3-vl-30b-a3b-instruct": {
+          title: "Qwen3 VL 30B A3B Instruct",
           in: 0.15,
           out: 0.6,
           context: 262144,
           vision: true,
         },
         "qwen/qwen3-vl-235b-a22b-thinking": {
+          title: "Qwen3 VL 235B A22B Thinking",
           in: 0.3,
           out: 1.2,
           context: 262144,
           vision: true,
         },
         "qwen/qwen3-vl-235b-a22b-instruct": {
+          title: "Qwen3 VL 235B A22B Instruct",
           in: 0.2,
           out: 1.2,
           context: 262144,
           vision: true,
         },
-        "qwen/qwen3-max": { in: 1.2, out: 6, context: 256000, vision: false },
+        "qwen/qwen3-max": { title: "Qwen3 Max", in: 1.2, out: 6, context: 256000, vision: false },
         "qwen/qwen3-coder-plus": {
+          title: "Qwen3 Coder Plus",
           in: 1,
           out: 5,
           context: 128000,
           vision: false,
         },
         "qwen/qwen3-coder-flash": {
+          title: "Qwen3 Coder Flash",
           in: 0.3,
           out: 1.5,
           context: 128000,
           vision: false,
         },
         "qwen/qwen3-next-80b-a3b-thinking": {
+          title: "Qwen3 Next 80B A3B Thinking",
           in: 0.12,
           out: 1.2,
           context: 131072,
           vision: false,
         },
         "qwen/qwen3-next-80b-a3b-instruct": {
+          title: "Qwen3 Next 80B A3B Instruct",
           in: 0.09,
           out: 1.1,
           context: 262144,
           vision: false,
         },
         "qwen/qwen-plus-2025-07-28": {
+          title: "Qwen Plus (2025-07-28)",
           in: 0.4,
           out: 1.2,
           context: 1000000,
           vision: false,
         },
         "qwen/qwen-plus-2025-07-28:thinking": {
+          title: "Qwen Plus Thinking (2025-07-28)",
           in: 0.4,
           out: 4,
           context: 1000000,
           vision: false,
         },
         "qwen/qwen3-30b-a3b-thinking-2507": {
+          title: "Qwen3 30B A3B Thinking (2507)",
           in: 0.051,
           out: 0.34,
           context: 32768,
           vision: false,
         },
         "qwen/qwen3-coder-30b-a3b-instruct": {
+          title: "Qwen3 Coder 30B A3B Instruct",
           in: 0.07,
           out: 0.27,
           context: 160000,
           vision: false,
         },
         "qwen/qwen3-30b-a3b-instruct-2507": {
+          title: "Qwen3 30B A3B Instruct (2507)",
           in: 0.08,
           out: 0.33,
           context: 262144,
           vision: false,
         },
         "qwen/qwen3-235b-a22b-thinking-2507": {
+          title: "Qwen3 235B A22B Thinking (2507)",
           in: 0.11,
           out: 0.6,
           context: 262144,
           vision: false,
         },
         "qwen/qwen3-coder:free": {
+          title: "Qwen3 Coder (Free)",
           in: 0,
           out: 0,
           context: 262000,
           vision: false,
         },
         "qwen/qwen3-coder": {
+          title: "Qwen3 Coder",
           in: 0.22,
           out: 0.95,
           context: 262144,
           vision: false,
         },
         "qwen/qwen3-coder:exacto": {
+          title: "Qwen3 Coder (Exacto)",
           in: 0.22,
           out: 1.8,
           context: 262144,
           vision: false,
         },
         "qwen/qwen3-235b-a22b-2507": {
+          title: "Qwen3 235B A22B (2507)",
           in: 0.071,
           out: 0.463,
           context: 262144,
           vision: false,
         },
-        "qwen/qwen3-4b:free": { in: 0, out: 0, context: 40960, vision: false },
+        "qwen/qwen3-4b:free": { title: "Qwen3 4B (Free)", in: 0, out: 0, context: 40960, vision: false },
         "qwen/qwen3-30b-a3b": {
+          title: "Qwen3 30B A3B",
           in: 0.06,
           out: 0.22,
           context: 40960,
           vision: false,
         },
         "qwen/qwen3-8b": {
+          title: "Qwen3 8B",
           in: 0.028,
           out: 0.1104,
           context: 128000,
           vision: false,
         },
         "qwen/qwen3-14b": {
+          title: "Qwen3 14B",
           in: 0.05,
           out: 0.22,
           context: 40960,
           vision: false,
         },
         "qwen/qwen3-32b": {
+          title: "Qwen3 32B",
           in: 0.08,
           out: 0.24,
           context: 40960,
           vision: false,
         },
         "qwen/qwen3-235b-a22b": {
+          title: "Qwen3 235B A22B",
           in: 0.18,
           out: 0.54,
           context: 40960,
           vision: false,
         },
         "qwen/qwen2.5-coder-7b-instruct": {
+          title: "Qwen 2.5 Coder 7B Instruct",
           in: 0.03,
           out: 0.09,
           context: 32768,
           vision: false,
         },
         "qwen/qwen2.5-vl-32b-instruct": {
+          title: "Qwen 2.5 VL 32B Instruct",
           in: 0.05,
           out: 0.22,
           context: 16384,
           vision: true,
         },
-        "qwen/qwq-32b": { in: 0.15, out: 0.4, context: 32768, vision: false },
+        "qwen/qwq-32b": { title: "QwQ 32B", in: 0.15, out: 0.4, context: 32768, vision: false },
         "qwen/qwen-vl-plus": {
+          title: "Qwen VL Plus",
           in: 0.21,
           out: 0.63,
           context: 7500,
           vision: true,
         },
         "qwen/qwen-vl-max": {
+          title: "Qwen VL Max",
           in: 0.8,
           out: 3.2,
           context: 131072,
           vision: true,
         },
         "qwen/qwen-turbo": {
+          title: "Qwen Turbo",
           in: 0.05,
           out: 0.2,
           context: 1000000,
           vision: false,
         },
         "qwen/qwen2.5-vl-72b-instruct": {
+          title: "Qwen 2.5 VL 72B Instruct",
           in: 0.07,
           out: 0.26,
           context: 32768,
           vision: true,
         },
-        "qwen/qwen-plus": { in: 0.4, out: 1.2, context: 131072, vision: false },
-        "qwen/qwen-max": { in: 1.6, out: 6.4, context: 32768, vision: false },
+        "qwen/qwen-plus": { title: "Qwen Plus", in: 0.4, out: 1.2, context: 131072, vision: false },
+        "qwen/qwen-max": { title: "Qwen Max", in: 1.6, out: 6.4, context: 32768, vision: false },
         "qwen/qwen-2.5-coder-32b-instruct": {
+          title: "Qwen 2.5 Coder 32B Instruct",
           in: 0.03,
           out: 0.11,
           context: 32768,
           vision: false,
         },
         "qwen/qwen-2.5-7b-instruct": {
+          title: "Qwen 2.5 7B Instruct",
           in: 0.04,
           out: 0.1,
           context: 32768,
           vision: false,
         },
         "qwen/qwen-2.5-72b-instruct": {
+          title: "Qwen 2.5 72B Instruct",
           in: 0.12,
           out: 0.39,
           context: 32768,
           vision: false,
         },
         "qwen/qwen-2.5-vl-7b-instruct:free": {
+          title: "Qwen 2.5 VL 7B Instruct (Free)",
           in: 0,
           out: 0,
           context: 32768,
           vision: true,
         },
         "qwen/qwen-2.5-vl-7b-instruct": {
+          title: "Qwen 2.5 VL 7B Instruct",
           in: 0.2,
           out: 0.2,
           context: 32768,
@@ -1286,36 +1416,42 @@
         },
         // Amazon Nova
         "amazon/nova-2-lite-v1:free": {
+          title: "Nova 2 Lite v1 (Free)",
           in: 0,
           out: 0,
           context: 1000000,
           vision: true,
         },
         "amazon/nova-2-lite-v1": {
+          title: "Nova 2 Lite v1",
           in: 0.3,
           out: 2.5,
           context: 1000000,
           vision: true,
         },
         "amazon/nova-premier-v1": {
+          title: "Nova Premier v1",
           in: 2.5,
           out: 12.5,
           context: 1000000,
           vision: true,
         },
         "amazon/nova-lite-v1": {
+          title: "Nova Lite v1",
           in: 0.06,
           out: 0.24,
           context: 300000,
           vision: true,
         },
         "amazon/nova-micro-v1": {
+          title: "Nova Micro v1",
           in: 0.035,
           out: 0.14,
           context: 128000,
           vision: false,
         },
         "amazon/nova-pro-v1": {
+          title: "Nova Pro v1",
           in: 0.8,
           out: 3.2,
           context: 300000,
@@ -1324,31 +1460,36 @@
 
         // Perplexity
         "perplexity/sonar-pro-search": {
+          title: "Sonar Pro Search",
           in: 3,
           out: 15,
           context: 200000,
           vision: true,
         },
         "perplexity/sonar-pro": {
+          title: "Sonar Pro",
           in: 3,
           out: 15,
           context: 200000,
           vision: true,
         },
         "perplexity/sonar-reasoning-pro": {
+          title: "Sonar Reasoning Pro",
           in: 2,
           out: 8,
           context: 128000,
           vision: true,
         },
         "perplexity/sonar-reasoning": {
+          title: "Sonar Reasoning",
           in: 1,
           out: 5,
           context: 127000,
           vision: false,
         },
-        "perplexity/sonar": { in: 1, out: 1, context: 127072, vision: true },
+        "perplexity/sonar": { title: "Sonar", in: 1, out: 1, context: 127072, vision: true },
         "perplexity/sonar-deep-research": {
+          title: "Sonar Deep Research",
           in: 2,
           out: 8,
           context: 128000,
@@ -1356,81 +1497,93 @@
         },
 
         // Z.AI (Zhipu) GLM models
-        "z-ai/glm-4.7": { in: 0.44, out: 1.74, context: 202752, vision: false },
-        "z-ai/glm-4.6v": { in: 0.3, out: 0.9, context: 131072, vision: true },
-        "z-ai/glm-4.6": { in: 0.39, out: 1.9, context: 204800, vision: false },
+        "z-ai/glm-4.7": { title: "GLM 4.7", in: 0.44, out: 1.74, context: 202752, vision: false },
+        "z-ai/glm-4.6v": { title: "GLM 4.6V", in: 0.3, out: 0.9, context: 131072, vision: true },
+        "z-ai/glm-4.6": { title: "GLM 4.6", in: 0.39, out: 1.9, context: 204800, vision: false },
         "z-ai/glm-4.6:exacto": {
+          title: "GLM 4.6 (Exacto)",
           in: 0.44,
           out: 1.76,
           context: 204800,
           vision: false,
         },
-        "z-ai/glm-4.5v": { in: 0.48, out: 1.44, context: 65536, vision: true },
-        "z-ai/glm-4.5": { in: 0.35, out: 1.55, context: 131072, vision: false },
+        "z-ai/glm-4.5v": { title: "GLM 4.5V", in: 0.48, out: 1.44, context: 65536, vision: true },
+        "z-ai/glm-4.5": { title: "GLM 4.5", in: 0.35, out: 1.55, context: 131072, vision: false },
         "z-ai/glm-4.5-air:free": {
+          title: "GLM 4.5 Air (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: false,
         },
         "z-ai/glm-4.5-air": {
+          title: "GLM 4.5 Air",
           in: 0.104,
           out: 0.68,
           context: 131072,
           vision: false,
         },
-        "z-ai/glm-4-32b": { in: 0.1, out: 0.1, context: 128000, vision: false },
+        "z-ai/glm-4-32b": { title: "GLM 4 32B", in: 0.1, out: 0.1, context: 128000, vision: false },
 
         // NVIDIA
         "nvidia/nemotron-3-nano-30b-a3b:free": {
+          title: "Nemotron 3 Nano 30B A3B (Free)",
           in: 0,
           out: 0,
           context: 256000,
           vision: false,
         },
         "nvidia/nemotron-3-nano-30b-a3b": {
+          title: "Nemotron 3 Nano 30B A3B",
           in: 0.06,
           out: 0.24,
           context: 262144,
           vision: false,
         },
         "nvidia/nemotron-nano-12b-v2-vl:free": {
+          title: "Nemotron Nano 12B v2 VL (Free)",
           in: 0,
           out: 0,
           context: 128000,
           vision: true,
         },
         "nvidia/nemotron-nano-12b-v2-vl": {
+          title: "Nemotron Nano 12B v2 VL",
           in: 0.2,
           out: 0.6,
           context: 131072,
           vision: true,
         },
         "nvidia/nemotron-nano-9b-v2:free": {
+          title: "Nemotron Nano 9B v2 (Free)",
           in: 0,
           out: 0,
           context: 128000,
           vision: false,
         },
         "nvidia/nemotron-nano-9b-v2": {
+          title: "Nemotron Nano 9B v2",
           in: 0.04,
           out: 0.16,
           context: 131072,
           vision: false,
         },
         "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
+          title: "Llama 3.3 Nemotron Super 49B v1.5",
           in: 0.1,
           out: 0.4,
           context: 131072,
           vision: false,
         },
         "nvidia/llama-3.1-nemotron-ultra-253b-v1": {
+          title: "Llama 3.1 Nemotron Ultra 253B v1",
           in: 0.6,
           out: 1.8,
           context: 131072,
           vision: false,
         },
         "nvidia/llama-3.1-nemotron-70b-instruct": {
+          title: "Llama 3.1 Nemotron 70B Instruct",
           in: 1.2,
           out: 1.2,
           context: 131072,
@@ -1439,30 +1592,35 @@
 
         // Baidu ERNIE
         "baidu/ernie-4.5-21b-a3b-thinking": {
+          title: "ERNIE 4.5 21B A3B Thinking",
           in: 0.056,
           out: 0.224,
           context: 131072,
           vision: false,
         },
         "baidu/ernie-4.5-21b-a3b": {
+          title: "ERNIE 4.5 21B A3B",
           in: 0.056,
           out: 0.224,
           context: 120000,
           vision: false,
         },
         "baidu/ernie-4.5-vl-28b-a3b": {
+          title: "ERNIE 4.5 VL 28B A3B",
           in: 0.112,
           out: 0.448,
           context: 30000,
           vision: true,
         },
         "baidu/ernie-4.5-vl-424b-a47b": {
+          title: "ERNIE 4.5 VL 424B A47B",
           in: 0.336,
           out: 1,
           context: 123000,
           vision: true,
         },
         "baidu/ernie-4.5-300b-a47b": {
+          title: "ERNIE 4.5 300B A47B",
           in: 0.224,
           out: 0.88,
           context: 123000,
@@ -1471,42 +1629,49 @@
 
         // Nous Research
         "nousresearch/hermes-4-70b": {
+          title: "Hermes 4 70B",
           in: 0.11,
           out: 0.38,
           context: 131072,
           vision: false,
         },
         "nousresearch/hermes-4-405b": {
+          title: "Hermes 4 405B",
           in: 0.3,
           out: 1.2,
           context: 131072,
           vision: false,
         },
         "nousresearch/hermes-3-llama-3.1-70b": {
+          title: "Hermes 3 Llama 3.1 70B",
           in: 0.3,
           out: 0.3,
           context: 65536,
           vision: false,
         },
         "nousresearch/hermes-3-llama-3.1-405b:free": {
+          title: "Hermes 3 Llama 3.1 405B (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: false,
         },
         "nousresearch/hermes-3-llama-3.1-405b": {
+          title: "Hermes 3 Llama 3.1 405B",
           in: 1,
           out: 1,
           context: 131072,
           vision: false,
         },
         "nousresearch/deephermes-3-mistral-24b-preview": {
+          title: "DeepHermes 3 Mistral 24B Preview",
           in: 0.02,
           out: 0.1,
           context: 32768,
           vision: false,
         },
         "nousresearch/hermes-2-pro-llama-3-8b": {
+          title: "Hermes 2 Pro Llama 3 8B",
           in: 0.025,
           out: 0.08,
           context: 8192,
@@ -1515,48 +1680,56 @@
 
         // Microsoft
         "microsoft/phi-4-reasoning-plus": {
+          title: "Phi-4 Reasoning Plus",
           in: 0.07,
           out: 0.35,
           context: 32768,
           vision: false,
         },
         "microsoft/phi-4-multimodal-instruct": {
+          title: "Phi-4 Multimodal Instruct",
           in: 0.05,
           out: 0.1,
           context: 131072,
           vision: true,
         },
         "microsoft/phi-4": {
+          title: "Phi-4",
           in: 0.06,
           out: 0.14,
           context: 16384,
           vision: false,
         },
         "microsoft/phi-3.5-mini-128k-instruct": {
+          title: "Phi-3.5 Mini 128K Instruct",
           in: 0.1,
           out: 0.1,
           context: 128000,
           vision: false,
         },
         "microsoft/phi-3-mini-128k-instruct": {
+          title: "Phi-3 Mini 128K Instruct",
           in: 0.1,
           out: 0.1,
           context: 128000,
           vision: false,
         },
         "microsoft/phi-3-medium-128k-instruct": {
+          title: "Phi-3 Medium 128K Instruct",
           in: 1,
           out: 1,
           context: 128000,
           vision: false,
         },
         "microsoft/mai-ds-r1": {
+          title: "MAI-DS-R1",
           in: 0.3,
           out: 1.2,
           context: 163840,
           vision: false,
         },
         "microsoft/wizardlm-2-8x22b": {
+          title: "WizardLM 2 8x22B",
           in: 0.48,
           out: 0.48,
           context: 65536,
@@ -1565,24 +1738,28 @@
 
         // Cohere
         "cohere/command-a": {
+          title: "Command A",
           in: 2.5,
           out: 10,
           context: 256000,
           vision: false,
         },
         "cohere/command-r7b-12-2024": {
+          title: "Command R7B (12-2024)",
           in: 0.0375,
           out: 0.15,
           context: 128000,
           vision: false,
         },
         "cohere/command-r-08-2024": {
+          title: "Command R (08-2024)",
           in: 0.15,
           out: 0.6,
           context: 128000,
           vision: false,
         },
         "cohere/command-r-plus-08-2024": {
+          title: "Command R Plus (08-2024)",
           in: 2.5,
           out: 10,
           context: 128000,
@@ -1591,42 +1768,49 @@
 
         // MoonshotAI Kimi
         "moonshotai/kimi-linear-48b-a3b-instruct": {
+          title: "Kimi Linear 48B A3B Instruct",
           in: 0.7,
           out: 0.9,
           context: 1048576,
           vision: false,
         },
         "moonshotai/kimi-k2-thinking": {
+          title: "Kimi K2 Thinking",
           in: 0.4,
           out: 1.75,
           context: 262144,
           vision: false,
         },
         "moonshotai/kimi-k2-0905": {
+          title: "Kimi K2 (0905)",
           in: 0.39,
           out: 1.9,
           context: 262144,
           vision: false,
         },
         "moonshotai/kimi-k2-0905:exacto": {
+          title: "Kimi K2 (0905) Exacto",
           in: 0.6,
           out: 2.5,
           context: 262144,
           vision: false,
         },
         "moonshotai/kimi-k2:free": {
+          title: "Kimi K2 (Free)",
           in: 0,
           out: 0,
           context: 32768,
           vision: false,
         },
         "moonshotai/kimi-k2": {
+          title: "Kimi K2",
           in: 0.456,
           out: 1.84,
           context: 131072,
           vision: false,
         },
         "moonshotai/kimi-dev-72b": {
+          title: "Kimi Dev 72B",
           in: 0.29,
           out: 1.15,
           context: 131072,
@@ -1635,12 +1819,14 @@
 
         // Alibaba Tongyi
         "alibaba/tongyi-deepresearch-30b-a3b:free": {
+          title: "Tongyi DeepResearch 30B A3B (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: false,
         },
         "alibaba/tongyi-deepresearch-30b-a3b": {
+          title: "Tongyi DeepResearch 30B A3B",
           in: 0.09,
           out: 0.4,
           context: 131072,
@@ -1649,12 +1835,14 @@
 
         // Relace
         "relace/relace-search": {
+          title: "Relace Search",
           in: 1,
           out: 3,
           context: 256000,
           vision: false,
         },
         "relace/relace-apply-3": {
+          title: "Relace Apply 3",
           in: 0.85,
           out: 1.25,
           context: 256000,
@@ -1663,6 +1851,7 @@
 
         // EssentialAI
         "essentialai/rnj-1-instruct": {
+          title: "RNJ-1 Instruct",
           in: 0.15,
           out: 0.15,
           context: 32768,
@@ -1671,36 +1860,42 @@
 
         // Arcee AI
         "arcee-ai/trinity-mini:free": {
+          title: "Trinity Mini (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: false,
         },
         "arcee-ai/trinity-mini": {
+          title: "Trinity Mini",
           in: 0.045,
           out: 0.15,
           context: 131072,
           vision: false,
         },
         "arcee-ai/spotlight": {
+          title: "Spotlight",
           in: 0.18,
           out: 0.18,
           context: 131072,
           vision: true,
         },
         "arcee-ai/maestro-reasoning": {
+          title: "Maestro Reasoning",
           in: 0.9,
           out: 3.3,
           context: 131072,
           vision: false,
         },
         "arcee-ai/virtuoso-large": {
+          title: "Virtuoso Large",
           in: 0.75,
           out: 1.2,
           context: 131072,
           vision: false,
         },
         "arcee-ai/coder-large": {
+          title: "Coder Large",
           in: 0.5,
           out: 0.8,
           context: 32768,
@@ -1709,6 +1904,7 @@
 
         // Prime Intellect
         "prime-intellect/intellect-3": {
+          title: "Intellect 3",
           in: 0.2,
           out: 1.1,
           context: 131072,
@@ -1717,36 +1913,42 @@
 
         // TNG Tech
         "tngtech/tng-r1t-chimera:free": {
+          title: "TNG R1T Chimera (Free)",
           in: 0,
           out: 0,
           context: 163840,
           vision: false,
         },
         "tngtech/tng-r1t-chimera": {
+          title: "TNG R1T Chimera",
           in: 0.3,
           out: 1.2,
           context: 163840,
           vision: false,
         },
         "tngtech/deepseek-r1t2-chimera:free": {
+          title: "DeepSeek R1T2 Chimera (Free)",
           in: 0,
           out: 0,
           context: 163840,
           vision: false,
         },
         "tngtech/deepseek-r1t2-chimera": {
+          title: "DeepSeek R1T2 Chimera",
           in: 0.3,
           out: 1.2,
           context: 163840,
           vision: false,
         },
         "tngtech/deepseek-r1t-chimera:free": {
+          title: "DeepSeek R1T Chimera (Free)",
           in: 0,
           out: 0,
           context: 163840,
           vision: false,
         },
         "tngtech/deepseek-r1t-chimera": {
+          title: "DeepSeek R1T Chimera",
           in: 0.3,
           out: 1.2,
           context: 163840,
@@ -1755,24 +1957,28 @@
 
         // Deep Cogito
         "deepcogito/cogito-v2.1-671b": {
+          title: "Cogito v2.1 671B",
           in: 1.25,
           out: 1.25,
           context: 128000,
           vision: false,
         },
         "deepcogito/cogito-v2-preview-llama-405b": {
+          title: "Cogito v2 Preview Llama 405B",
           in: 3.5,
           out: 3.5,
           context: 32768,
           vision: false,
         },
         "deepcogito/cogito-v2-preview-llama-70b": {
+          title: "Cogito v2 Preview Llama 70B",
           in: 0.88,
           out: 0.88,
           context: 32768,
           vision: false,
         },
         "deepcogito/cogito-v2-preview-llama-109b-moe": {
+          title: "Cogito v2 Preview Llama 109B MoE",
           in: 0.18,
           out: 0.59,
           context: 32767,
@@ -1781,6 +1987,7 @@
 
         // StepFun
         "stepfun-ai/step3": {
+          title: "Step3",
           in: 0.57,
           out: 1.42,
           context: 65536,
@@ -1789,6 +1996,7 @@
 
         // OpenGVLab
         "opengvlab/internvl3-78b": {
+          title: "InternVL3 78B",
           in: 0.1,
           out: 0.39,
           context: 32768,
@@ -1797,30 +2005,35 @@
 
         // TheDrummer
         "thedrummer/cydonia-24b-v4.1": {
+          title: "Cydonia 24B v4.1",
           in: 0.3,
           out: 0.5,
           context: 131072,
           vision: false,
         },
         "thedrummer/anubis-70b-v1.1": {
+          title: "Anubis 70B v1.1",
           in: 0.75,
           out: 1,
           context: 131072,
           vision: false,
         },
         "thedrummer/skyfall-36b-v2": {
+          title: "Skyfall 36B v2",
           in: 0.55,
           out: 0.8,
           context: 32768,
           vision: false,
         },
         "thedrummer/unslopnemo-12b": {
+          title: "UnslopNemo 12B",
           in: 0.4,
           out: 0.4,
           context: 32768,
           vision: false,
         },
         "thedrummer/rocinante-12b": {
+          title: "Rocinante 12B",
           in: 0.17,
           out: 0.43,
           context: 32768,
@@ -1829,6 +2042,7 @@
 
         // Kwaipilot
         "kwaipilot/kat-coder-pro:free": {
+          title: "KAT Coder Pro (Free)",
           in: 0,
           out: 0,
           context: 256000,
@@ -1837,18 +2051,21 @@
 
         // MiniMax
         "minimax/minimax-m2": {
+          title: "MiniMax M2",
           in: 0.2,
           out: 1,
           context: 196608,
           vision: false,
         },
         "minimax/minimax-m1": {
+          title: "MiniMax M1",
           in: 0.4,
           out: 2.2,
           context: 1000000,
           vision: false,
         },
         "minimax/minimax-01": {
+          title: "MiniMax 01",
           in: 0.2,
           out: 1.1,
           context: 1000192,
@@ -1857,12 +2074,14 @@
 
         // LiquidAI
         "liquid/lfm2-8b-a1b": {
+          title: "LFM2 8B A1B",
           in: 0.05,
           out: 0.1,
           context: 32768,
           vision: false,
         },
         "liquid/lfm-2.2-6b": {
+          title: "LFM 2.2 6B",
           in: 0.05,
           out: 0.1,
           context: 32768,
@@ -1871,6 +2090,7 @@
 
         // IBM Granite
         "ibm-granite/granite-4.0-h-micro": {
+          title: "Granite 4.0 H Micro",
           in: 0.017,
           out: 0.11,
           context: 131000,
@@ -1879,30 +2099,35 @@
 
         // AllenAI Olmo
         "allenai/olmo-3.1-32b-think:free": {
+          title: "Olmo 3.1 32B Think (Free)",
           in: 0,
           out: 0,
           context: 65536,
           vision: false,
         },
         "allenai/olmo-3-32b-think:free": {
+          title: "Olmo 3 32B Think (Free)",
           in: 0,
           out: 0,
           context: 65536,
           vision: false,
         },
         "allenai/olmo-3-7b-instruct": {
+          title: "Olmo 3 7B Instruct",
           in: 0.1,
           out: 0.2,
           context: 65536,
           vision: false,
         },
         "allenai/olmo-3-7b-think": {
+          title: "Olmo 3 7B Think",
           in: 0.12,
           out: 0.2,
           context: 65536,
           vision: false,
         },
         "allenai/olmo-2-0325-32b-instruct": {
+          title: "Olmo 2 (0325) 32B Instruct",
           in: 0.05,
           out: 0.2,
           context: 128000,
@@ -1911,6 +2136,7 @@
 
         // THUDM
         "thudm/glm-4.1v-9b-thinking": {
+          title: "GLM 4.1V 9B Thinking",
           in: 0.028,
           out: 0.1104,
           context: 65536,
@@ -1919,12 +2145,14 @@
 
         // Meituan
         "meituan/longcat-flash-chat:free": {
+          title: "LongCat Flash Chat (Free)",
           in: 0,
           out: 0,
           context: 131072,
           vision: false,
         },
         "meituan/longcat-flash-chat": {
+          title: "LongCat Flash Chat",
           in: 0.2,
           out: 0.8,
           context: 131072,
@@ -1933,6 +2161,7 @@
 
         // Tencent Hunyuan
         "tencent/hunyuan-a13b-instruct": {
+          title: "Hunyuan A13B Instruct",
           in: 0.14,
           out: 0.57,
           context: 131072,
@@ -1941,6 +2170,7 @@
 
         // ByteDance
         "bytedance/ui-tars-1.5-7b": {
+          title: "UI-TARS 1.5 7B",
           in: 0.1,
           out: 0.2,
           context: 128000,
@@ -1949,6 +2179,7 @@
 
         // Venice (Dolphin)
         "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
+          title: "Dolphin Mistral 24B Venice Edition (Free)",
           in: 0,
           out: 0,
           context: 32768,
@@ -1957,6 +2188,7 @@
 
         // Switchpoint
         "switchpoint/router": {
+          title: "Router",
           in: 0.85,
           out: 3.4,
           context: 131072,
@@ -1965,12 +2197,14 @@
 
         // Morph
         "morph/morph-v3-large": {
+          title: "Morph v3 Large",
           in: 0.9,
           out: 1.9,
           context: 262144,
           vision: false,
         },
         "morph/morph-v3-fast": {
+          title: "Morph v3 Fast",
           in: 0.8,
           out: 1.2,
           context: 81920,
@@ -1979,12 +2213,14 @@
 
         // Inception
         "inception/mercury": {
+          title: "Mercury",
           in: 0.25,
           out: 1,
           context: 128000,
           vision: false,
         },
         "inception/mercury-coder": {
+          title: "Mercury Coder",
           in: 0.25,
           out: 1,
           context: 128000,
@@ -1993,30 +2229,35 @@
 
         // Sao10K
         "sao10k/l3.1-70b-hanami-x1": {
+          title: "L3.1 70B Hanami X1",
           in: 3,
           out: 3,
           context: 16000,
           vision: false,
         },
         "sao10k/l3.3-euryale-70b": {
+          title: "L3.3 Euryale 70B",
           in: 0.65,
           out: 0.75,
           context: 131072,
           vision: false,
         },
         "sao10k/l3.1-euryale-70b": {
+          title: "L3.1 Euryale 70B",
           in: 0.65,
           out: 0.75,
           context: 32768,
           vision: false,
         },
         "sao10k/l3-euryale-70b": {
+          title: "L3 Euryale 70B",
           in: 1.48,
           out: 1.48,
           context: 8192,
           vision: false,
         },
         "sao10k/l3-lunaris-8b": {
+          title: "L3 Lunaris 8B",
           in: 0.04,
           out: 0.05,
           context: 8192,
@@ -2025,12 +2266,14 @@
 
         // NeverSleep
         "neversleep/llama-3.1-lumimaid-8b": {
+          title: "Llama 3.1 Lumimaid 8B",
           in: 0.09,
           out: 0.6,
           context: 32768,
           vision: false,
         },
         "neversleep/noromaid-20b": {
+          title: "Noromaid 20B",
           in: 1,
           out: 1.75,
           context: 4096,
@@ -2038,14 +2281,16 @@
         },
 
         // AionLabs
-        "aion-labs/aion-1.0": { in: 4, out: 8, context: 131072, vision: false },
+        "aion-labs/aion-1.0": { title: "Aion 1.0", in: 4, out: 8, context: 131072, vision: false },
         "aion-labs/aion-1.0-mini": {
+          title: "Aion 1.0 Mini",
           in: 0.7,
           out: 1.4,
           context: 131072,
           vision: false,
         },
         "aion-labs/aion-rp-llama-3.1-8b": {
+          title: "Aion RP Llama 3.1 8B",
           in: 0.8,
           out: 1.6,
           context: 32768,
@@ -2054,6 +2299,7 @@
 
         // ArliAI
         "arliai/qwq-32b-arliai-rpr-v1": {
+          title: "QwQ 32B ArliAI RPR v1",
           in: 0.03,
           out: 0.11,
           context: 32768,
@@ -2062,6 +2308,7 @@
 
         // EleutherAI
         "eleutherai/llemma_7b": {
+          title: "Llemma 7B",
           in: 0.8,
           out: 1.2,
           context: 4096,
@@ -2070,6 +2317,7 @@
 
         // AlfredPros
         "alfredpros/codellama-7b-instruct-solidity": {
+          title: "CodeLlama 7B Instruct Solidity",
           in: 0.8,
           out: 1.2,
           context: 4096,
@@ -2078,6 +2326,7 @@
 
         // Xiaomi
         "xiaomi/mimo-v2-flash:free": {
+          title: "Mimo v2 Flash (Free)",
           in: 0,
           out: 0,
           context: 262144,
@@ -2086,6 +2335,7 @@
 
         // Nex AGI
         "nex-agi/deepseek-v3.1-nex-n1:free": {
+          title: "DeepSeek v3.1 Nex N1 (Free)",
           in: 0,
           out: 0,
           context: 131072,
@@ -2094,43 +2344,50 @@
 
         // Other legacy models
         "inflection/inflection-3-pi": {
+          title: "Inflection 3 Pi",
           in: 2.5,
           out: 10,
           context: 8000,
           vision: false,
         },
         "inflection/inflection-3-productivity": {
+          title: "Inflection 3 Productivity",
           in: 2.5,
           out: 10,
           context: 8000,
           vision: false,
         },
         "anthracite-org/magnum-v4-72b": {
+          title: "Magnum v4 72B",
           in: 3,
           out: 5,
           context: 16384,
           vision: false,
         },
         "raifle/sorcererlm-8x22b": {
+          title: "SorcererLM 8x22B",
           in: 4.5,
           out: 4.5,
           context: 16000,
           vision: false,
         },
         "alpindale/goliath-120b": {
+          title: "Goliath 120B",
           in: 6,
           out: 8,
           context: 6144,
           vision: false,
         },
-        "mancer/weaver": { in: 0.75, out: 1, context: 8000, vision: false },
+        "mancer/weaver": { title: "Weaver", in: 0.75, out: 1, context: 8000, vision: false },
         "undi95/remm-slerp-l2-13b": {
+          title: "REMM SLERP L2 13B",
           in: 0.45,
           out: 0.65,
           context: 6144,
           vision: false,
         },
         "gryphe/mythomax-l2-13b": {
+          title: "MythoMax L2 13B",
           in: 0.06,
           out: 0.06,
           context: 4096,
@@ -2157,7 +2414,10 @@
             const filtered = {};
 
             for (const [name, model] of Object.entries(models.value)) {
-              if (name.toLowerCase().includes(query)) {
+              const nameMatch = name.toLowerCase().includes(query);
+              const titleMatch = model.title && model.title.toLowerCase().includes(query);
+
+              if (nameMatch || titleMatch) {
                 filtered[name] = model;
               }
             }
@@ -2243,11 +2503,12 @@
         },
       });
 
-      // Add ui.css to piper.appRoot
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = './../ui.css';
-      piper.appRoot.appendChild(link);
+      link.href = piper.mode === 'dev'
+        ? './../ui.css'
+        : 'https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@f2e6410/nodes/ui.css';
+      piper.appRoot.prepend(link);
 
       console.log("Creating app...");
       const app = createApp(App);
