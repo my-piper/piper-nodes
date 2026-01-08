@@ -2506,9 +2506,10 @@
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = piper.mode === 'dev'
-        ? './../ui.css'
-        : 'https://raw.githubusercontent.com/my-piper/piper-nodes/refs/heads/main/nodes/ui.css';
-      piper.appRoot.prepend(link);
+        ? '../ui.css'
+        //: 'http://127.0.0.1:3000/nodes/ui.css';
+        : 'https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@6f07f1b585e0b0d9d7e3515dc8447c692bfb9501/nodes/ui.css';
+      piper.appRoot.appendChild(link);
 
       console.log("Creating app...");
       const app = createApp(App);

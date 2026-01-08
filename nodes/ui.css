@@ -4,7 +4,7 @@
   [data-theme="light"],
   [data-theme="dark"],
   :root:not([data-theme="dark"]),
-  :host(:not([data-theme="dark"])),
+  :host(:not([data-theme=dark])),
   :root:not([data-theme="light"]),
   :host(:not([data-theme="light"])) {
     --pico-font-size: 14px;
