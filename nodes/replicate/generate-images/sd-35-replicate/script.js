@@ -56,7 +56,7 @@ export async function run({ env, inputs, state }) {
 
     const task = await predict(
       { apiToken: REPLICATE_TOKEN },
-      `https://api.replicate.com/v1/models/${MODEL_PATHS[model]}/predictions`,
+      `models/${MODEL_PATHS[model]}/predictions`,
       payload
     );
     return repeat({

@@ -5,10 +5,13 @@ export async function catchError(res) {
   }
 }
 
-export async function predict({ apiToken }, endpoint, payload) {
-  console.log("Sending request to", endpoint);
+const BASE_URL = "https://api.replicate.com";
+
+export async function predict({ apiToken, version = "v1" }, endpoint, payload) {
+  const url = [BASE_URL, version, endpoint].join("/");
+  console.log("Sending request to", url);
   console.log(JSON.stringify(payload, null, 2));
-  const res = await fetch(endpoint, {
+  const res = await fetch(url, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiToken}`,
@@ -24,8 +27,9 @@ export async function predict({ apiToken }, endpoint, payload) {
   return task;
 }
 
-export async function getOutput({ apiToken }, task) {
-  const res = await fetch(`https://api.replicate.com/v1/predictions/${task}`, {
+export async function getOutput({ apiToken, version = "v1" }, task) {
+  const url = [BASE_URL, version, `predictions/${task}`].join("/");
+  const res = await fetch(url, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${apiToken}`,
