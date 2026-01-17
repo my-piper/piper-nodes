@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+tmp/
+
+# Lock files
+package-lock.json
+deno.lock
+
+# Logs
+*.log
+
+# Coverage
+coverage/
+.nyc_output/
+

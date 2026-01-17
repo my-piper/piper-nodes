@@ -1,6 +1,6 @@
 const { runNode } = require("@piper/node");
+import { writeFile } from "node:fs/promises";
 import { run } from "./script";
-import { writeFile } from "fs/promises";
 
 test("should compose layers", async () => {
   const { image } = await runNode(run, {

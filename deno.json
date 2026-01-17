@@ -1,0 +1,48 @@
+{
+  "imports": {
+    "std/": "https://deno.land/std@0.224.0/"
+  },
+  "tasks": {
+    "start": "deno run --allow-net --allow-read jsr:@std/http@1.0/file-server --port 3000 --cors",
+    "dev": "deno run --allow-net --allow-read jsr:@std/http@1.0/file-server --port 3000 --cors",
+    "test": "deno test **/*test.js --allow-net --allow-read --allow-env",
+    "test:watch": "deno test **/*test.js --allow-net --allow-read --allow-env --watch",
+    "test:coverage": "deno test **/*test.js --allow-net --allow-read --allow-env --coverage=coverage",
+    "fmt": "deno fmt",
+    "fmt:check": "deno fmt --check",
+    "lint": "deno lint",
+    "lint:fix": "deno lint --fix"
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 80,
+    "indentWidth": 2,
+    "semiColons": true,
+    "singleQuote": false,
+    "proseWrap": "preserve",
+    "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.json"],
+    "exclude": ["node_modules/", "deno.lock"]
+  },
+  "lint": {
+    "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+    "exclude": ["node_modules/", "deno.lock", "**/*.test.ts"],
+    "rules": {
+      "tags": ["recommended"],
+      "include": [
+        "ban-untagged-todo",
+        "camelcase",
+        "eqeqeq",
+        "explicit-function-return-type",
+        "no-await-in-loop",
+        "no-const-assign",
+        "no-eval",
+        "no-implicit-declare-namespace-export",
+        "no-non-null-assertion",
+        "no-throw-literal",
+        "no-var",
+        "prefer-const"
+      ],
+      "exclude": ["no-explicit-any", "no-process-global"]
+    }
+  }
+}
