@@ -13,6 +13,7 @@ export function repeat(obj) {
 }
 
 export class DataError extends Error {
+  code = "DATA_ERROR";
   constructor(message, details = {}) {
     super(message);
     this.details = details;
@@ -20,12 +21,14 @@ export class DataError extends Error {
 }
 
 export class FatalError extends Error {
+  code = "FATAL_ERROR";
   constructor(message) {
     super(message);
   }
 }
 
 export class TimeoutError extends Error {
+  code = "TIMEOUT_ERROR";
   constructor(message) {
     super(message);
   }
