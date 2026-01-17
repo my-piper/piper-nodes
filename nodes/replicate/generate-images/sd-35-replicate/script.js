@@ -1,9 +1,5 @@
-import {
-  next,
-  repeat,
-  throwError,
-} from "https://cdn.jsdelivr.net/gh/my-piper/piper-node@v2.0.1/index.js";
-import { catchError, getOutput } from "../../utils.js";
+import { next, repeat, throwError } from "../../../../utils/node.js";
+import { getOutput, predict } from "../../utils.js";
 
 export async function costs({ env, inputs }) {
   if (env.scope.REPLICATE_TOKEN === "user") {
@@ -58,24 +54,11 @@ export async function run({ env, inputs, state }) {
       output_format,
     };
 
-    console.log(JSON.stringify(payload, null, 2));
-
-    const res = await fetch(
+    const task = await predict(
+      { apiToken: REPLICATE_TOKEN },
       `https://api.replicate.com/v1/models/${MODEL_PATHS[model]}/predictions`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${REPLICATE_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          input: payload,
-        }),
-      }
+      payload
     );
-    await catchError(res);
-
-    const { id: task } = await res.json();
     return repeat({
       state: { task, retries: 0 },
       delay: CHECK_INTERVAL,
@@ -83,19 +66,7 @@ export async function run({ env, inputs, state }) {
   } else {
     const { task, retries = 0 } = state;
 
-    const res = await fetch(
-      `https://api.replicate.com/v1/predictions/${task}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${REPLICATE_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    await catchError(res);
-
-    const output = getOutput(await res.json());
+    const output = await getOutput({ apiToken: REPLICATE_TOKEN }, task);
     if (!output) {
       if (retries >= MAX_RETRIES) {
         throwError.fatal("Generation timeout exceeded");

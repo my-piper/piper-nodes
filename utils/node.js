@@ -1,26 +1,44 @@
-const MAX_ATTEMPTS = 30;
-const DEFAULT_DELAY = 1000;
-
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+export function next(obj) {
+  return {
+    __type: "next",
+    ...obj,
+  };
 }
 
-export async function runNode(run, payload) {
-    const results = await run(payload);
-
-    if(results.__type === "repeat") {
-        console.log("Repeat node");
-        const { delay, state } = results;
-        await sleep(delay || DEFAULT_DELAY);
-        return await runNode(run, {
-            ...payload,
-            state,
-        });
-    }else if(results.__type === "next") {
-        return results;
-    }else {
-        throw new Error(`Unknown run result: ${JSON.stringify(results)}`);
-    }
-
-    return results;
+export function repeat(obj) {
+  return {
+    __type: "repeat",
+    ...obj,
+  };
 }
+
+export class DataError extends Error {
+  constructor(message, details = {}) {
+    super(message);
+    this.details = details;
+  }
+}
+
+export class FatalError extends Error {
+  constructor(message) {
+    super(message);
+  }
+}
+
+export class TimeoutError extends Error {
+  constructor(message) {
+    super(message);
+  }
+}
+
+export const throwError = {
+  data: (message, details = {}) => {
+    throw new DataError(message, details);
+  },
+  fatal: (message) => {
+    throw new FatalError(message);
+  },
+  timeout: (message) => {
+    throw new TimeoutError(message);
+  },
+};

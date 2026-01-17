@@ -1,6 +1,6 @@
 import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
 import { expect } from "https://deno.land/std@0.224.0/expect/mod.ts";
-import { runNode } from "../../../../utils/node.js";
+import { runNode } from "../../../../utils/run-node.js";
 
 const env = await load({
   envPath: ".env",
