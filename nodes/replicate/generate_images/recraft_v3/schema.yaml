@@ -1,0 +1,114 @@
+version: 0
+icon: image
+order: 105
+title: Recraft V3
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+  - text-to-image
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@5f242a047ff10790a7a616eaf2a6ffb79a1a3509/nodes/replicate/generate_images/recraft_v3/script.js
+arrange:
+  x: 630
+  y: 580
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for image generation;ru=Текстовая подсказка для генерации изображения;de=Texteingabe für die Bildgenerierung;fr=Invite texte pour la génération d'image;es=Texto descriptivo para la generación de imagen;zh=用于生成图片的文本提示
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  aspect_ratio:
+    order: 3
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Aspect ratio (overrides size if set);ru=Соотношение сторон (если выбрано, переопределяет размер);de=Seitenverhältnis (setzt Größe außer Kraft, falls ausgewählt);fr=Rapport d’aspect (remplace la taille si défini);es=Relación de aspecto (anula el tamaño si se establece);zh=宽高比（如设置，将覆盖尺寸）
+    type: string
+    default: Not set
+    enum:
+      - Not set|en=Not set;ru=Не задано
+      - 1:1
+      - 4:3
+      - 3:4
+      - 3:2
+      - 2:3
+      - 16:9
+      - 9:16
+      - 1:2
+      - 2:1
+      - 7:5
+      - 5:7
+      - 4:5
+      - 5:4
+      - 3:5
+      - 5:3
+  style:
+    order: 4
+    title: en=Style;ru=Стиль;de=Stil;fr=Style;es=Estilo;zh=风格
+    description: en=Style of the generated image;ru=Стиль генерируемого изображения;de=Stil des generierten Bildes;fr=Style de l'image générée;es=Estilo de la imagen generada;zh=生成图像的风格
+    type: string
+    default: any
+    enum:
+      - any|en=Any;ru=Любой;de=Beliebig;fr=Tout;es=Cualquiera;zh=任意
+      - realistic_image|en=Realistic image;ru=Реалистичное изображение;de=Realistisches Bild;fr=Image réaliste;es=Imagen realista;zh=写实图像
+      - digital_illustration|en=Digital illustration;ru=Цифровая иллюстрация;de=Digitale Illustration;fr=Illustration numérique;es=Ilustración digital;zh=数字插画
+      - digital_illustration/pixel_art|en=Pixel art;ru=Пиксель-арт;de=Pixelkunst;fr=Pixel art;es=Pixel art;zh=像素艺术
+      - digital_illustration/hand_drawn|en=Hand drawn;ru=Рисованный от руки;de=Handgezeichnet;fr=Dessin à la main;es=Dibujado a mano;zh=手绘
+      - digital_illustration/grain|en=Grain illustration;ru=Зернистая иллюстрация;de=Körnige Illustration;fr=Illustration granuleuse;es=Ilustración de grano;zh=颗粒插画
+      - digital_illustration/infantile_sketch|en=Infantile sketch;ru=Детский набросок;de=Kinderskizze;fr=Esquisse enfantine;es=Boceto infantil;zh=儿童素描
+      - digital_illustration/2d_art_poster|en=2D art poster;ru=2D постер;de=2D Kunstplakat;fr=Affiche d'art 2D;es=Cartel de arte 2D;zh=二维艺术海报
+      - digital_illustration/handmade_3d|en=Handmade 3D;ru=Ручная 3D;de=Handgemachtes 3D;fr=3D fait main;es=3D hecho a mano;zh=手工3D
+      - digital_illustration/hand_drawn_outline|en=Hand-drawn outline;ru=Ручной контур;de=Handgezeichnete Kontur;fr=Contour dessiné main;es=Contorno a mano;zh=手绘轮廓
+      - digital_illustration/engraving_color|en=Color engraving;ru=Цветная гравюра;de=Farbgravur;fr=Gravure en couleur;es=Grabado en color;zh=彩色蚀刻
+      - digital_illustration/2d_art_poster_2|en=2D art poster 2;ru=2D постер 2;de=2D Kunstplakat 2;fr=Affiche d'art 2D n°2;es=Cartel de arte 2D 2;zh=二维艺术海报2
+      - realistic_image/b_and_w|en=Black & white;ru=Чёрно-белый;de=Schwarzweiß;fr=Noir et blanc;es=Blanco y negro;zh=黑白
+      - realistic_image/hard_flash|en=Hard flash;ru=Жёсткий свет вспышки;de=Harter Blitz;fr=Flash dur;es=Flash duro;zh=强烈闪光
+      - realistic_image/hdr|en=HDR;ru=HDR;de=HDR;fr=HDR;es=HDR;zh=HDR
+      - realistic_image/natural_light|en=Natural light;ru=Естественный свет;de=Natürliches Licht;fr=Lumière naturelle;es=Luz natural;zh=自然光
+      - realistic_image/studio_portrait|en=Studio portrait;ru=Студийный портрет;de=Studio-Porträt;fr=Portrait studio;es=Retrato de estudio;zh=工作室肖像
+      - realistic_image/enterprise|en=Enterprise style;ru=Деловой стиль;de=Unternehmensstil;fr=Style entreprise;es=Estilo empresarial;zh=企业风格
+      - realistic_image/motion_blur|en=Motion blur;ru=Размытие в движении;de=Bewegungsunschärfe;fr=Flou de mouvement;es=Desenfoque de movimiento;zh=运动模糊
+  image_size:
+    order: 2
+    title: en=Size;ru=Размер
+    type: string
+    default: 1024x1024
+    enum:
+      - 1024x1024 <en=Square;ru=Квадрат>
+      - 1365x1024 <en=Horizontal;ru=Горизонтальный>
+      - 1024x1365 <en=Vertical;ru=Вертикальный>
+      - 1536x1024 <en=Horizontal;ru=Горизонтальный>
+      - 1024x1536 <en=Vertical;ru=Вертикальный>
+      - 1820x1024 <en=Horizontal;ru=Горизонтальный>
+      - 1024x1820 <en=Vertical;ru=Вертикальный>
+      - 1024x2048 <en=Vertical;ru=Вертикальный>
+      - 2048x1024 <en=Horizontal;ru=Горизонтальный>
+      - 1434x1024 <en=Horizontal;ru=Горизонтальный>
+      - 1024x1434 <en=Vertical;ru=Вертикальный>
+      - 1024x1280 <en=Vertical;ru=Вертикальный>
+      - 1280x1024 <en=Horizontal;ru=Горизонтальный>
+      - 1024x1707 <en=Vertical;ru=Вертикальный>
+      - 1707x1024 <en=Horizontal;ru=Горизонтальный>
+outputs:
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    featured: true
+catalog:
+  _id: recraft_v3_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
+    type: string
+    scope: global
