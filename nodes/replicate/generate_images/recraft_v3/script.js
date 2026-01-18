@@ -1,28 +1,15 @@
 import { next, repeat, throwError } from "../../../../utils/node.js";
 import { getOutput, predict } from "../../utils.js";
 
-export async function costs({ env, inputs }) {
+export function costs({ env }) {
   if (env.scope.REPLICATE_TOKEN === "user") {
     return 0;
   }
-
-  const { model = "medium" } = inputs;
-  switch (model) {
-    case "large":
-      return 0.065;
-    case "medium":
-    default:
-      return 0.035;
-  }
+  return { costs: 0.04, details: "en=Price is fixed;ru=Цена фиксированна" };
 }
 
-const CHECK_INTERVAL = 2000;
-const MAX_RETRIES = 100;
-
-const MODEL_PATHS = {
-  medium: "stability-ai/stable-diffusion-3.5-medium",
-  large: "stability-ai/stable-diffusion-3.5-large",
-};
+const CHECK_INTERVAL = 1000;
+const MAX_RETRIES = 20;
 
 export async function run({ env, inputs, state }) {
   const { REPLICATE_TOKEN } = env.variables;
@@ -30,35 +17,22 @@ export async function run({ env, inputs, state }) {
     throwError.fatal("Please, set your API token for Replicate AI");
   }
 
-  const {
-    model = "medium",
-    prompt,
-    aspect_ratio,
-    cfg,
-    negative_prompt,
-    seed,
-    image,
-    prompt_strength,
-    output_format,
-  } = inputs;
+  const { prompt, style, aspect_ratio, image_size } = inputs;
 
   if (!state) {
     const payload = {
       prompt,
+      size: image_size,
+      style,
       aspect_ratio,
-      cfg,
-      negative_prompt,
-      seed,
-      image,
-      prompt_strength,
-      output_format,
     };
 
     const task = await predict(
       { apiToken: REPLICATE_TOKEN },
-      `models/${MODEL_PATHS[model]}/predictions`,
+      "models/recraft-ai/recraft-v3/predictions",
       payload
     );
+
     return repeat({
       state: { task, retries: 0 },
       delay: CHECK_INTERVAL,
@@ -67,9 +41,10 @@ export async function run({ env, inputs, state }) {
     const { task, retries = 0 } = state;
 
     const output = await getOutput({ apiToken: REPLICATE_TOKEN }, task);
+
     if (!output) {
       if (retries >= MAX_RETRIES) {
-        throwError.fatal("Generation timeout exceeded");
+        throwError.timeout();
       }
       return repeat({
         state: { task, retries: retries + 1 },
@@ -83,7 +58,7 @@ export async function run({ env, inputs, state }) {
 
     return next({
       outputs: { image: output },
-      costs: await costs({ env, inputs }),
+      costs: costs({ env, inputs }),
     });
   }
 }

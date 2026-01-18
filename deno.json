@@ -30,7 +30,6 @@
       "tags": ["recommended"],
       "include": [
         "ban-untagged-todo",
-        "camelcase",
         "eqeqeq",
         "explicit-function-return-type",
         "no-await-in-loop",
@@ -42,7 +41,7 @@
         "no-var",
         "prefer-const"
       ],
-      "exclude": ["no-explicit-any", "no-process-global"]
+      "exclude": ["no-explicit-any", "no-process-global", "camelcase"]
     }
   }
 }

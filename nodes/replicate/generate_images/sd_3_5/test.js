@@ -9,7 +9,7 @@ const env = await load({
 
 import { run } from "./script.js";
 
-Deno.test("SD 3.5 replicate: generate image by prompt", async () => {
+Deno.test("SD 3.5 replicate: default generate image", async () => {
   const {
     costs,
     outputs: { image },
