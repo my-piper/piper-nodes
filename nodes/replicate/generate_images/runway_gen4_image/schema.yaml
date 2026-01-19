@@ -2,8 +2,8 @@ version: 0
 title: Runway Gen4 Image
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
-- image-to-image
+  - text-to-image
+  - image-to-image
 execution: regular
 arrange:
   x: 640
@@ -27,8 +27,8 @@ inputs:
     type: string
     default: standard
     enum:
-    - standard|en=Standard;ru=Стандартная
-    - turbo|en=Turbo;ru=Турбо
+      - standard|en=Standard;ru=Стандартная
+      - turbo|en=Turbo;ru=Турбо
   aspect_ratio:
     order: 5
     title: en=Aspect Ratio;ru=Соотношение сторон
@@ -36,12 +36,12 @@ inputs:
     type: string
     default: 969
     enum:
-    - 16:9|en=16:9;ru=16:9
-    - 9:16|en=9:16;ru=9:16
-    - 4:3|en=4:3;ru=4:3
-    - 3:4|en=3:4;ru=3:4
-    - 1:1|en=1:1;ru=1:1
-    - 21:9|en=21:9;ru=21:9
+      - 16:9|en=16:9;ru=16:9
+      - 9:16|en=9:16;ru=9:16
+      - 4:3|en=4:3;ru=4:3
+      - 3:4|en=3:4;ru=3:4
+      - 1:1|en=1:1;ru=1:1
+      - 21:9|en=21:9;ru=21:9
   resolution:
     order: 6
     title: en=Resolution;ru=Разрешение
@@ -49,8 +49,8 @@ inputs:
     type: string
     default: 1080p
     enum:
-    - 720p|en=720p;ru=720p
-    - 1080p|en=1080p;ru=1080p
+      - 720p|en=720p;ru=720p
+      - 1080p|en=1080p;ru=1080p
   seed:
     order: 7
     title: en=Seed;ru=Начальный шум
@@ -72,8 +72,8 @@ inputs:
     description: en=Should be in order your images;ru=Должны быть в порядке ваших изображений
     type: string
     multiline: true
-    placeholder: '@cat @dog'
-    default: '@cat'
+    placeholder: "@cat @dog"
+    default: "@cat"
 outputs:
   image:
     title: en=Image;ru=Изображение
@@ -94,4 +94,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/runway_gen4_image/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/replicate/generate_images/runway_gen4_image/script.js

@@ -4,7 +4,7 @@ thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/re
 tags:
   - text-to-image
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@5b986ce8fd3f7edc99f19fe9d4e8b8091b11e753/nodes/replicate/generate_images/google_imagen4/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/replicate/generate_images/google_imagen4/script.js
 arrange:
   x: 1940
   y: 700

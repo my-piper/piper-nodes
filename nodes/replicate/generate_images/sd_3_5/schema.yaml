@@ -4,8 +4,8 @@ order: 100
 title: Stable Diffusion 3.5
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
-- image-to-image
+  - text-to-image
+  - image-to-image
 execution: regular
 arrange:
   x: 270
@@ -29,8 +29,8 @@ inputs:
     type: string
     default: medium
     enum:
-    - medium|en=Medium;ru=Средняя
-    - large|en=Large;ru=Большая
+      - medium|en=Medium;ru=Средняя
+      - large|en=Large;ru=Большая
   aspect_ratio:
     order: 3
     title: en=Aspect Ratio;ru=Соотношение сторон
@@ -38,15 +38,15 @@ inputs:
     type: string
     default: 61
     enum:
-    - 1:1|en=1:1 <en=Square;ru=Квадрат>;ru=1:1
-    - 3:2|en=3:2 <en=Horizontal;ru=Горизонтальное>;ru=3:2
-    - 5:4|en=5:4 <en=Horizontal;ru=Горизонтальное>;ru=5:4
-    - 16:9|en=16:9 <en=Horizontal;ru=Горизонтальное>;ru=16:9
-    - 21:9|en=21:9 <en=Horizontal;ru=Горизонтальное>;ru=21:9
-    - 9:16|en=9:16 <en=Vertical;ru=Вертикальное>;ru=9:16
-    - 9:21|en=9:21 <en=Vertical;ru=Вертикальное>;ru=9:21
-    - 2:3|en=2:3 <en=Vertical;ru=Вертикальное>;ru=2:3
-    - 4:5|en=4:5 <en=Vertical;ru=Вертикальное>;ru=4:5
+      - 1:1|en=1:1 <en=Square;ru=Квадрат>;ru=1:1
+      - 3:2|en=3:2 <en=Horizontal;ru=Горизонтальное>;ru=3:2
+      - 5:4|en=5:4 <en=Horizontal;ru=Горизонтальное>;ru=5:4
+      - 16:9|en=16:9 <en=Horizontal;ru=Горизонтальное>;ru=16:9
+      - 21:9|en=21:9 <en=Horizontal;ru=Горизонтальное>;ru=21:9
+      - 9:16|en=9:16 <en=Vertical;ru=Вертикальное>;ru=9:16
+      - 9:21|en=9:21 <en=Vertical;ru=Вертикальное>;ru=9:21
+      - 2:3|en=2:3 <en=Vertical;ru=Вертикальное>;ru=2:3
+      - 4:5|en=4:5 <en=Vertical;ru=Вертикальное>;ru=4:5
   cfg:
     order: 4
     title: en=CFG Scale;ru=CFG шкала
@@ -92,9 +92,9 @@ inputs:
     type: string
     default: webp
     enum:
-    - webp
-    - jpg
-    - png
+      - webp
+      - jpg
+      - png
 outputs:
   image:
     title: en=Image;ru=Изображение
@@ -115,4 +115,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/sd_3_5/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/replicate/generate_images/sd_3_5/script.js

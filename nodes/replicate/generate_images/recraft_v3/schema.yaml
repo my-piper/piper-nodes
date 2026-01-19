@@ -6,7 +6,7 @@ thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/re
 tags:
   - text-to-image
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@5f242a047ff10790a7a616eaf2a6ffb79a1a3509/nodes/replicate/generate_images/recraft_v3/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/replicate/generate_images/recraft_v3/script.js
 arrange:
   x: 630
   y: 580

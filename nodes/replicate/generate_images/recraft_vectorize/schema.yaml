@@ -2,8 +2,8 @@ version: 0
 title: en=Recraft Vectorize;ru=Recraft Векторизация
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- image-to-image
-- svg
+  - image-to-image
+  - svg
 execution: regular
 arrange:
   x: 1030
@@ -38,4 +38,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/recraft_vectorize/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/replicate/generate_images/recraft_vectorize/script.js

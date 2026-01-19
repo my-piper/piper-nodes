@@ -2,7 +2,7 @@ version: 0
 title: Minimax Image 1
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
+  - text-to-image
 execution: regular
 arrange:
   x: 1110
@@ -26,14 +26,14 @@ inputs:
     type: string
     default: 61
     enum:
-    - 1:1|en=1:1;ru=1:1
-    - 16:9|en=16:9;ru=16:9
-    - 4:3|en=4:3;ru=4:3
-    - 3:2|en=3:2;ru=3:2
-    - 2:3|en=2:3;ru=2:3
-    - 3:4|en=3:4;ru=3:4
-    - 9:16|en=9:16;ru=9:16
-    - 21:9|en=21:9;ru=21:9
+      - 1:1|en=1:1;ru=1:1
+      - 16:9|en=16:9;ru=16:9
+      - 4:3|en=4:3;ru=4:3
+      - 3:2|en=3:2;ru=3:2
+      - 2:3|en=2:3;ru=2:3
+      - 3:4|en=3:4;ru=3:4
+      - 9:16|en=9:16;ru=9:16
+      - 21:9|en=21:9;ru=21:9
   number_of_images:
     order: 3
     title: en=Images Count;ru=Кол-во изображений
@@ -75,4 +75,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/minimax_image_1/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/replicate/generate_images/minimax_image_1/script.js

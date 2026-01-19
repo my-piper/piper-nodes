@@ -3,8 +3,8 @@ title: Bytedance Seedream
 description: Generate high-resolution images with Seedream 4 and 4.5 models
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
-- image-to-image
+  - text-to-image
+  - image-to-image
 execution: regular
 arrange:
   x: 1110
@@ -34,8 +34,8 @@ inputs:
     type: string
     default: seedream_4_5
     enum:
-    - seedream_4|en=Seedream 4;ru=Seedream 4
-    - seedream_4_5|en=Seedream 4.5;ru=Seedream 4.5
+      - seedream_4|en=Seedream 4;ru=Seedream 4
+      - seedream_4_5|en=Seedream 4.5;ru=Seedream 4.5
   aspect_ratio:
     order: 5
     title: en=Aspect Ratio;ru=Соотношение сторон
@@ -43,15 +43,15 @@ inputs:
     type: string
     default: match_input_image
     enum:
-    - match_input_image|en=Match input image;ru=Как у исходного
-    - 1:1|en=1:1 (square);ru=1:1 (квадрат)
-    - 4:3|en=4:3 (landscape);ru=4:3 (альбом)
-    - 3:4|en=3:4 (portrait);ru=3:4 (портрет)
-    - 16:9|en=16:9 (wide);ru=16:9 (широкий)
-    - 9:16|en=9:16 (vertical);ru=9:16 (вертикальный)
-    - 3:2|en=3:2 (landscape);ru=3:2 (альбом)
-    - 2:3|en=2:3 (portrait);ru=2:3 (портрет)
-    - 21:9|en=21:9 (cinematic);ru=21:9 (кинематографичное)
+      - match_input_image|en=Match input image;ru=Как у исходного
+      - 1:1|en=1:1 (square);ru=1:1 (квадрат)
+      - 4:3|en=4:3 (landscape);ru=4:3 (альбом)
+      - 3:4|en=3:4 (portrait);ru=3:4 (портрет)
+      - 16:9|en=16:9 (wide);ru=16:9 (широкий)
+      - 9:16|en=9:16 (vertical);ru=9:16 (вертикальный)
+      - 3:2|en=3:2 (landscape);ru=3:2 (альбом)
+      - 2:3|en=2:3 (portrait);ru=2:3 (портрет)
+      - 21:9|en=21:9 (cinematic);ru=21:9 (кинематографичное)
   width:
     order: 6
     title: en=Width;ru=Ширина
@@ -77,8 +77,8 @@ inputs:
     type: string
     default: disabled
     enum:
-    - disabled|en=Disabled;ru=Отключено
-    - auto|en=Auto;ru=Авто
+      - disabled|en=Disabled;ru=Отключено
+      - auto|en=Auto;ru=Авто
   max_images:
     order: 9
     title: en=Max Images;ru=Макс. кол. изобр.
@@ -100,9 +100,9 @@ inputs:
     type: string
     default: 2K
     enum:
-    - 2K|en=2K;ru=2K
-    - 4K|en=4K;ru=4K
-    - custom|en=Custom;ru=Пользовательский
+      - 2K|en=2K;ru=2K
+      - 4K|en=4K;ru=4K
+      - custom|en=Custom;ru=Пользовательский
   images:
     order: 3
     title: en=Images;ru=Изображения
@@ -129,4 +129,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/seedream/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/replicate/generate_images/seedream/script.js

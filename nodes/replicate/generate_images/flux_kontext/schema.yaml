@@ -3,8 +3,8 @@ title: FLUX Kontext
 description: Edit and generate images with FLUX Kontext models
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
-- image-to-image
+  - text-to-image
+  - image-to-image
 execution: regular
 arrange:
   x: 1560
@@ -34,10 +34,10 @@ inputs:
     type: string
     default: fast
     enum:
-    - fast|en=Fast;ru=Быстрая
-    - dev|en=Dev;ru=Разработка
-    - pro|en=Pro;ru=Про
-    - max|en=Max;ru=Максимум
+      - fast|en=Fast;ru=Быстрая
+      - dev|en=Dev;ru=Разработка
+      - pro|en=Pro;ru=Про
+      - max|en=Max;ru=Максимум
   aspect_ratio:
     order: 4
     title: en=Aspect Ratio;ru=Соотношение сторон
@@ -45,20 +45,20 @@ inputs:
     type: string
     default: match_input_image
     enum:
-    - match_input_image|en=Match input image;ru=Как у исходного
-    - 1:1|en=1:1;ru=1:1
-    - 16:9|en=16:9;ru=16:9
-    - 9:16|en=9:16;ru=9:16
-    - 4:3|en=4:3;ru=4:3
-    - 3:4|en=3:4;ru=3:4
-    - 3:2|en=3:2;ru=3:2
-    - 2:3|en=2:3;ru=2:3
-    - 4:5|en=4:5;ru=4:5
-    - 5:4|en=5:4;ru=5:4
-    - 21:9|en=21:9;ru=21:9
-    - 9:21|en=9:21;ru=9:21
-    - 2:1|en=2:1;ru=2:1
-    - 1:2|en=1:2;ru=1:2
+      - match_input_image|en=Match input image;ru=Как у исходного
+      - 1:1|en=1:1;ru=1:1
+      - 16:9|en=16:9;ru=16:9
+      - 9:16|en=9:16;ru=9:16
+      - 4:3|en=4:3;ru=4:3
+      - 3:4|en=3:4;ru=3:4
+      - 3:2|en=3:2;ru=3:2
+      - 2:3|en=2:3;ru=2:3
+      - 4:5|en=4:5;ru=4:5
+      - 5:4|en=5:4;ru=5:4
+      - 21:9|en=21:9;ru=21:9
+      - 9:21|en=9:21;ru=9:21
+      - 2:1|en=2:1;ru=2:1
+      - 1:2|en=1:2;ru=1:2
   safety_tolerance:
     order: 6
     title: en=Safety Tolerance;ru=Толер. безоп.
@@ -81,9 +81,9 @@ inputs:
     type: string
     default: webp
     enum:
-    - webp|en=WebP;ru=WebP
-    - jpg|en=JPG;ru=JPG
-    - png|en=PNG;ru=PNG
+      - webp|en=WebP;ru=WebP
+      - jpg|en=JPG;ru=JPG
+      - png|en=PNG;ru=PNG
   output_quality:
     order: 9
     title: en=Output Quality;ru=Качество вывода
@@ -118,4 +118,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/flux_kontext/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/replicate/generate_images/flux_kontext/script.js

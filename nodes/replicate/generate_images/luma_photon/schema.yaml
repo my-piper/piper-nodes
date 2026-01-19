@@ -2,8 +2,8 @@ version: 0
 title: Luma Photon
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
-- image-to-image
+  - text-to-image
+  - image-to-image
 execution: regular
 arrange:
   x: 1730
@@ -27,13 +27,13 @@ inputs:
     type: string
     default: 969
     enum:
-    - 1:1|en=1:1 (square);ru=1:1 (квадрат)
-    - 3:4|en=3:4 (portrait);ru=3:4 (портрет)
-    - 4:3|en=4:3 (landscape);ru=4:3 (альбом)
-    - 9:16|en=9:16 (vertical);ru=9:16 (вертикально)
-    - 16:9|en=16:9 (wide);ru=16:9 (широкий)
-    - 9:21|en=9:21;ru=9:21
-    - 21:9|en=21:9;ru=21:9
+      - 1:1|en=1:1 (square);ru=1:1 (квадрат)
+      - 3:4|en=3:4 (portrait);ru=3:4 (портрет)
+      - 4:3|en=4:3 (landscape);ru=4:3 (альбом)
+      - 9:16|en=9:16 (vertical);ru=9:16 (вертикально)
+      - 16:9|en=16:9 (wide);ru=16:9 (широкий)
+      - 9:21|en=9:21;ru=9:21
+      - 21:9|en=21:9;ru=21:9
   seed:
     order: 3
     title: en=Seed;ru=Начальный шум
@@ -95,4 +95,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/luma_photon/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/replicate/generate_images/luma_photon/script.js

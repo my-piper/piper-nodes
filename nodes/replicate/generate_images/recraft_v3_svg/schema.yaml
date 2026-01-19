@@ -2,8 +2,8 @@ version: 0
 title: Recraft V3 SVG
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
-- svg
+  - text-to-image
+  - svg
 execution: regular
 arrange:
   x: 2870
@@ -27,22 +27,22 @@ inputs:
     type: string
     default: Not set
     enum:
-    - Not set|en=Not set;ru=Не задано
-    - 1:1|en=1:1;ru=1:1
-    - 4:3|en=4:3;ru=4:3
-    - 3:4|en=3:4;ru=3:4
-    - 3:2|en=3:2;ru=3:2
-    - 2:3|en=2:3;ru=2:3
-    - 16:9|en=16:9;ru=16:9
-    - 9:16|en=9:16;ru=9:16
-    - 1:2|en=1:2;ru=1:2
-    - 2:1|en=2:1;ru=2:1
-    - 7:5|en=7:5;ru=7:5
-    - 5:7|en=5:7;ru=5:7
-    - 4:5|en=4:5;ru=4:5
-    - 5:4|en=5:4;ru=5:4
-    - 3:5|en=3:5;ru=3:5
-    - 5:3|en=5:3;ru=5:3
+      - Not set|en=Not set;ru=Не задано
+      - 1:1|en=1:1;ru=1:1
+      - 4:3|en=4:3;ru=4:3
+      - 3:4|en=3:4;ru=3:4
+      - 3:2|en=3:2;ru=3:2
+      - 2:3|en=2:3;ru=2:3
+      - 16:9|en=16:9;ru=16:9
+      - 9:16|en=9:16;ru=9:16
+      - 1:2|en=1:2;ru=1:2
+      - 2:1|en=2:1;ru=2:1
+      - 7:5|en=7:5;ru=7:5
+      - 5:7|en=5:7;ru=5:7
+      - 4:5|en=4:5;ru=4:5
+      - 5:4|en=5:4;ru=5:4
+      - 3:5|en=3:5;ru=3:5
+      - 5:3|en=5:3;ru=5:3
   style:
     order: 3
     title: en=Style;ru=Стиль
@@ -50,11 +50,11 @@ inputs:
     type: string
     default: any
     enum:
-    - any|en=Any;ru=Любой
-    - engraving|en=Engraving;ru=Гравюра
-    - line_art|en=Line art;ru=Линейный арт
-    - line_circuit|en=Line circuit;ru=Линейная схема
-    - linocut|en=Linocut;ru=Линогравюра
+      - any|en=Any;ru=Любой
+      - engraving|en=Engraving;ru=Гравюра
+      - line_art|en=Line art;ru=Линейный арт
+      - line_circuit|en=Line circuit;ru=Линейная схема
+      - linocut|en=Linocut;ru=Линогравюра
 outputs:
   svg:
     title: en=SVG Image;ru=SVG
@@ -75,4 +75,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/recraft_v3_svg/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/replicate/generate_images/recraft_v3_svg/script.js
