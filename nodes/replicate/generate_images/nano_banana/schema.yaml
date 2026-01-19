@@ -1,0 +1,76 @@
+version: 0
+title: Google Nano Banana
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- text-to-image
+- image-to-image
+execution: regular
+arrange:
+  x: 2070
+  y: 980
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=A text description of the image you want to generate;ru=Текстовое описание изображения, которое вы хотите сгенерировать
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  images:
+    order: 2
+    title: en=Images;ru=Изображения
+    description: en=Input images to transform or use as reference (supports multiple images);ru=Входные изображения для трансформации или в качестве референса (поддерживается несколько изображений)
+    type: image[]
+    featured: true
+  aspect_ratio:
+    order: 3
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Aspect ratio of the generated image;ru=Соотношение сторон создаваемого изображения
+    type: string
+    default: match_input_image
+    enum:
+    - match_input_image|en=Match image;ru=Как у изображения
+    - 1:1|en=1:1 <Square>;ru=1:1 <Квадрат>
+    - 2:3|en=2:3 <Portrait>;ru=2:3 <Портрет>
+    - 3:2|en=3:2 <Landscape>;ru=3:2 <Пейзаж>
+    - 3:4|en=3:4 <Portrait>;ru=3:4 <Портрет>
+    - 4:3|en=4:3 <Landscape>;ru=4:3 <Пейзаж>
+    - 4:5|en=4:5 <Portrait>;ru=4:5 <Портрет>
+    - 5:4|en=5:4 <Landscape>;ru=5:4 <Пейзаж>
+    - 9:16|en=9:16 <Portrait>;ru=9:16 <Портрет>
+    - 16:9|en=16:9 <Landscape>;ru=16:9 <Пейзаж>
+    - 21:9|en=21:9 <Landscape>;ru=21:9 <Пейзаж>
+  output_format:
+    order: 4
+    title: en=Output Format;ru=Формат вывода
+    description: en=Format of the output image;ru=Формат итогового изображения
+    type: string
+    default: jpg
+    enum:
+    - jpg|en=JPG;ru=JPG
+    - png|en=PNG;ru=PNG
+outputs:
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    featured: true
+catalog:
+  _id: google_nano_banana_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/nano_banana/script.js

@@ -1,0 +1,103 @@
+version: 0
+title: Z-Image Turbo
+description: Fast image generation with Z-Image Turbo model
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- text-to-image
+execution: regular
+arrange:
+  x: 2490
+  y: 330
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for image generation;ru=Текстовая подсказка для генерации изображения
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  seed:
+    order: 6
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation (leave empty for random);ru=Случайное число для воспроизводимости (оставьте пустым для случайного)
+    type: integer
+    default: -1
+  height:
+    order: 2
+    title: en=Height;ru=Высота
+    description: en=Height of the generated image in pixels (64-2048);ru=Высота изображения в пикселях (64-2048)
+    type: integer
+    min: 64
+    max: 2048
+    step: 8
+    default: 1024
+  width:
+    order: 3
+    title: en=Width;ru=Ширина
+    description: en=Width of the generated image in pixels (64-2048);ru=Ширина изображения в пикселях (64-2048)
+    type: integer
+    min: 64
+    max: 2048
+    step: 8
+    default: 1024
+  num_inference_steps:
+    order: 4
+    title: en=Inference Steps;ru=Кол-во шагов
+    description: en=Number of inference steps (results in steps - 1 DiT forwards);ru=Количество шагов генерации (кол-во прямых проходов DiT на 1 меньше)
+    type: integer
+    min: 1
+    max: 50
+    step: 1
+    default: 8
+  guidance_scale:
+    order: 5
+    title: en=Guidance Scale;ru=Шкала управления
+    description: en=Guidance scale (should be 0 for Turbo models);ru=Степень привязки к подсказке (для Turbo должна быть 0)
+    type: float
+    min: 0
+    max: 20
+    step: 0.5
+    default: 0
+  output_format:
+    order: 7
+    title: en=Output Format;ru=Формат вывода
+    description: en=Format of the output image;ru=Формат итогового изображения
+    type: string
+    default: jpg
+    enum:
+    - jpg|en=JPG;ru=JPG
+    - png|en=PNG;ru=PNG
+    - webp|en=WebP;ru=WebP
+  output_quality:
+    order: 8
+    title: en=Output Quality;ru=Качество вывода
+    description: en=Quality when saving the output (0-100, not relevant for PNG);ru=Качество при сохранении изображения (0-100, не влияет для PNG)
+    type: integer
+    min: 0
+    max: 100
+    default: 80
+outputs:
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    featured: true
+catalog:
+  _id: z_image_turbo_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/z_image_turbo/script.js

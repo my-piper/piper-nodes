@@ -1,0 +1,132 @@
+version: 0
+title: Bytedance Seedream
+description: Generate high-resolution images with Seedream 4 and 4.5 models
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- text-to-image
+- image-to-image
+execution: regular
+arrange:
+  x: 1110
+  y: 950
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 2
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for image generation;ru=Текстовая подсказка для генерации изображения
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  seed:
+    order: 11
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation;ru=Случайный шум для воспроизводимости
+    type: integer
+    default: -1
+  model:
+    order: 1
+    title: en=Model;ru=Модель
+    description: en=Select Seedream model version;ru=Выберите версию Seedream
+    type: string
+    default: seedream_4_5
+    enum:
+    - seedream_4|en=Seedream 4;ru=Seedream 4
+    - seedream_4_5|en=Seedream 4.5;ru=Seedream 4.5
+  aspect_ratio:
+    order: 5
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Image aspect ratio (only used when image_size is not 'custom');ru=Соотношение сторон изображения (используется, если разрешение не custom)
+    type: string
+    default: match_input_image
+    enum:
+    - match_input_image|en=Match input image;ru=Как у исходного
+    - 1:1|en=1:1 (square);ru=1:1 (квадрат)
+    - 4:3|en=4:3 (landscape);ru=4:3 (альбом)
+    - 3:4|en=3:4 (portrait);ru=3:4 (портрет)
+    - 16:9|en=16:9 (wide);ru=16:9 (широкий)
+    - 9:16|en=9:16 (vertical);ru=9:16 (вертикальный)
+    - 3:2|en=3:2 (landscape);ru=3:2 (альбом)
+    - 2:3|en=2:3 (portrait);ru=2:3 (портрет)
+    - 21:9|en=21:9 (cinematic);ru=21:9 (кинематографичное)
+  width:
+    order: 6
+    title: en=Width;ru=Ширина
+    description: en=Custom width in pixels (only for custom size, 1024-4096);ru=Ширина изображения (для custom размера, 1024-4096)
+    type: integer
+    min: 1024
+    max: 4096
+    step: 64
+    default: 2048
+  height:
+    order: 7
+    title: en=Height;ru=Высота
+    description: en=Custom height in pixels (only for custom size, 1024-4096);ru=Высота изображения (для custom размера, 1024-4096)
+    type: integer
+    min: 1024
+    max: 4096
+    step: 64
+    default: 2048
+  sequential_image_generation:
+    order: 8
+    title: en=Seq. generation;ru=Послед. генерация
+    description: en=Enable multi-image generation mode;ru=Включить режим генерации нескольких изображений
+    type: string
+    default: disabled
+    enum:
+    - disabled|en=Disabled;ru=Отключено
+    - auto|en=Auto;ru=Авто
+  max_images:
+    order: 9
+    title: en=Max Images;ru=Макс. кол. изобр.
+    description: en=Maximum images to generate in auto mode (1-15, total with input ≤ 15);ru=Максимум изображений в авто-режиме (1-15, всего с входными ≤ 15)
+    type: integer
+    min: 1
+    max: 15
+    default: 1
+  enhance_prompt:
+    order: 10
+    title: en=Enhance Prompt;ru=Улучшить промпт
+    description: en=Enable prompt enhancement for higher quality (only for Seedream 4);ru=Включить улучшение промпта для более высокого качества (только для Seedream 4)
+    type: boolean
+    default: true
+  image_size:
+    order: 4
+    title: en=Image Size;ru=Размер изображения
+    description: en=Image resolution preset (2K, 4K, or custom);ru=Разрешение изображения (2K, 4K или custom)
+    type: string
+    default: 2K
+    enum:
+    - 2K|en=2K;ru=2K
+    - 4K|en=4K;ru=4K
+    - custom|en=Custom;ru=Пользовательский
+  images:
+    order: 3
+    title: en=Images;ru=Изображения
+    description: en=Input images for image-to-image generation (1-10 for v4, 1-14 for v4.5);ru=Входные изображения для генерации по изображению (1-10 для v4, 1-14 для v4.5)
+    type: image[]
+    featured: true
+outputs:
+  images:
+    title: en=Images;ru=Изображения
+    type: image[]
+    featured: true
+catalog:
+  _id: bytedance_seedream_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/seedream/script.js

@@ -1,0 +1,197 @@
+version: 0
+title: Ideogram V3 Character
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- text-to-image
+- image-to-image
+execution: regular
+arrange:
+  x: 1520
+  y: 550
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for image generation;ru=Текстовая подсказка для генерации изображения
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  character_reference_image:
+    order: 2
+    title: en=Character;ru=Персонаж
+    description: en=Reference image for character consistency;ru=Референсное изображение для постоянства персонажа
+    type: image
+    required: true
+    featured: true
+  rendering_speed:
+    order: 3
+    title: en=Rendering Speed;ru=Скорость рендеринга
+    description: en=Speed vs quality trade-off;ru=Баланс между скоростью и качеством
+    type: string
+    default: Default
+    enum:
+    - Turbo|en=Turbo;ru=Турбо
+    - Default|en=Default;ru=Обычная
+    - Quality|en=Quality;ru=Качество
+  style_type:
+    order: 4
+    title: en=Style Type;ru=Тип стиля
+    description: en=Character style type;ru=Тип стиля персонажа
+    type: string
+    default: Auto
+    enum:
+    - Auto|en=Auto;ru=Авто
+    - Fiction|en=Fiction;ru=Вымышленный
+    - Realistic|en=Realistic;ru=Реалистичный
+  aspect_ratio:
+    order: 5
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Aspect ratio (ignored if resolution or inpainting image is set);ru=Соотношение сторон (игнорируется если задано разрешение или inpainting изображение)
+    type: string
+    default: 61
+    enum:
+    - 1:3|en=1:3;ru=1:3
+    - 3:1|en=3:1;ru=3:1
+    - 1:2|en=1:2;ru=1:2
+    - 2:1|en=2:1;ru=2:1
+    - 9:16|en=9:16;ru=9:16
+    - 16:9|en=16:9;ru=16:9
+    - 10:16|en=10:16;ru=10:16
+    - 16:10|en=16:10;ru=16:10
+    - 2:3|en=2:3;ru=2:3
+    - 3:2|en=3:2;ru=3:2
+    - 3:4|en=3:4;ru=3:4
+    - 4:3|en=4:3;ru=4:3
+    - 4:5|en=4:5;ru=4:5
+    - 5:4|en=5:4;ru=5:4
+    - 1:1|en=1:1;ru=1:1
+  resolution:
+    order: 6
+    title: en=Resolution;ru=Разрешение
+    description: en=Specific resolution (overrides aspect ratio, ignored for inpainting);ru=Определённое разрешение (заменяет соотношение сторон, игнорируется при inpainting)
+    type: string
+    default: None
+    enum:
+    - None|en=None;ru=Нет
+    - 512x1536
+    - 576x1408
+    - 576x1472
+    - 576x1536
+    - 640x1344
+    - 640x1408
+    - 640x1472
+    - 640x1536
+    - 704x1152
+    - 704x1216
+    - 704x1280
+    - 704x1344
+    - 704x1408
+    - 704x1472
+    - 736x1312
+    - 768x1088
+    - 768x1216
+    - 768x1280
+    - 768x1344
+    - 800x1280
+    - 832x960
+    - 832x1024
+    - 832x1088
+    - 832x1152
+    - 832x1216
+    - 832x1248
+    - 864x1152
+    - 896x960
+    - 896x1024
+    - 896x1088
+    - 896x1120
+    - 896x1152
+    - 960x832
+    - 960x896
+    - 960x1024
+    - 960x1088
+    - 1024x832
+    - 1024x896
+    - 1024x960
+    - 1024x1024
+    - 1088x768
+    - 1088x832
+    - 1088x896
+    - 1088x960
+    - 1120x896
+    - 1152x704
+    - 1152x832
+    - 1152x864
+    - 1152x896
+    - 1216x704
+    - 1216x768
+    - 1216x832
+    - 1248x832
+    - 1280x704
+    - 1280x768
+    - 1280x800
+    - 1312x736
+    - 1344x640
+    - 1344x704
+    - 1344x768
+    - 1408x576
+    - 1408x640
+    - 1408x704
+    - 1472x576
+    - 1472x640
+    - 1472x704
+    - 1536x512
+    - 1536x576
+    - 1536x640
+  magic_prompt_option:
+    order: 7
+    title: en=Magic Prompt;ru=Магический промпт
+    description: en=Optimize and enhance your prompt automatically;ru=Автоматическая оптимизация и улучшение промпта
+    type: string
+    default: Auto
+    enum:
+    - Auto|en=Auto;ru=Авто
+    - On|en=On;ru=Включить
+    - Off|en=Off;ru=Выключить
+  seed:
+    order: 8
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation (leave empty for random);ru=Случайный шум для воспроизводимости (оставьте пустым для случайного)
+    type: integer
+    min: 0
+    max: 2147483647
+    default: -1
+  image:
+    order: 9
+    title: en=Inpainting Image;ru=Изобр. для дорисовки
+    description: en=Image for inpainting (requires mask);ru=Изображение для inpainting (требует маску)
+    type: image
+  mask:
+    order: 10
+    title: en=Inpainting Mask;ru=Маска для дорисовки
+    description: en=Black and white mask (black = inpaint, white = preserve, requires image);ru=Чёрно-белая маска (чёрное = дорисовать, белое = сохранить, требует изображение)
+    type: image
+outputs:
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    featured: true
+catalog:
+  _id: ideogram_v3_character_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/ideogram_v3_character/script.js

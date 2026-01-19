@@ -1,0 +1,97 @@
+version: 0
+title: Runway Gen4 Image
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- text-to-image
+- image-to-image
+execution: regular
+arrange:
+  x: 640
+  y: 1350
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 2
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for image generation. Use @tag_name to reference images;ru=Текстовая подсказка для генерации изображения. Используйте @имя_тега для привязки к картинке
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: change style to anime for @cat
+  model:
+    order: 1
+    title: en=Model;ru=Модель
+    description: en=Choose between Gen4 Image models;ru=Выберите модель Gen4 Image
+    type: string
+    default: standard
+    enum:
+    - standard|en=Standard;ru=Стандартная
+    - turbo|en=Turbo;ru=Турбо
+  aspect_ratio:
+    order: 5
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Image aspect ratio;ru=Соотношение сторон изображения
+    type: string
+    default: 969
+    enum:
+    - 16:9|en=16:9;ru=16:9
+    - 9:16|en=9:16;ru=9:16
+    - 4:3|en=4:3;ru=4:3
+    - 3:4|en=3:4;ru=3:4
+    - 1:1|en=1:1;ru=1:1
+    - 21:9|en=21:9;ru=21:9
+  resolution:
+    order: 6
+    title: en=Resolution;ru=Разрешение
+    description: en=Image resolution;ru=Разрешение изображения
+    type: string
+    default: 1080p
+    enum:
+    - 720p|en=720p;ru=720p
+    - 1080p|en=1080p;ru=1080p
+  seed:
+    order: 7
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation (leave empty for random);ru=Случайный шум для воспроизводимости (оставьте пустым для случайного)
+    type: integer
+    min: 0
+    max: 2147483647
+    default: -1
+  images:
+    order: 3
+    title: en=Images;ru=Изображения
+    description: en=Reference images (up to 3, aspect ratio 0.5-2). Use with tags to reference in prompt.;ru=Референсные изображения (до 3, соотношение сторон 0.5-2). Используйте с тегами для ссылок в промпте.
+    type: image[]
+    featured: true
+    max: 2
+  tags:
+    order: 4
+    title: en=Tags;ru=Теги
+    description: en=Should be in order your images;ru=Должны быть в порядке ваших изображений
+    type: string
+    multiline: true
+    placeholder: '@cat @dog'
+    default: '@cat'
+outputs:
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    featured: true
+catalog:
+  _id: runway_gen4_image_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/runway_gen4_image/script.js

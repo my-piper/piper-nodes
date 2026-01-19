@@ -1,0 +1,140 @@
+version: 0
+title: Qwen Image
+description: Generate and edit images with Qwen Image model
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- text-to-image
+- image-to-image
+execution: regular
+arrange:
+  x: 690
+  y: 980
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for generation or editing instruction;ru=Текстовое описание к генерации или инструкции по редактированию
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: change style to anime
+  seed:
+    order: 8
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation;ru=Случайный шум для воспроизводимости
+    type: integer
+    default: -1
+  aspect_ratio:
+    order: 3
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Aspect ratio for the generated image (edit mode uses 'match_input_image' when image provided);ru=Соотношение сторон для генерируемого изображения (в режиме редактирования используется match_input_image)
+    type: string
+    default: 969
+    enum:
+    - 1:1|en=1:1;ru=1:1
+    - 16:9|en=16:9;ru=16:9
+    - 9:16|en=9:16;ru=9:16
+    - 4:3|en=4:3;ru=4:3
+    - 3:4|en=3:4;ru=3:4
+    - 3:2|en=3:2;ru=3:2
+    - 2:3|en=2:3;ru=2:3
+    - match_input_image|en=Match input image;ru=Как у исходного
+  image_size:
+    order: 4
+    title: en=Image Size;ru=Размер изображения
+    description: en=Quality vs speed optimization (only for text-to-image mode);ru=Оптимизация изображение по качеству/скорости (только для text-to-image)
+    type: string
+    default: optimize_for_quality
+    enum:
+    - optimize_for_quality|en=Quality;ru=Качество
+    - optimize_for_speed|en=Speed;ru=Скорость
+  num_inference_steps:
+    order: 5
+    title: en=Inference Steps;ru=Шаги инференса
+    description: en=Number of denoising steps (1-50, only for text-to-image mode);ru=Количество шагов денойзинга (1-50, только для text-to-image)
+    type: integer
+    min: 1
+    max: 50
+    default: 30
+  guidance:
+    order: 6
+    title: en=Guidance;ru=Точность
+    description: en=Guidance scale (0-10, lower = more realistic, try 2-3.5);ru=Степень следования промпту (0-10, ниже — реалистичнее, пробуйте 2-3.5)
+    type: float
+    min: 0
+    max: 10
+    step: 0.5
+    default: 3
+  negative_prompt:
+    order: 7
+    title: en=Negative Prompt;ru=Негативный промпт
+    description: en=Negative prompt for generated image (only for text-to-image mode);ru=Негативный промпт (только для text-to-image)
+    type: string
+    multiline: true
+    default: ' '
+  go_fast:
+    order: 9
+    title: en=Go Fast;ru=Быстро
+    description: en=Run faster predictions with additional optimizations;ru=Быстрое выполнение с доп. ускорениями
+    type: boolean
+    default: true
+  enhance_prompt:
+    order: 10
+    title: en=Enhance Prompt;ru=Улучшить промпт
+    description: en=Enhance the prompt with positive magic (only for text-to-image mode);ru=Магически улучшить промпт (только для text-to-image)
+    type: boolean
+    default: false
+  output_format:
+    order: 11
+    title: en=Output Format;ru=Формат вывода
+    description: en=Format of the output images;ru=Формат итоговых изображений
+    type: string
+    default: webp
+    enum:
+    - webp|en=WebP;ru=WebP
+    - jpg|en=JPG;ru=JPG
+    - png|en=PNG;ru=PNG
+  output_quality:
+    order: 12
+    title: en=Output Quality;ru=Качество вывода
+    description: en=Quality when saving (0-100, not relevant for PNG);ru=Качество (0-100, не актуально для PNG)
+    type: integer
+    min: 0
+    max: 100
+    default: 80
+  disable_safety_checker:
+    order: 13
+    title: en=Disable Safety Checker;ru=Откл. проверку безоп.
+    description: en=Disable safety checker for generated images;ru=Отключить фильтрацию безопасности для генерируемых изображений
+    type: boolean
+    default: true
+  images:
+    order: 2
+    title: en=Images;ru=Изображения
+    description: en=Input image for image-to-image mode (if provided, switches to edit mode automatically);ru=Входное изображение для режима image-to-image (если указано, переходит в режим редактирования)
+    type: image[]
+    featured: true
+outputs:
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    featured: true
+catalog:
+  _id: qwen_image_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/qwen_image/script.js

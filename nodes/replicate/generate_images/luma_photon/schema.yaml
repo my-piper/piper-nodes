@@ -1,0 +1,98 @@
+version: 0
+title: Luma Photon
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- text-to-image
+- image-to-image
+execution: regular
+arrange:
+  x: 1730
+  y: 1470
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for image generation;ru=Текстовая подсказка для генерации изображения
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  aspect_ratio:
+    order: 2
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Aspect ratio of the generated image;ru=Соотношение сторон итогового изображения
+    type: string
+    default: 969
+    enum:
+    - 1:1|en=1:1 (square);ru=1:1 (квадрат)
+    - 3:4|en=3:4 (portrait);ru=3:4 (портрет)
+    - 4:3|en=4:3 (landscape);ru=4:3 (альбом)
+    - 9:16|en=9:16 (vertical);ru=9:16 (вертикально)
+    - 16:9|en=16:9 (wide);ru=16:9 (широкий)
+    - 9:21|en=9:21;ru=9:21
+    - 21:9|en=21:9;ru=21:9
+  seed:
+    order: 3
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation (leave empty for random);ru=Случайный шум для воспроизводимости (оставьте пустым для случайного)
+    type: integer
+    min: 0
+    max: 2147483647
+    default: -1
+  image_reference:
+    order: 4
+    title: en=Image;ru=Изображение
+    description: en=Reference image to guide generation;ru=Референс для генерации изображения
+    type: image
+  image_reference_weight:
+    order: 5
+    title: en=Image Weight;ru=Вес изобр.
+    description: en=Weight of the reference image (0-1). Higher values = stronger influence;ru=Влияние референса (0-1, больше - сильнее)
+    type: float
+    min: 0
+    max: 1
+    step: 0.05
+    default: 0.85
+  style_reference:
+    order: 6
+    title: en=Style;ru=Стиль
+    description: en=Style reference image to guide generation;ru=Референс для стиля
+    type: image
+  style_reference_weight:
+    order: 7
+    title: en=Style Weight;ru=Вес стиля
+    description: en=Weight of the style reference (0-1). Higher values = stronger influence;ru=Влияние референса стиля (0-1, больше - сильнее)
+    type: float
+    min: 0
+    max: 1
+    step: 0.05
+    default: 0.85
+  character_reference:
+    order: 8
+    title: en=Character;ru=Персонаж
+    description: en=Character reference image to guide generation;ru=Референсное изображение персонажа для генерации
+    type: image
+outputs:
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    featured: true
+catalog:
+  _id: luma_photon_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/luma_photon/script.js

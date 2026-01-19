@@ -1,0 +1,41 @@
+version: 0
+title: en=Recraft Vectorize;ru=Recraft Векторизация
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- image-to-image
+- svg
+execution: regular
+arrange:
+  x: 1030
+  y: 570
+groups:
+  inputs: {}
+inputs:
+  image:
+    order: 1
+    title: en=Image;ru=Изображение
+    description: en=Raster image to convert to SVG (PNG/JPG/WEBP, max 5MB, 256-4096px, max 16MP);ru=Растровое изображение для конвертации в SVG (PNG/JPG/WEBP, макс. 5МБ, 256-4096px, макс. 16МП)
+    type: image
+    required: true
+    featured: true
+outputs:
+  svg:
+    title: en=SVG;ru=SVG
+    type: image
+    featured: true
+catalog:
+  _id: recraft_vectorize_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/recraft_vectorize/script.js

@@ -1,3 +1,5 @@
+import { throwError } from "../../utils/node.js";
+
 export async function catchError(res) {
   if (!res.ok) {
     const errorText = await res.text();

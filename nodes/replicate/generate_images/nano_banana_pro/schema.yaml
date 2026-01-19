@@ -1,0 +1,96 @@
+version: 0
+title: Google Nano Banana Pro
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- text-to-image
+- image-to-image
+execution: regular
+arrange:
+  x: 2180
+  y: 1380
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=A text description of the image you want to generate;ru=Текстовое описание изображения, которое вы хотите сгенерировать
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  aspect_ratio:
+    order: 3
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Aspect ratio of the generated image;ru=Соотношение сторон создаваемого изображения
+    type: string
+    default: match_input_image
+    enum:
+    - match_input_image|en=Match image;ru=Как у изображения
+    - 1:1|en=1:1 <Square>
+    - 2:3|en=2:3 <Portrait>
+    - 3:2|en=3:2 <Landscape>
+    - 3:4|en=3:4 <Portrait>
+    - 4:3|en=4:3 <Landscape>
+    - 4:5|en=4:5 <Portrait>
+    - 5:4|en=5:4 <Landscape>
+    - 9:16|en=9:16 <Portrait>
+    - 16:9|en=16:9 <Landscape>
+    - 21:9|en=21:9 <Landscape>
+  resolution:
+    order: 4
+    title: en=Resolution;ru=Разрешение
+    description: en=Resolution of the generated image (1K/2K = $0.14, 4K = $0.24);ru=Разрешение итогового изображения (1K/2K = $0.14, 4K = $0.24)
+    type: string
+    default: 2K
+    enum:
+    - 1K|en=1K;ru=1K
+    - 2K|en=2K;ru=2K
+    - 4K|en=4K;ru=4K
+  output_format:
+    order: 5
+    title: en=Output Format;ru=Формат вывода
+    description: en=Format of the output image;ru=Формат итогового изображения
+    type: string
+    default: jpg
+    enum:
+    - jpg|en=JPG;ru=JPG
+    - png|en=PNG;ru=PNG
+  safety_filter_level:
+    order: 6
+    title: en=Safety Filter Level;ru=Уровень фильтра контента
+    description: en=Content safety filter strictness;ru=Строгость фильтра безопасности контента
+    type: string
+    default: block_only_high
+    enum:
+    - block_low_and_above|en=Block low and above;ru=Блокировать низкий и выше
+    - block_medium_and_above|en=Block medium and above;ru=Блокировать средний и выше
+    - block_only_high|en=Block only high;ru=Блокировать только высокий
+  images:
+    order: 2
+    title: en=Images;ru=Изображения
+    description: en=Optional reference images (up to 14 images supported);ru=Референсные изображения (до 14 штук)
+    type: image[]
+    featured: true
+outputs:
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    featured: true
+catalog:
+  _id: google_nano_banana_pro_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/nano_banana_pro/script.js

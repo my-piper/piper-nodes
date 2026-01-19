@@ -1,0 +1,118 @@
+version: 0
+icon: image
+order: 100
+title: Stable Diffusion 3.5
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- text-to-image
+- image-to-image
+execution: regular
+arrange:
+  x: 270
+  y: 200
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 2
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for image generation;ru=Текстовая подсказка для генерации изображения
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  model:
+    order: 1
+    title: en=Model;ru=Модель
+    description: en=Choose between SD 3.5 models;ru=Выберите модель SD 3.5
+    type: string
+    default: medium
+    enum:
+    - medium|en=Medium;ru=Средняя
+    - large|en=Large;ru=Большая
+  aspect_ratio:
+    order: 3
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Output aspect ratio (ignored if input image is provided);ru=Соотношение сторон (игнорируется если предоставлено изображение)
+    type: string
+    default: 61
+    enum:
+    - 1:1|en=1:1 <en=Square;ru=Квадрат>;ru=1:1
+    - 3:2|en=3:2 <en=Horizontal;ru=Горизонтальное>;ru=3:2
+    - 5:4|en=5:4 <en=Horizontal;ru=Горизонтальное>;ru=5:4
+    - 16:9|en=16:9 <en=Horizontal;ru=Горизонтальное>;ru=16:9
+    - 21:9|en=21:9 <en=Horizontal;ru=Горизонтальное>;ru=21:9
+    - 9:16|en=9:16 <en=Vertical;ru=Вертикальное>;ru=9:16
+    - 9:21|en=9:21 <en=Vertical;ru=Вертикальное>;ru=9:21
+    - 2:3|en=2:3 <en=Vertical;ru=Вертикальное>;ru=2:3
+    - 4:5|en=4:5 <en=Vertical;ru=Вертикальное>;ru=4:5
+  cfg:
+    order: 4
+    title: en=CFG Scale;ru=CFG шкала
+    description: en=Guidance scale - how similar output should be to prompt (1-10);ru=Шкала соответствия - насколько результат должен быть похож на подсказку (1-10)
+    type: float
+    min: 1
+    max: 10
+    step: 0.5
+    default: 5
+  negative_prompt:
+    order: 5
+    title: en=Negative Prompt;ru=Негативная подсказка
+    description: en=What you do not want to see in the image;ru=То, что вы не хотите видеть на изображении
+    type: string
+    multiline: true
+  seed:
+    order: 6
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation (leave empty for random);ru=Случайное число для воспроизводимости (оставьте пустым для случайного)
+    type: integer
+    min: 0
+    max: 2147483647
+    default: -1
+  image:
+    order: 7
+    title: en=Image;ru=Изображение
+    description: en=Image for img2img mode (output will match this aspect ratio);ru=Изображение для режима img2img (выход будет с таким же соотношением сторон)
+    type: image
+    featured: true
+  prompt_strength:
+    order: 8
+    title: en=Prompt Strength;ru=Сила подсказки
+    description: en=Denoising strength for img2img (0-1). 1.0 = full destruction of input;ru=Степень изменения для img2img (0-1). 1.0 = полное разрушение исходного изображения
+    type: float
+    min: 0
+    max: 1
+    step: 0.05
+    default: 0.85
+  output_format:
+    order: 9
+    title: en=Output Format;ru=Формат вывода
+    description: en=Format of the output image;ru=Формат итогового изображения
+    type: string
+    default: webp
+    enum:
+    - webp
+    - jpg
+    - png
+outputs:
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    featured: true
+catalog:
+  _id: sd_35_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/sd_3_5/script.js

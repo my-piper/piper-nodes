@@ -1,0 +1,121 @@
+version: 0
+title: FLUX Kontext
+description: Edit and generate images with FLUX Kontext models
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+- text-to-image
+- image-to-image
+execution: regular
+arrange:
+  x: 1560
+  y: 990
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 2
+    title: en=Prompt;ru=Промпт
+    description: en=Text description of what you want to generate, or the instruction on how to edit the given image;ru=Текстовое описание того, что вы хотите сгенерировать, или инструкция, как изменить изображение
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  seed:
+    order: 5
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation (leave empty for random);ru=Случайное число для воспроизводимости (оставьте пустым для случайного)
+    type: integer
+    default: -1
+  model:
+    order: 1
+    title: en=Model;ru=Модель
+    description: en=Select a FLUX Kontext variant;ru=Выберите вариант FLUX Kontext
+    type: string
+    default: fast
+    enum:
+    - fast|en=Fast;ru=Быстрая
+    - dev|en=Dev;ru=Разработка
+    - pro|en=Pro;ru=Про
+    - max|en=Max;ru=Максимум
+  aspect_ratio:
+    order: 4
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Output image aspect ratio. Use 'match_input_image' to match the input image;ru=Соотношение сторон выходного изображения. Используйте match_input_image, чтобы соответствовать входному изображению
+    type: string
+    default: match_input_image
+    enum:
+    - match_input_image|en=Match input image;ru=Как у исходного
+    - 1:1|en=1:1;ru=1:1
+    - 16:9|en=16:9;ru=16:9
+    - 9:16|en=9:16;ru=9:16
+    - 4:3|en=4:3;ru=4:3
+    - 3:4|en=3:4;ru=3:4
+    - 3:2|en=3:2;ru=3:2
+    - 2:3|en=2:3;ru=2:3
+    - 4:5|en=4:5;ru=4:5
+    - 5:4|en=5:4;ru=5:4
+    - 21:9|en=21:9;ru=21:9
+    - 9:21|en=9:21;ru=9:21
+    - 2:1|en=2:1;ru=2:1
+    - 1:2|en=1:2;ru=1:2
+  safety_tolerance:
+    order: 6
+    title: en=Safety Tolerance;ru=Толер. безоп.
+    description: en=Safety tolerance (0 = strictest, 6 = most permissive, applies to Pro/Max);ru=Толер. безоп. (0 = строго, 6 = наиболее разрешено; применяется к Pro/Max)
+    type: integer
+    min: 0
+    max: 6
+    step: 1
+    default: 2
+  prompt_upsampling:
+    order: 7
+    title: en=Prompt Upsampling;ru=Улучшение подсказки
+    description: en=Automatic prompt improvement. Applies to Pro/Max;ru=Автоматическое улучшение подсказки. Применяется для Pro/Max
+    type: boolean
+    default: false
+  output_format:
+    order: 8
+    title: en=Output Format;ru=Формат вывода
+    description: en=Output format. Pro/Max support jpg/png; webp will be converted to png;ru=Формат вывода. Pro/Max поддерживает jpg/png; webp будет преобразован в png
+    type: string
+    default: webp
+    enum:
+    - webp|en=WebP;ru=WebP
+    - jpg|en=JPG;ru=JPG
+    - png|en=PNG;ru=PNG
+  output_quality:
+    order: 9
+    title: en=Output Quality;ru=Качество вывода
+    description: en=Quality when saving the output (0-100, not relevant for PNG). Used for Dev/Fast;ru=Качество при сохранении результата (0-100, не влияет для PNG). Используется для Dev/Fast
+    type: integer
+    min: 0
+    max: 100
+    default: 80
+  image:
+    order: 3
+    title: en=Image;ru=Изображение
+    description: en=Reference image (required for Fast, optional for other models);ru=Референсное изображение (обязательно для Fast, опционально для других моделей)
+    type: image
+    featured: true
+outputs:
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    featured: true
+catalog:
+  _id: flux_kontext_replicate
+  version: 15
+  category:
+    _id: generate_images
+    title: en=Generate Images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate Token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
+    type: string
+    scope: global
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/flux_kontext/script.js
