@@ -47,7 +47,8 @@ export async function getOutput({ apiToken, version = "v1" }, task) {
       return null;
     case "failed":
     case "canceled":
-      catchError(error);
+      throwError.fatal(error || "Generation failed");
+      break;
     case "succeeded":
       return output;
     default:

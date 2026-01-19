@@ -101,4 +101,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@5b986ce8fd3f7edc99f19fe9d4e8b8091b11e753/nodes/replicate/generate_images/hunyuan_image/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@55c5cb085b9b12a838dfc2d7b0729e1085b69694/nodes/replicate/generate_images/hunyuan_image/script.js
