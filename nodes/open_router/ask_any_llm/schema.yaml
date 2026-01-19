@@ -14,8 +14,8 @@ tags:
   - image-to-text
 source: catalog
 execution: deferred
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/open_router/ask-any-llm/script.js
-app: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/open_router/ask-any-llm/app.html
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/open_router/ask_any_llm/script.js
+app: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.1/nodes/open_router/ask_any_llm/app.html
 sign: 3bc8dfbf1f08baef6764cc819eed179bc45f8963a3a87f25d22dff6ab066a44b
 arrange:
   x: 320

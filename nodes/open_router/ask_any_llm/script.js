@@ -1,3 +1,4 @@
+import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 import { next, throwError } from "../../../utils/node.js";
 
 // https://openrouter.ai/models?fmt=table&input_modalities=text&output_modalities=text
@@ -1605,8 +1606,8 @@ async function imageToBase64(url) {
   const buffer = new Uint8Array(arrayBuffer);
   const mimeType = response.headers.get("content-type") || "image/jpeg";
 
-  // Convert to base64
-  const base64 = btoa(String.fromCharCode(...buffer));
+  // Use Deno's built-in base64 encoding
+  const base64 = encodeBase64(buffer);
   return `data:${mimeType};base64,${base64}`;
 }
 
