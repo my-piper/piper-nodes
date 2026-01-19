@@ -12,6 +12,7 @@ export function costs({ env, inputs }) {
   if (env.scope.REPLICATE_TOKEN === "user") {
     return 0;
   }
+
   const { model = "fast" } = inputs;
   return PRICES[model];
 }
