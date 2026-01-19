@@ -2,7 +2,7 @@ version: 0
 title: ByteDance Seededit 3
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- image-to-image
+  - image-to-image
 execution: regular
 arrange:
   x: 610
@@ -63,4 +63,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/seededit_3/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@2a650e972109c3014b44e678fb1a5e90323e04d1/nodes/replicate/generate_images/seededit_3/script.js

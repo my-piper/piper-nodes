@@ -2,8 +2,8 @@ version: 0
 title: Google Nano Banana Pro
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
-- image-to-image
+  - text-to-image
+  - image-to-image
 execution: regular
 arrange:
   x: 2180
@@ -27,17 +27,17 @@ inputs:
     type: string
     default: match_input_image
     enum:
-    - match_input_image|en=Match image;ru=Как у изображения
-    - 1:1|en=1:1 <Square>
-    - 2:3|en=2:3 <Portrait>
-    - 3:2|en=3:2 <Landscape>
-    - 3:4|en=3:4 <Portrait>
-    - 4:3|en=4:3 <Landscape>
-    - 4:5|en=4:5 <Portrait>
-    - 5:4|en=5:4 <Landscape>
-    - 9:16|en=9:16 <Portrait>
-    - 16:9|en=16:9 <Landscape>
-    - 21:9|en=21:9 <Landscape>
+      - match_input_image|en=Match image;ru=Как у изображения
+      - 1:1|en=1:1 <Square>
+      - 2:3|en=2:3 <Portrait>
+      - 3:2|en=3:2 <Landscape>
+      - 3:4|en=3:4 <Portrait>
+      - 4:3|en=4:3 <Landscape>
+      - 4:5|en=4:5 <Portrait>
+      - 5:4|en=5:4 <Landscape>
+      - 9:16|en=9:16 <Portrait>
+      - 16:9|en=16:9 <Landscape>
+      - 21:9|en=21:9 <Landscape>
   resolution:
     order: 4
     title: en=Resolution;ru=Разрешение
@@ -45,9 +45,9 @@ inputs:
     type: string
     default: 2K
     enum:
-    - 1K|en=1K;ru=1K
-    - 2K|en=2K;ru=2K
-    - 4K|en=4K;ru=4K
+      - 1K|en=1K;ru=1K
+      - 2K|en=2K;ru=2K
+      - 4K|en=4K;ru=4K
   output_format:
     order: 5
     title: en=Output Format;ru=Формат вывода
@@ -55,8 +55,8 @@ inputs:
     type: string
     default: jpg
     enum:
-    - jpg|en=JPG;ru=JPG
-    - png|en=PNG;ru=PNG
+      - jpg|en=JPG;ru=JPG
+      - png|en=PNG;ru=PNG
   safety_filter_level:
     order: 6
     title: en=Safety Filter Level;ru=Уровень фильтра контента
@@ -64,9 +64,9 @@ inputs:
     type: string
     default: block_only_high
     enum:
-    - block_low_and_above|en=Block low and above;ru=Блокировать низкий и выше
-    - block_medium_and_above|en=Block medium and above;ru=Блокировать средний и выше
-    - block_only_high|en=Block only high;ru=Блокировать только высокий
+      - block_low_and_above|en=Block low and above;ru=Блокировать низкий и выше
+      - block_medium_and_above|en=Block medium and above;ru=Блокировать средний и выше
+      - block_only_high|en=Block only high;ru=Блокировать только высокий
   images:
     order: 2
     title: en=Images;ru=Изображения
@@ -93,4 +93,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/nano_banana_pro/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@2a650e972109c3014b44e678fb1a5e90323e04d1/nodes/replicate/generate_images/nano_banana_pro/script.js

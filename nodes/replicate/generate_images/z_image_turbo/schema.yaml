@@ -3,7 +3,7 @@ title: Z-Image Turbo
 description: Fast image generation with Z-Image Turbo model
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
+  - text-to-image
 execution: regular
 arrange:
   x: 2490
@@ -32,7 +32,7 @@ inputs:
     description: en=Height of the generated image in pixels (64-2048);ru=Высота изображения в пикселях (64-2048)
     type: integer
     min: 64
-    max: 2048
+    max: 1440
     step: 8
     default: 1024
   width:
@@ -69,9 +69,9 @@ inputs:
     type: string
     default: jpg
     enum:
-    - jpg|en=JPG;ru=JPG
-    - png|en=PNG;ru=PNG
-    - webp|en=WebP;ru=WebP
+      - jpg|en=JPG;ru=JPG
+      - png|en=PNG;ru=PNG
+      - webp|en=WebP;ru=WebP
   output_quality:
     order: 8
     title: en=Output Quality;ru=Качество вывода
@@ -100,4 +100,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/z_image_turbo/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@2a650e972109c3014b44e678fb1a5e90323e04d1/nodes/replicate/generate_images/z_image_turbo/script.js

@@ -3,8 +3,8 @@ title: Qwen Image
 description: Generate and edit images with Qwen Image model
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
-- image-to-image
+  - text-to-image
+  - image-to-image
 execution: regular
 arrange:
   x: 690
@@ -34,14 +34,14 @@ inputs:
     type: string
     default: 969
     enum:
-    - 1:1|en=1:1;ru=1:1
-    - 16:9|en=16:9;ru=16:9
-    - 9:16|en=9:16;ru=9:16
-    - 4:3|en=4:3;ru=4:3
-    - 3:4|en=3:4;ru=3:4
-    - 3:2|en=3:2;ru=3:2
-    - 2:3|en=2:3;ru=2:3
-    - match_input_image|en=Match input image;ru=Как у исходного
+      - 1:1|en=1:1;ru=1:1
+      - 16:9|en=16:9;ru=16:9
+      - 9:16|en=9:16;ru=9:16
+      - 4:3|en=4:3;ru=4:3
+      - 3:4|en=3:4;ru=3:4
+      - 3:2|en=3:2;ru=3:2
+      - 2:3|en=2:3;ru=2:3
+      - match_input_image|en=Match input image;ru=Как у исходного
   image_size:
     order: 4
     title: en=Image Size;ru=Размер изображения
@@ -49,8 +49,8 @@ inputs:
     type: string
     default: optimize_for_quality
     enum:
-    - optimize_for_quality|en=Quality;ru=Качество
-    - optimize_for_speed|en=Speed;ru=Скорость
+      - optimize_for_quality|en=Quality;ru=Качество
+      - optimize_for_speed|en=Speed;ru=Скорость
   num_inference_steps:
     order: 5
     title: en=Inference Steps;ru=Шаги инференса
@@ -74,7 +74,7 @@ inputs:
     description: en=Negative prompt for generated image (only for text-to-image mode);ru=Негативный промпт (только для text-to-image)
     type: string
     multiline: true
-    default: ' '
+    default: " "
   go_fast:
     order: 9
     title: en=Go Fast;ru=Быстро
@@ -94,9 +94,9 @@ inputs:
     type: string
     default: webp
     enum:
-    - webp|en=WebP;ru=WebP
-    - jpg|en=JPG;ru=JPG
-    - png|en=PNG;ru=PNG
+      - webp|en=WebP;ru=WebP
+      - jpg|en=JPG;ru=JPG
+      - png|en=PNG;ru=PNG
   output_quality:
     order: 12
     title: en=Output Quality;ru=Качество вывода
@@ -137,4 +137,4 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/qwen_image/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@2a650e972109c3014b44e678fb1a5e90323e04d1/nodes/replicate/generate_images/qwen_image/script.js

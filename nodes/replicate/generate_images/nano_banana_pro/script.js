@@ -17,8 +17,8 @@ export function costs({ env, inputs }) {
   }
 }
 
-const CHECK_INTERVAL = 2000;
-const MAX_RETRIES = 60;
+const CHECK_INTERVAL = 3000;
+const MAX_RETRIES = 100;
 
 export async function run({ env, inputs, state }) {
   const { REPLICATE_TOKEN } = env.variables;
