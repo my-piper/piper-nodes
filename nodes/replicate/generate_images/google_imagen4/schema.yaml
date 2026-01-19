@@ -2,11 +2,12 @@ version: 0
 title: Google Imagen 4
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
-- text-to-image
+  - text-to-image
 execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@5b986ce8fd3f7edc99f19fe9d4e8b8091b11e753/nodes/replicate/generate_images/google_imagen4/script.js
 arrange:
-  x: 2080
-  y: 240
+  x: 1940
+  y: 700
 groups:
   inputs: {}
 inputs:
@@ -26,9 +27,9 @@ inputs:
     type: string
     default: imagen-4
     enum:
-    - imagen-4-fast|en=Imagen 4 Fast;ru=Imagen 4 Fast
-    - imagen-4|en=Imagen 4;ru=Imagen 4
-    - imagen-4-ultra|en=Imagen 4 Ultra;ru=Imagen 4 Ultra
+      - imagen-4-fast|en=Imagen 4 Fast;ru=Imagen 4 Fast
+      - imagen-4|en=Imagen 4;ru=Imagen 4
+      - imagen-4-ultra|en=Imagen 4 Ultra;ru=Imagen 4 Ultra
   aspect_ratio:
     order: 3
     title: en=Aspect Ratio;ru=Соотношение сторон
@@ -36,11 +37,11 @@ inputs:
     type: string
     default: 61
     enum:
-    - 1:1|en=1:1 (square);ru=1:1 (квадрат)
-    - 9:16|en=9:16 (vertical);ru=9:16 (вертикальное)
-    - 16:9|en=16:9 (wide);ru=16:9 (широкий)
-    - 3:4|en=3:4 (portrait);ru=3:4 (портрет)
-    - 4:3|en=4:3 (album);ru=4:3 (альбом)
+      - 1:1|en=1:1 (square);ru=1:1 (квадрат)
+      - 9:16|en=9:16 (vertical);ru=9:16 (вертикальное)
+      - 16:9|en=16:9 (wide);ru=16:9 (широкий)
+      - 3:4|en=3:4 (portrait);ru=3:4 (портрет)
+      - 4:3|en=4:3 (album);ru=4:3 (альбом)
   safety_filter_level:
     order: 4
     title: en=Safety Filter Level;ru=Уровень фильтра контента
@@ -48,9 +49,9 @@ inputs:
     type: string
     default: block_only_high
     enum:
-    - block_low_and_above|en=Block low and above;ru=Блокировать низкий и выше
-    - block_medium_and_above|en=Block medium and above;ru=Блокировать средний и выше
-    - block_only_high|en=Block only high;ru=Блокировать только высокий
+      - block_low_and_above|en=Block low and above;ru=Блокировать низкий и выше
+      - block_medium_and_above|en=Block medium and above;ru=Блокировать средний и выше
+      - block_only_high|en=Block only high;ru=Блокировать только высокий
   output_format:
     order: 5
     title: en=Output Format;ru=Формат вывода
@@ -58,8 +59,8 @@ inputs:
     type: string
     default: jpg
     enum:
-    - jpg|en=JPG;ru=JPG
-    - png|en=PNG;ru=PNG
+      - jpg|en=JPG;ru=JPG
+      - png|en=PNG;ru=PNG
 outputs:
   image:
     title: en=Image;ru=Изображение
@@ -80,4 +81,3 @@ environment:
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/nodes/replicate/generate_images/google_imagen4/script.js
