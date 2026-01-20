@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  /* Custom colors */
+  --color-graphite-50: #eaeaea;
+  --color-graphite-75: #aaaaaa;
+  --color-graphite-100: #878787;
+  --color-graphite-200: #535353;
+  --color-graphite-300: #303030;
+  --color-graphite-400: #222222;
+  --color-graphite-500: #1d1d1d;
+  --color-graphite-600: #111111;
+  
+  --color-primary: #00d1d1;
+  --color-green: #18e09a;
+  --color-red: #f95741;
+  
+  /* Custom font family */
+  --font-family-sans: "Inter", sans-serif;
+}
+
+/* Custom base styles */
+@layer base {
+  body {
+    font-family: var(--font-family-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  /* Add your custom component styles here */
+}
+
+/* Custom utility styles */
+@layer utilities {
+  /* Add your custom utility styles here */
+}

@@ -41,6 +41,9 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Deno
+deno.lock
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
@@ -137,4 +140,8 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-nodes/.DS_Store
+
+# macOS
+.DS_Store
+**/.DS_Store
+
