@@ -141,4 +141,3 @@ Deno.test("FLUX Kontext Fast: default settings", async () => {
   expect(image).toMatch(/^https/);
   expect(costs).toBe(0.01);
 });
-

@@ -1,0 +1,162 @@
+version: 1
+icon: image
+order: 5
+package: artworks
+title: en=Generate SDXL & Flux;ru=Генерация SDXL & Flux
+tags:
+  - text-to-image
+  - en=cheap;ru=дешево
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@f4e5d8f07a7cc278166d7a1d01b9fe62fd5d153d/nodes/artworks/generate_image/script.js
+app: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@f4e5d8f07a7cc278166d7a1d01b9fe62fd5d153d/nodes/artworks/generate_image/app.html
+arrange:
+  x: 870
+  y: 150
+groups:
+  inputs:
+    base:
+      order: 1
+      title: en=Base parameters;ru=Базовые параметры
+    SDXL:
+      order: 2
+      title: SDXL
+      description: Only for SDXL checkpoints
+inputs:
+  checkpoint:
+    order: 2
+    title: en=Checkpoint;ru=Модель
+    group: base
+    type: string
+    required: true
+    default: juggernautXL_v9Rundiffusionphoto2.safetensors
+    enum:
+      - juggernautXL_v9Rundiffusionphoto2.safetensors|Juggernaut XL <SDXL>
+      - STOIQONewrealityFLUXSD_F1DPreAlpha.safetensors|New Reality Flux <Flux>
+      - dynavisionXLAllInOneStylized_releaseV0610Bakedvae.safetensors|DynaVision XL All In One <SDXL>
+      - flux1DevHyperNF4Flux1DevBNB_flux1DevHyperNF4.safetensors|Hyper NF4 Flux 1 <Flux>
+      - aamXLAnimeMix_v10.safetensors|AAM XL (Anime Mix) <SDXL> <Fantasy>
+      - raemuXL_v40.safetensors|Raemu XL <SDXL>
+      - animaPencilXL_v260.safetensors|Anima Pencil XL <SDXL> <Fantasy>
+      - leosamsHelloworldXL_helloworldXL50GPT4V.safetensors|Helloworld XL <SDXL>
+      - albedobaseXL_v20.safetensors|AlbedoBase XL <SDXL>
+      - afroditexlNudePeople_20Bkdvae.safetensors|Nude People <NSFW>
+      - nosft-float8-e4m3fn.safetensors|Flux Nude People <NSFW>
+      - asdf_0.4a_lorapov_0.2_lust_0.4.fp16.safetensors|Real Porn <NSFW>
+      - PonyASDF_0.4_f6cosineb.fp16.safetensors|Real Porn Pony <NSFW>
+      - Sexy_Aesthetic_SDXL_0.4x0.2.fp16.safetensors|Sexy & Beauty <NSFW>
+      - aniku_0.2.fp16.safetensors|Anime Desire <NSFW>
+      - anikurender_0.4b.fp16.safetensors|Hardcore Fantasy <NSFW>
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Подсказка
+    group: base
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat walking on the moon
+  imageSize:
+    order: 4
+    title: en=Size;ru=Размер
+    group: base
+    type: string
+    required: true
+    default: 1024x1024
+    enum:
+      - 960x1024|960x1024 <SDXL>
+      - 960x1088|960x1088 <SDXL>
+      - 1024x1024|1024x1024 <SDXL>
+      - 1024x960|1024x960 <SDXL>
+      - 1088x896|1088x896 <SDXL>
+      - 1088x960|1088x960 <SDXL>
+      - 1152x832|1152x832 <SDXL>
+      - 1152x896|1152x896 <SDXL>
+      - 1216x832|1216x832 <SDXL> <Flux>
+      - 1280x768|1280x768 <SDXL> <Flux>
+      - 1344x704|1344x704 <SDXL> <Flux>
+      - 1344x768|1344x768 <SDXL> <Flux>
+      - 1408x704|1408x704 <SDXL> <Flux>
+      - 1472x704|1472x704 <SDXL> <Flux>
+      - 1536x640|1536x640 <SDXL> <Flux>
+      - 1600x640|1600x640 <SDXL> <Flux>
+      - 1664x576|1664x576 <SDXL> <Flux>
+      - 1728x576|1728x576 <SDXL> <Flux>
+  batchSize:
+    order: 7
+    title: en=Batch size;ru=Кол-во изобр.
+    group: base
+    type: integer
+    min: 1
+    max: 4
+    step: 1
+    default: 1
+  negativePrompt:
+    order: 3
+    title: en=Negative prompt;ru=Негативная подсказка
+    group: base
+    type: string
+    multiline: true
+  cfgScale:
+    order: 5
+    title: en=CFG scale;ru=Креативность
+    group: base
+    type: float
+    min: 1
+    max: 20
+    step: 1
+    default: 7
+  performance:
+    order: 6
+    title: en=Performance;ru=Производительность
+    group: base
+    type: string
+    default: speed
+    enum:
+      - express|en=⚡ Express;ru=⚡ Экспресс
+      - speed|en=🚅 Speed;ru=🚅 Скорость
+      - quality|en=💎 Quality;ru=💎 Качество
+  sharpness:
+    order: 1
+    title: en=Sharpness;ru=Фотоэффект
+    group: SDXL
+    type: integer
+    min: 0
+    max: 30
+    step: 1
+    default: 2
+  seed:
+    order: 8
+    title: en=Seed;ru=Начальный шум
+    group: base
+    type: integer
+    default: -1
+  templates:
+    order: 90
+    title: en=Templates;ru=Шаблоны
+    type: json
+    schema:
+      id: templates
+outputs:
+  images:
+    title: en=Images;ru=Изображения
+    type: image[]
+    featured: true
+catalog:
+  _id: generate_image_artworks
+  version: 40
+  category:
+    _id: generate_images
+    title: en=Generate images;ru=Ген. изображений
+    icon: image
+    order: 5
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global
