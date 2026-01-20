@@ -183,3 +183,36 @@ Deno.test(
     expect(costs.costs).toBe(0.005);
   }
 );
+
+Deno.test("ArtWorks Generate Image: generation with templates", async () => {
+  const {
+    costs,
+    outputs: { images },
+  } = await runNode(run, {
+    env: {
+      scope: {},
+      variables: {
+        ARTWORKS_USER,
+        ARTWORKS_PASSWORD,
+      },
+    },
+    inputs: {
+      prompt: "a fantasy landscape with castles",
+      checkpoint: "juggernautXL_v9Rundiffusionphoto2.safetensors",
+      imageSize: "1024x1024",
+      performance: "speed",
+      templates: [
+        {
+          fullFileName: "sdxl_glass.safetensors",
+          weight: 2,
+          trainedWords: ["translucent", "transparent"],
+        },
+      ],
+    },
+  });
+  console.log("Generated images:", images);
+  expect(Array.isArray(images)).toBe(true);
+  expect(images.length).toBeGreaterThan(0);
+  expect(images[0]).toMatch(/^https/);
+  expect(costs.costs).toBe(0.005);
+});

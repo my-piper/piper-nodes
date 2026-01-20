@@ -55,6 +55,7 @@ export async function run({ env, inputs, state }) {
       batchSize,
       // SDXL
       styles,
+      templates,
     } = inputs;
 
     const payload = {
@@ -62,7 +63,15 @@ export async function run({ env, inputs, state }) {
       isFast: true,
       payload: {
         base64: false,
-        prompt,
+        prompt: (() => {
+          const chunks = [prompt];
+          for (const t of templates || []) {
+            if (t.trainedWords?.length > 0) {
+              chunks.push(...t.trainedWords);
+            }
+          }
+          return chunks.join(", ");
+        })(),
         negativePrompt,
         checkpoint,
         cfgScale,
@@ -87,6 +96,14 @@ export async function run({ env, inputs, state }) {
           }
         })(),
         sharpness,
+        ...(templates?.length > 0
+          ? {
+              loras: templates.map(({ fullFileName, weight }) => ({
+                modelName: fullFileName,
+                weight,
+              })),
+            }
+          : {}),
       },
     };
 
