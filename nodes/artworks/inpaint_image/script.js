@@ -1,0 +1,169 @@
+const CHECK_TASK_INTERVAL = 3000;
+const MAX_ATTEMPTS = 100;
+
+export async function costs({ env, inputs }) {
+  if (env.scope.ARTWORKS_USER === "user") {
+    return 0;
+  }
+
+  const { performance } = inputs;
+
+  switch (performance) {
+    case "express":
+      return 0.0032;
+    case "speed":
+      return 0.0043;
+    case "quality":
+      return 0.0054;
+    default:
+      throw new Error("Unknown performance type");
+  }
+}
+
+export async function run({ inputs, state, env }) {
+  const { throwError, repeat, next, download } = require("@piper/node");
+  const { ArtWorks, fitSize, FatalError } = require("artworks");
+  const sharp = require("sharp/lib/index.js");
+
+  const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+  if (!ARTWORKS_USER) {
+    throwError.fatal("Please, set ARTWORKS_USER in environment");
+  }
+  if (!ARTWORKS_PASSWORD) {
+    throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+  }
+
+  const artworks = new ArtWorks({
+    baseUrl: "https://api.artworks.ai",
+    username: ARTWORKS_USER,
+    password: ARTWORKS_PASSWORD,
+  });
+
+  if (!state) {
+    const {
+      image,
+      prompt = "change image area",
+      checkpoint,
+      negativePrompt,
+      imageSize,
+      denoisingStrength = 1,
+      cfgScale = 7,
+      performance,
+      batchSize,
+      seed = -1,
+      // mask
+      mask,
+      maskMargin,
+      // SDXL
+      invertMask,
+    } = inputs;
+
+    const payload = {
+      type: "inpaint-on-image",
+      isFast: true,
+      payload: {
+        base64: false,
+        image,
+        prompt,
+        checkpoint,
+        negativePrompt,
+        ...(!!imageSize
+          ? await (async () => {
+              const { data } = await download(image);
+              const buffer = sharp(data);
+              const { width, height } = await buffer.metadata();
+              if (imageSize !== "auto:auto") {
+                const { width: w, height: h } = fitSize(
+                  imageSize,
+                  height / width,
+                );
+                return { size: `${w}x${h}` };
+              }
+
+              return {};
+            })()
+          : {}),
+        denoisingStrength,
+        cfgScale,
+        performance,
+        ...(batchSize > 1 ? { batchSize } : {}),
+        ...(seed > 0 ? { seed } : {}),
+        // mask
+        mask,
+        maskMargin,
+        // SDXL
+        invertMask,
+      },
+    };
+
+    console.log(JSON.stringify(payload, null, 2));
+
+    try {
+      const task = await artworks.createTask(payload);
+      console.log(`Task created ${task}`);
+      return repeat({
+        state: {
+          task,
+          attempt: 0,
+          startedAt: new Date().toISOString(),
+        },
+        progress: {
+          total: MAX_ATTEMPTS,
+          processed: 0,
+        },
+        delay: 2000,
+      });
+    } catch (e) {
+      if (e instanceof FatalError) {
+        throwError.fatal(e.message);
+      }
+      throw e;
+    }
+  } else {
+    const { task, attempt, startedAt } = state;
+
+    if (attempt > MAX_ATTEMPTS) {
+      try {
+        await artworks.cancelTask(task);
+      } catch (e) {}
+
+      const now = new Date();
+      const time = (now - new Date(startedAt)) / 1000;
+      throwError.timeout(`Task ${task} timeout in ${time} sec`);
+    }
+
+    console.log(`Check task ${attempt} ${task}`);
+
+    try {
+      const results = await artworks.checkState(task);
+      if (!results) {
+        return repeat({
+          delay: CHECK_TASK_INTERVAL,
+          state: {
+            task,
+            attempt: attempt + 1,
+            startedAt,
+          },
+          progress: {
+            total: MAX_ATTEMPTS,
+            processed: attempt,
+          },
+        });
+      }
+      let images = results.images.map((i) => i.url);
+      return next({
+        outputs: {
+          images: (await Promise.all(images.map((url) => download(url)))).map(
+            ({ data }) => data,
+          ),
+        },
+        costs: costs({ env, inputs }),
+      });
+    } catch (e) {
+      if (e instanceof FatalError) {
+        throwError.fatal(e.message);
+      }
+      throw e;
+    }
+  }
+}

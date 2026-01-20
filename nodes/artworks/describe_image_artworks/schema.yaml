@@ -1,0 +1,32 @@
+inputs:
+  details:
+    default: high
+    enum:
+    - low|Low
+    - middle|Middle
+    - high|High
+    group: main
+    order: 3
+    required: true
+    title: en=Detail level;ru=Уровень детализации
+    type: string
+  image:
+    featured: true
+    group: main
+    order: 1
+    required: true
+    title: en=Image;ru=Изображение
+    type: image
+  prompt:
+    group: main
+    multiline: true
+    order: 2
+    placeholder: en=Describe the image in detail;ru=Подробно опишите изображение
+    required: false
+    title: en=Prompt (optional);ru=Подсказка (опционально)
+    type: string
+outputs:
+  text:
+    featured: true
+    title: en=Caption;ru=Описание
+    type: string

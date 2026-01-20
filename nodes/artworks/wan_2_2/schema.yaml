@@ -1,0 +1,76 @@
+inputs:
+  fps:
+    default: '16'
+    enum:
+    - 16|en=16;ru=16
+    - 24|en=24;ru=24
+    - 30|en=30;ru=30
+    - 60|en=60;ru=60
+    order: 7
+    title: en=Fps;ru=Кадров в секунду
+    type: string
+  image:
+    featured: true
+    order: 2
+    required: true
+    title: en=Image;ru=Изображение
+    type: image
+  length:
+    default: 5s
+    enum:
+    - 5s|en=5s;ru=5 сек
+    - 8s|en=8s;ru=8 сек
+    order: 5
+    title: en=Length;ru=Длительность
+    type: string
+  prompt:
+    default: cat astronaut walking at a moon
+    featured: true
+    multiline: true
+    order: 3
+    required: true
+    title: en=Prompt;ru=Подсказка
+    type: string
+  resolution:
+    default: 480p
+    enum:
+    - 480p
+    - 720p
+    - 1080p
+    order: 6
+    title: en=Resolution;ru=Разрешение
+    type: string
+  version:
+    default: 22
+    enum:
+    - 2_1|Wan 2.1
+    - 2_2|Wan 2.2
+    order: 1
+    title: en=Version;ru=Версия
+    type: string
+  videoSize:
+    default: 512x512
+    enum:
+    - 512x512|en=512x512 (1:1) <Horizontal>;ru=512x512 (1:1) <Горизонтальное>
+    - 960x960|en=960x960 (1:1) <Horizontal>;ru=960x960 (1:1) <Горизонтальное>
+    - 720x720|en=720x720 (1:1) <Horizontal>;ru=720x720 (1:1) <Горизонтальное>
+    - 832x480|en=832x480 (26:15) <Horizontal>;ru=832x480 (26:15) <Горизонтальное>
+    - 832x624|en=832x624 (4:3) <Horizontal>;ru=832x624 (4:3) <Горизонтальное>
+    - 960x544|en=960x544 (30:17) <Horizontal>;ru=960x544 (30:17) <Горизонтальное>
+    - 1104x832|en=1104x832 (69:52) <Horizontal>;ru=1104x832 (69:52) <Горизонтальное>
+    - 1280x544|en=1280x544 (40:17) <Horizontal>;ru=1280x544 (40:17) <Горизонтальное>
+    - 1280x720|en=1280x720 (16:9) <Horizontal>;ru=1280x720 (16:9) <Горизонтальное>
+    - 480x832|en=480x832 (15:26) <Vertical>;ru=480x832 (15:26) <Вертикальное>
+    - 544x960|en=544x960 (17:30) <Vertical>;ru=544x960 (17:30) <Вертикальное>
+    - 544x1280|en=544x1280 (17:40) <Vertical>;ru=544x1280 (17:40) <Вертикальное>
+    - 624x832|en=624x832 (3:4) <Vertical>;ru=624x832 (3:4) <Вертикальное>
+    - 720x1280|en=720x1280 (9:16) <Vertical>;ru=720x1280 (9:16) <Вертикальное>
+    - 832x1104|en=832x1104 (52:69) <Vertical>;ru=832x1104 (52:69) <Вертикальное>
+    order: 4
+    title: en=Video size;ru=Размер видео
+    type: string
+outputs:
+  video:
+    featured: true
+    title: en=Video;ru=Видео
+    type: video

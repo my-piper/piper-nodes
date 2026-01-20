@@ -1,0 +1,21 @@
+inputs:
+  image:
+    featured: true
+    order: 1
+    required: true
+    title: en=Image;ru=Изображение
+    type: image
+  upscalingResize:
+    default: 2
+    max: 4
+    min: 0.1
+    order: 2
+    required: true
+    step: 0.1
+    title: en=Resize;ru=Увеличение
+    type: float
+outputs:
+  image:
+    featured: true
+    title: en=Image;ru=Изображение
+    type: image

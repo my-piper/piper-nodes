@@ -1,0 +1,22 @@
+inputs:
+  image:
+    featured: true
+    order: 1
+    required: true
+    title: en=Image;ru=Изображение
+    type: image
+  type:
+    default: photo
+    enum:
+    - photo|en=Photo;ru=Фото
+    - anime|en=Anime;ru=Аниме
+    - mixed|en=Mixed;ru=Любой
+    order: 2
+    required: false
+    title: en=Prompt type;ru=Тип описания
+    type: string
+outputs:
+  prompt:
+    featured: true
+    title: en=Prompt;ru=Подсказка
+    type: string

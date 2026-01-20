@@ -1,0 +1,115 @@
+inputs:
+  batchSize:
+    default: 1
+    group: base
+    max: 4
+    min: 1
+    order: 9
+    step: 1
+    title: en=Batch size;ru=Кол-во
+    type: integer
+  cfgScale:
+    default: 7
+    group: base
+    max: 20
+    min: 1
+    order: 7
+    step: 1
+    title: en=CFG scale;ru=Креативность
+    type: integer
+  checkpoint:
+    default: juggernautXL_v9Rundiffusionphoto2.safetensors
+    enum:
+    - juggernautXL_v9Rundiffusionphoto2.safetensors|Juggernaut XL <SDXL>
+    - STOIQONewrealityFLUXSD_F1DPreAlpha.safetensors|New Reality Flux <Flux>
+    - dynavisionXLAllInOneStylized_releaseV0610Bakedvae.safetensors|DynaVision XL All In One <SDXL>
+    - flux1DevHyperNF4Flux1DevBNB_flux1DevHyperNF4.safetensors|Hyper NF4 Flux 1 <Flux>
+    - aamXLAnimeMix_v10.safetensors|AAM XL (Anime Mix) <SDXL> <Fantasy>
+    - raemuXL_v40.safetensors|Raemu XL <SDXL>
+    - animaPencilXL_v260.safetensors|Anima Pencil XL <SDXL> <Fantasy>
+    - leosamsHelloworldXL_helloworldXL50GPT4V.safetensors|Helloworld XL <SDXL>
+    - albedobaseXL_v20.safetensors|AlbedoBase XL <SDXL>
+    - afroditexlNudePeople_20Bkdvae.safetensors|Nude People <NSFW>
+    - nosft-float8-e4m3fn.safetensors|Flux Nude People <NSFW>
+    - asdf_0.4a_lorapov_0.2_lust_0.4.fp16.safetensors|Real Porn <NSFW>
+    - PonyASDF_0.4_f6cosineb.fp16.safetensors|Real Porn Pony <NSFW>
+    - Sexy_Aesthetic_SDXL_0.4x0.2.fp16.safetensors|Sexy & Beauty <NSFW>
+    - aniku_0.2.fp16.safetensors|Anime Desire <NSFW>
+    - anikurender_0.4b.fp16.safetensors|Hardcore Fantasy <NSFW>
+    group: base
+    order: 3
+    required: true
+    title: en=Checkpoint;ru=Модель
+    type: string
+  denoisingStrength:
+    default: 0.5
+    group: base
+    max: 1
+    min: 0.1
+    order: 6
+    step: 0.05
+    title: en=Denoising strength;ru=Степень изменения
+    type: float
+  image:
+    featured: true
+    group: base
+    order: 1
+    required: true
+    title: en=Image;ru=Изображение
+    type: image
+  imageSize:
+    default: auto:auto
+    enum:
+    - auto:1024|en=auto:1024;ru=авто:1024
+    - 1024:auto|en=1024:auto;ru=1024:авто
+    - auto:auto|en=auto:auto;ru=авто:авто
+    group: base
+    order: 5
+    placeholder: auto:auto
+    title: en=Image size;ru=Размер изображения
+    type: string
+  negativePrompt:
+    group: base
+    multiline: true
+    order: 4
+    title: en=Negative prompt;ru=Негативная подсказка
+    type: string
+  performance:
+    default: speed
+    enum:
+    - express|en=⚡ Express;ru=⚡ Экспресс
+    - speed|en=🚅 Speed;ru=🚅 Скорость
+    - quality|en=💎 Quality;ru=💎 Качество
+    group: base
+    order: 8
+    title: en=Performance;ru=Производительность
+    type: string
+  prompt:
+    default: cat walking on the Mars
+    featured: true
+    group: base
+    multiline: true
+    order: 2
+    required: true
+    title: en=Prompt;ru=Подсказка
+    type: string
+  seed:
+    group: base
+    order: 10
+    placeholder: '-1'
+    title: en=Seed;ru=Начальный шум
+    type: integer
+  sharpness:
+    default: 2
+    group: SDXL
+    max: 30
+    min: 0
+    order: 1
+    step: 1
+    title: en=Sharpness;ru=Фотоэффект
+    type: integer
+outputs:
+  images:
+    featured: true
+    title: en=Images;ru=Изображения
+    type: image[]

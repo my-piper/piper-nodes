@@ -1,0 +1,65 @@
+inputs:
+  applyConvexHull:
+    default: false
+    order: 6
+    title: en=Apply convex hull;ru=Сгладить края
+    type: boolean
+  image:
+    featured: true
+    order: 1
+    required: true
+    title: en=Image;ru=Изображение
+    type: image
+  model:
+    default: deepfashion2_yolov8s-seg.pt
+    enum:
+    - deepfashion2_yolov8s-seg.pt|en=Clothes;ru=Одежда
+    - face_yolov8m.pt|en=Face (Medium);ru=Лицо (среднее)
+    - face_yolov8n.pt|en=Face (Nano);ru=Лицо (нано)
+    - face_yolov8s.pt|en=Face (Small);ru=Лицо (маленькое)
+    - female_breast_v3.2.pt|en=Female Breast;ru=Женская грудь
+    - hand_yolov8n.pt|en=Hands (Nano);ru=Руки (нано)
+    - hand_yolov8s.pt|en=Hands (Small);ru=Руки (маленькие)
+    - person_yolov8m-seg.pt|en=Persons (Medium);ru=Персоны (средние)
+    - person_yolov8n-seg.pt|en=Persons (Nano);ru=Персоны (нано)
+    - person_yolov8s-seg.pt|en=Persons (Small);ru=Персоны (маленькие)
+    - penisV2.pt|en=Penis <NSFW>;ru=Пенис
+    - vagina-v2.6.pt|en=Vagina <NSFW>;ru=Влагалище
+    order: 3
+    required: false
+    title: en=Yolo model;ru=Yolo модель
+    type: string
+  prompt:
+    featured: true
+    multiline: true
+    order: 4
+    required: false
+    title: en=Prompt;ru=Подсказка
+    type: string
+  threshold:
+    default: 0.5
+    max: 0.69
+    min: 0.1
+    order: 5
+    required: true
+    step: 0.1
+    title: en=Threshold;ru=Чувствительность
+    type: float
+  type:
+    default: yolo
+    enum:
+    - yolo|Yolo
+    - default|en=Prompt;ru=Подсказка
+    order: 2
+    required: true
+    title: en=Type;ru=Тип поиска
+    type: string
+outputs:
+  masks:
+    schema: image-masks
+    title: en=Masks;ru=Контуры
+    type: json
+  merged:
+    featured: true
+    title: en=Merged;ru=Общая маска
+    type: image

@@ -1,0 +1,20 @@
+inputs:
+  position:
+    default: last
+    enum:
+    - first|en=First frame;ru=Первый кадр
+    - last|en=Last frame;ru=Последний кадр
+    order: 2
+    title: en=Position;ru=Позиция
+    type: string
+  video:
+    featured: true
+    order: 1
+    required: true
+    title: en=Video;ru=Видео
+    type: video
+outputs:
+  frame:
+    featured: true
+    title: en=Frame;ru=Фрейм
+    type: image

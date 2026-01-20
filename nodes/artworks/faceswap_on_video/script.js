@@ -1,49 +1,54 @@
-export async function run({ env, inputs, state }) {
-  const { next, repeat, throwError } = require("@piper/node");
-  const { ArtWorks, FatalError: ArtWorksError } = require("artworks");
+const CHECK_TASK_INTERVAL = 5000;
+const MAX_ATTEMPTS = 100;
 
-  const MAX_ATTEMPTS = 10;
-  const CHECK_TASK_INTERVAL = 2000;
-
-  const { PAAS_BASE_URL, PAAS_USER, PAAS_PASSWORD } = env.variables;
-
-  if (!PAAS_BASE_URL) {
-    throwError.fatal("Please, set PAAS_BASE_URL in environment");
+export async function costs({ env }) {
+  if (env.scope.ARTWORKS_USER === "user") {
+    return 0;
   }
-  if (!PAAS_USER) {
-    throwError.fatal("Please, set PAAS_USER in environment");
+  return 0.005;
+}
+
+export async function run({ inputs, state, env }) {
+  const { throwError, repeat, next, download } = require("@piper/node");
+  const { ArtWorks, FatalError } = require("artworks");
+
+  const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+  if (!ARTWORKS_USER) {
+    throwError.fatal("Please, set ARTWORKS_USER in environment");
   }
-  if (!PAAS_PASSWORD) {
-    throwError.fatal("Please, set PAAS_PASSWORD in environment");
+  if (!ARTWORKS_PASSWORD) {
+    throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
   }
 
   const artworks = new ArtWorks({
-    baseUrl: PAAS_BASE_URL,
-    username: PAAS_USER,
-    password: PAAS_PASSWORD,
+    baseUrl: "https://api.artworks.ai",
+    username: ARTWORKS_USER,
+    password: ARTWORKS_PASSWORD,
   });
 
   if (!state) {
-    const { source, target, text } = inputs;
+    const { face, video } = inputs;
 
     const payload = {
-      type: "translate-text",
+      type: "faceswap-on-video",
       isFast: true,
       payload: {
-        source,
-        target,
-        text,
+        base64: false,
+        face,
+        video,
       },
     };
+
+    console.log(JSON.stringify(payload, null, 2));
+
     try {
       const task = await artworks.createTask(payload);
       console.log(`Task created ${task}`);
       return repeat({
         state: {
-          payload,
           task,
           attempt: 0,
-          startedAt: new Date(),
+          startedAt: new Date().toISOString(),
         },
         progress: {
           total: MAX_ATTEMPTS,
@@ -52,13 +57,13 @@ export async function run({ env, inputs, state }) {
         delay: 2000,
       });
     } catch (e) {
-      if (e instanceof ArtWorksError) {
+      if (e instanceof FatalError) {
         throwError.fatal(e.message);
       }
       throw e;
     }
   } else {
-    const { payload, task, attempt, startedAt } = state;
+    const { task, attempt, startedAt } = state;
 
     if (attempt > MAX_ATTEMPTS) {
       try {
@@ -67,7 +72,7 @@ export async function run({ env, inputs, state }) {
 
       const now = new Date();
       const time = (now - new Date(startedAt)) / 1000;
-      throwError.timeout(`PaaS task ${task} timeout in ${time} sec`);
+      throwError.timeout(`Task ${task} timeout in ${time} sec`);
     }
 
     console.log(`Check task ${attempt} ${task}`);
@@ -78,7 +83,6 @@ export async function run({ env, inputs, state }) {
         return repeat({
           delay: CHECK_TASK_INTERVAL,
           state: {
-            payload,
             task,
             attempt: attempt + 1,
             startedAt,
@@ -89,16 +93,17 @@ export async function run({ env, inputs, state }) {
           },
         });
       }
-      const { alternatives, detectedLanguage, text } = results;
+
+      let {
+        video: { url },
+      } = results;
+      const { data: video } = await download(url);
       return next({
-        outputs: {
-          alternatives,
-          detectedLanguage,
-          text,
-        },
+        outputs: { video },
+        costs: costs({ env, inputs }),
       });
     } catch (e) {
-      if (e instanceof ArtWorksError) {
+      if (e instanceof FatalError) {
         throwError.fatal(e.message);
       }
       throw e;

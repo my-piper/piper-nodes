@@ -1,0 +1,52 @@
+inputs:
+  source:
+    default: auto
+    enum:
+    - auto|en=Auto;ru=Авто
+    - en|en=English;ru=Английский
+    - de|en=German;ru=Немецкий
+    - ru|en=Russian;ru=Русский
+    - es|en=Spanish;ru=Испанский
+    - fr|en=French;ru=Французский
+    - it|en=Italian;ru=Итальянский
+    - pt|en=Portuguese;ru=Португальский
+    - ja|en=Japanese;ru=Японский
+    - ko|en=Korean;ru=Корейский
+    - hi|en=Hindi;ru=Хинди
+    - tr|en=Turkish;ru=Турецкий
+    - zh|en=Chinese Simplified;ru=Китайский (упрощённый)
+    order: 1
+    title: en=Source language;ru=Исходный язык
+    type: string
+  target:
+    default: en
+    enum:
+    - en|en=English;ru=Английский
+    - de|en=German;ru=Немецкий
+    - ru|en=Russian;ru=Русский
+    - es|en=Spanish;ru=Испанский
+    - fr|en=French;ru=Французский
+    - it|en=Italian;ru=Итальянский
+    - pt|en=Portuguese;ru=Португальский
+    - ja|en=Japanese;ru=Японский
+    - ko|en=Korean;ru=Корейский
+    - hi|en=Hindi;ru=Хинди
+    - tr|en=Turkish;ru=Турецкий
+    - zh|en=Chinese Simplified;ru=Китайский (упрощённый)
+    order: 2
+    required: true
+    title: en=Target;ru=Целевой язык
+    type: string
+  text:
+    featured: true
+    multiline: true
+    order: 3
+    required: true
+    title: en=Text;ru=Текст
+    type: string
+outputs:
+  text:
+    featured: true
+    format: markdown
+    title: en=Text;ru=Перевод
+    type: string

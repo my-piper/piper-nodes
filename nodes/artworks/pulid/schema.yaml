@@ -1,0 +1,49 @@
+inputs:
+  aspectRatio:
+    default: 556
+    enum:
+    - 61
+    - 123
+    - 184
+    - 308
+    - 556
+    - 559
+    - 561
+    - 182
+    - 243
+    - 485
+    - 969
+    - 1149
+    - 1269
+    order: 4
+    title: en=Aspect ratio;ru=Соотношение сторон
+    type: string
+  person:
+    featured: true
+    order: 1
+    required: true
+    title: en=Person;ru=Персона
+    type: image
+  prompt:
+    default: Close-up portrait of Harry Potter
+    featured: true
+    multiline: true
+    order: 2
+    required: true
+    title: en=Prompt;ru=Подсказка
+    type: string
+  upscale:
+    default: false
+    enum:
+    - no|en=No enhancing;ru=Без улучшений
+    - skin_detailing|en=Skin detailing;ru=Детализаци кожи
+    - enhancing_quality|en=Enhancing quality;ru=Высокое разрешение
+    - full_enhancing|en=Full enhancing;ru=Все улучшения
+    order: 3
+    title: en=Upscale;ru=Качество
+    type: string
+outputs:
+  image:
+    featured: true
+    title: Image
+    type: image

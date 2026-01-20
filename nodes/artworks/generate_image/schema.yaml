@@ -6,12 +6,13 @@ title: en=Generate SDXL & Flux;ru=Генерация SDXL & Flux
 tags:
   - text-to-image
   - en=cheap;ru=дешево
+source: node
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@f4e5d8f07a7cc278166d7a1d01b9fe62fd5d153d/nodes/artworks/generate_image/script.js
-app: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@f4e5d8f07a7cc278166d7a1d01b9fe62fd5d153d/nodes/artworks/generate_image/app.html
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@ad35e191f5873ec7636f2ea90670020e3c419b1b/nodes/artworks/generate_image/script.js
+app: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@ad35e191f5873ec7636f2ea90670020e3c419b1b/nodes/artworks/generate_image/app.html
 arrange:
-  x: 870
-  y: 150
+  x: 860
+  y: 140
 groups:
   inputs:
     base:

@@ -1,0 +1,29 @@
+inputs:
+  gender:
+    default: auto
+    enum:
+    - auto|en=Auto;ru=Авто
+    - male|en=Male;ru=Мужчина
+    - female|en=Female;ru=Женщина
+    order: 2
+    title: en=Gender;ru=Пол
+    type: string
+  image:
+    featured: true
+    order: 1
+    required: true
+    title: en=Image;ru=Изображение
+    type: image
+  prompt:
+    default: red swimsuit
+    featured: true
+    multiline: true
+    order: 3
+    required: true
+    title: en=Prompt;ru=Подсказка
+    type: string
+outputs:
+  image:
+    featured: true
+    title: en=Image;ru=Изображение
+    type: image

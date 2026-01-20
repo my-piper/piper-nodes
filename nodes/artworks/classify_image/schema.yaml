@@ -1,0 +1,20 @@
+inputs:
+  image:
+    featured: true
+    order: 1
+    required: true
+    title: en=Image;ru=Изображение
+    type: image
+  labels:
+    default: '{ "girl": "girl on photo", "male": "male on photo" }'
+    order: 2
+    required: true
+    schema:
+      id: image-labels
+    title: en=Labels;ru=Теги
+    type: json
+outputs:
+  labels:
+    featured: true
+    title: en=Labels;ru=Теги
+    type: json

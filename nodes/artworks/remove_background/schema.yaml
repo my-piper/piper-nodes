@@ -1,0 +1,12 @@
+inputs:
+  image:
+    featured: true
+    order: 1
+    required: true
+    title: en=Image;ru=Изображение
+    type: image
+outputs:
+  image:
+    featured: true
+    title: en=Image;ru=Изображение
+    type: image

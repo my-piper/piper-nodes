@@ -1,0 +1,56 @@
+inputs:
+  answerFormat:
+    default: text
+    description: en=Don't forget to add instructions for JSON format;ru=Не забудьте добавить инструкции для JSON формата
+    enum:
+    - text|Text
+    - json|JSON
+    group: advanced
+    order: 4
+    required: true
+    title: en=Answer format;ru=Формат ответа
+    type: string
+  image:
+    description: en=Optional image for Qwen3-VL model. Model works without it too.;ru=Опциональное изображение для Qwen3-VL. Модель работает и без него.
+    group: vision
+    order: 3
+    title: en=Image;ru=Изображение
+    type: image
+  instructions:
+    description: en=System prompt to guide the model's behavior;ru=Системный промпт для управления поведением модели
+    group: advanced
+    multiline: true
+    order: 5
+    title: en=System instructions;ru=Инструкции системе
+    type: string
+  model:
+    default: deepseek-r1:8b
+    description: en=Select LLM model (Qwen3-VL supports images);ru=Выберите модель LLM (Qwen3-VL поддерживает изображения)
+    enum:
+    - deepseek-r1:8b|DeepSeek R1 8b
+    - qwen3-vl:8b-instruct|Qwen3-VL 8b (Vision)
+    featured: true
+    group: main
+    order: 1
+    title: en=Model;ru=Модель
+    type: string
+  question:
+    default: What do you think about AI?
+    description: en=Your question or prompt;ru=Ваш вопрос или промпт
+    featured: true
+    group: main
+    multiline: true
+    order: 2
+    required: true
+    title: en=Question;ru=Вопрос
+    type: string
+outputs:
+  json:
+    featured: true
+    title: JSON
+    type: json
+  text:
+    featured: true
+    format: markdown
+    title: en=Text;ru=Текст
+    type: string

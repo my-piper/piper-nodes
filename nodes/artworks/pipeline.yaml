@@ -1,0 +1,4930 @@
+name: ArtWorks
+version: 2
+tags:
+  - package
+readme: |
+  # Nodes
+
+  ## Generate images
+  * [x] Generate image
+  * [x] Image to image
+  * [x] Upscale image
+  * [x] Inpaint on image
+  * [x] Outpaint on image
+
+  ## Deep swap
+  * [x] Face swap on image
+  * [x] Face swap on video
+  * [x] Dress on image
+  * [x] PuLID
+
+  ## Image analysis
+  * [x] Extract mask on image
+  * [x] Detect face
+  * [x] Ask VLM
+  * [x] Classify image
+  * [x] Image to prompt
+  * [x] Score aesthetics
+  * [x] Detect NSFW
+
+  ## Process text
+  * [x] Translate text
+
+  ## Work with images
+  * [x] Remove background
+
+  ## Language Agents
+  * [x] Ask LLM agent
+
+  ## Video generation
+  * [x] WAN 2.2 animate
+
+  ## Video processing
+  * [x] Extract frame
+  * [x] Merge videos
+
+  # Check list
+  * [x] i18n everywhere
+  * [x] costs in next
+  * [x] check env scope
+layout:
+  left: 0
+  top: 0
+  zoom: 0.5438108973205089
+script: ""
+start:
+  nodes:
+    - detect_face
+deploy:
+  slug: artworks-nodes-v1
+inputs:
+  prompt_17:
+    title: en=Prompt;ru=Подсказка
+    type: string
+    required: true
+    multiline: true
+    flows:
+      to_image_to_image:
+        to: image_to_image
+        input: prompt
+    arrange:
+      x: 1440
+      y: 375.5
+  image:
+    title: en=Image;ru=Изображение
+    type: image
+    required: true
+    flows:
+      to_detect_face:
+        to: detect_face
+        input: image
+      to_classify_image_image_fca8b:
+        to: classify_image
+        input: image
+      to_describe_image_artworks_image_8b41f:
+        to: describe_image_artworks
+        input: image
+    arrange:
+      x: 290
+      y: 752.5
+  image_6f:
+    title: en=Image;ru=Изображение
+    type: image
+    required: true
+    flows:
+      to_face_swap_on_image:
+        to: face_swap_on_image
+        input: image
+    arrange:
+      x: 960
+      y: 1140
+  text:
+    title: en=Text;ru=Текст
+    type: string
+    required: true
+    multiline: true
+    flows:
+      to_translate_text:
+        to: translate_text
+        input: text
+    arrange:
+      x: 390
+      y: 205.5
+  image_69:
+    title: en=Image;ru=Изображение
+    type: image
+    required: true
+    flows:
+      to_dress_on_image:
+        to: dress_on_image
+        input: image
+    arrange:
+      x: 1040
+      y: 2002.5
+outputs: {}
+flows:
+  generate_image_to_image_to_image_5634f:
+    from: generate_image
+    output: images
+    to: image_to_image
+    input: image
+    transformer:
+      type: array
+      index: 0
+  image_to_image_to_outpaint_on_image_c943c:
+    from: image_to_image
+    output: images
+    to: outpaint_on_image
+    input: image
+    transformer:
+      type: array
+      index: 0
+  upscale_image_to_remove_background_9c5a0:
+    from: upscale_image
+    output: image
+    to: remove_background
+    input: image
+  image_to_image_to_upscale_image_53e4e:
+    from: image_to_image
+    output: images
+    to: upscale_image
+    input: image
+    transformer:
+      type: array
+      index: 0
+  detect_face_to_face_swap_on_image_216ab:
+    from: detect_face
+    output: face
+    to: face_swap_on_image
+    input: face
+  face_swap_on_image_to_srore_aesthetics_0ac86:
+    from: face_swap_on_image
+    output: image
+    to: srore_aesthetics
+    input: image
+  face_swap_on_image_to_extract_mask_60aba:
+    from: face_swap_on_image
+    output: image
+    to: extract_mask
+    input: image
+  dress_on_image_to_image_to_prompt_ff7b0:
+    from: dress_on_image
+    output: image
+    to: image_to_prompt
+    input: image
+  dress_on_image_to_detect_nsfw_c9836:
+    from: dress_on_image
+    output: image
+    to: detect_nsfw
+    input: image
+  extract_mask_to_inpaint_image_67811:
+    from: extract_mask
+    output: merged
+    to: inpaint_image
+    input: mask
+  face_swap_on_image_to_inpaint_image_2f157:
+    from: face_swap_on_image
+    output: image
+    to: inpaint_image
+    input: image
+  detect_face_to_pulid_4de65:
+    from: detect_face
+    output: face
+    to: pulid
+    input: person
+  dress_on_image_to_wan_2_2_bea7d:
+    from: dress_on_image
+    output: image
+    to: wan_2_2
+    input: image
+  wan_2_2_to_merge_videos_405e9:
+    from: wan_2_2
+    output: video
+    to: merge_videos
+    input: video1
+  merge_videos_to_extract_frame_02686:
+    from: merge_videos
+    output: video
+    to: extract_frame
+    input: video
+  detect_face_to_faceswap_on_video_df2f7:
+    from: detect_face
+    output: face
+    to: faceswap_on_video
+    input: face
+nodes:
+  face_swap_on_image:
+    version: 1
+    order: 10
+    title: en=Face swap on image;ru=Замена лица на изображении
+    tags:
+      - deep-swap
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 3000;
+      const MAX_ATTEMPTS = 20;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.005;
+      }
+
+      export async function run({ inputs, state, env }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { face, image } = inputs;
+
+          const payload = {
+            type: "faceswap-on-image",
+            isFast: true,
+            payload: {
+              base64: false,
+              face,
+              image,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            let {
+              images: [{ url }],
+            } = results;
+            const { data: image } = await download(url);
+            return next({
+              outputs: { image },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    sign: 104ac1e0ce2a70817cd8d0b167d09a883ab445eb68d8722d22916378891dfb7b
+    arrange:
+      x: 1030
+      y: 920
+    groups:
+      inputs: {}
+    inputs:
+      face:
+        order: 1
+        title: en=Face;ru=Лицо
+        type: image
+        required: true
+        featured: true
+      image:
+        order: 2
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+    outputs:
+      image:
+        title: en=Image;ru=Изображение
+        type: image
+        featured: true
+    catalog:
+      _id: face_swap_on_image_artworks
+      version: 35
+      category:
+        _id: deep_swap
+        title: en=Deep swap;ru=Глубокая замена
+        icon: face
+        order: 20
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  translate_text:
+    version: 15
+    icon: text
+    order: 5
+    package: artworks
+    title: en=Translate text;ru=Перевести текст
+    tags:
+      - translate
+      - en=cheap;ru=дешево
+    source: catalog
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 3000;
+      const MAX_ATTEMPTS = 10;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return { costs: 0.001, details: "en=Price is fixed;ru=Цена фиксирована" };
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { source = "auto", target = "en", text } = inputs;
+
+          const payload = {
+            type: "translate-text",
+            isFast: true,
+            payload: {
+              source,
+              target,
+              text,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            const { text } = results;
+            return next({
+              outputs: { text },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    app: ""
+    sign: a27ef866ccfa87f1c8442121a0965e4c8e0a9177f8508d0564b894c8596251ce
+    arrange:
+      x: 500
+      y: 170
+    groups:
+      inputs: {}
+    inputs:
+      source:
+        order: 1
+        title: en=Source language;ru=Исходный язык
+        type: string
+        default: auto
+        enum:
+          - auto|en=Auto;ru=Авто
+          - en|en=English;ru=Английский
+          - de|en=German;ru=Немецкий
+          - ru|en=Russian;ru=Русский
+          - es|en=Spanish;ru=Испанский
+          - fr|en=French;ru=Французский
+          - it|en=Italian;ru=Итальянский
+          - pt|en=Portuguese;ru=Португальский
+          - ja|en=Japanese;ru=Японский
+          - ko|en=Korean;ru=Корейский
+          - hi|en=Hindi;ru=Хинди
+          - tr|en=Turkish;ru=Турецкий
+          - zh|en=Chinese Simplified;ru=Китайский (упрощённый)
+      target:
+        order: 2
+        title: en=Target;ru=Целевой язык
+        type: string
+        required: true
+        default: en
+        enum:
+          - en|en=English;ru=Английский
+          - de|en=German;ru=Немецкий
+          - ru|en=Russian;ru=Русский
+          - es|en=Spanish;ru=Испанский
+          - fr|en=French;ru=Французский
+          - it|en=Italian;ru=Итальянский
+          - pt|en=Portuguese;ru=Португальский
+          - ja|en=Japanese;ru=Японский
+          - ko|en=Korean;ru=Корейский
+          - hi|en=Hindi;ru=Хинди
+          - tr|en=Turkish;ru=Турецкий
+          - zh|en=Chinese Simplified;ru=Китайский (упрощённый)
+      text:
+        order: 3
+        title: en=Text;ru=Текст
+        type: string
+        required: true
+        featured: true
+        multiline: true
+    outputs:
+      text:
+        title: en=Text;ru=Перевод
+        type: string
+        format: markdown
+        featured: true
+    catalog:
+      _id: translate_text_artworks
+      version: 35
+      category:
+        _id: process_text
+        title: en=Process text;ru=Обработка текста
+        icon: text
+        order: 35
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  detect_face:
+    version: 0
+    icon: face
+    order: 10
+    title: en=Detect face;ru=Определить лицо
+    tags:
+      - object-detection
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 3000;
+      const MAX_ATTEMPTS = 10;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.005;
+      }
+
+      const FIT_FACE_SIZE = 512;
+
+      export async function fit(image, { maxWidth, maxHeight }) {
+        const { width, height } = await image.metadata();
+        const orientation = width >= height ? "-" : "|";
+
+        const sharp = require("sharp/lib/index.js");
+
+        switch (orientation) {
+          case "-":
+            if (width > maxWidth) {
+              return sharp(await image.resize({ width: maxWidth }).toBuffer());
+            }
+            break;
+          case "|":
+            if (height > maxHeight) {
+              return sharp(await image.resize({ height: maxHeight }).toBuffer());
+            }
+            break;
+        }
+
+        return image;
+      }
+
+      export async function crop(source, face) {
+        const sharp = require("sharp/lib/index.js");
+
+        const image = await sharp(source);
+        const metadata = await image.metadata();
+
+        const UNCROP = 0.6;
+
+        let { x, y, width, height } = face;
+
+        const uncropX = width * UNCROP;
+        const uncropY = height * UNCROP;
+
+        width = Math.round(width + uncropX);
+        height = Math.round(height + uncropY);
+        x = Math.round(x - uncropX / 2);
+        y = Math.round(y - uncropY / 2);
+
+        const [left, top] = [Math.max(x, 0), Math.max(y, 0)];
+        [width, height] = [
+          Math.min(width, metadata.width - left),
+          Math.min(height, metadata.height - top),
+        ];
+
+        const crop = {
+          left,
+          top,
+          width,
+          height,
+        };
+
+        const area = await fit(await image.clone().extract(crop).webp(), {
+          maxWidth: FIT_FACE_SIZE,
+          maxHeight: FIT_FACE_SIZE,
+        });
+
+        return area.toBuffer();
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { image } = inputs;
+
+          const payload = {
+            type: "detect-faces",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+              features: ["age", "gender", "race", "emotion"],
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            const { faces } = results;
+            const { image, index } = inputs;
+            const face = faces[index];
+            if (!face) {
+              throwError.fatal("Face with such index was not found");
+            }
+            const { x, y, width, height, ageFrom, ageTo, gender, race, emotion } =
+              face;
+            const { data } = await download(image);
+            return next({
+              outputs: {
+                face: await crop(data, {
+                  x,
+                  y,
+                  width,
+                  height,
+                }),
+                features: {
+                  ageFrom,
+                  ageTo,
+                  gender,
+                  race,
+                  emotion,
+                },
+                costs: costs({ env, inputs }),
+              },
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    app: ""
+    sign: 9ca74a4edf2f4fbd10c7dc24bfcdbf1550fb8736fae2249f6f1a8f90866eee45
+    arrange:
+      x: 400
+      y: 920
+    groups:
+      inputs: {}
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+      index:
+        order: 2
+        title: en=Index;ru=Индекс
+        type: integer
+        required: true
+        default: 0
+    outputs:
+      face:
+        title: en=Face;ru=Лицо
+        type: image
+        featured: true
+      features:
+        title: en=Features;ru=Характеристики
+        type: json
+        schema: face-features
+        featured: true
+    catalog:
+      _id: detect_face_on_image_artworks
+      version: 35
+      category:
+        _id: image_analysis
+        title: en=Image analysis;ru=Анализ изображений
+        icon: image
+        order: 25
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  remove_background:
+    version: 1
+    package: artworks
+    title: en=Remove background;ru=Удалить фон
+    tags:
+      - image
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 3000;
+      const MAX_ATTEMPTS = 20;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.005;
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { image } = inputs;
+
+          const payload = {
+            type: "remove-image-background",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 5000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            let {
+              image: { url: image },
+            } = results;
+            const { data } = await download(image);
+            return next({
+              outputs: { image: data },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    app: ""
+    sign: ae7911a245cb23f0b6d62d763a8fc0e2766dd80e65043c2a8c7a110b74a69b1a
+    arrange:
+      x: 2430
+      y: 150
+    groups:
+      inputs: {}
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+    outputs:
+      image:
+        title: en=Image;ru=Изображение
+        type: image
+        featured: true
+    catalog:
+      _id: remove_background_artworks
+      version: 35
+      category:
+        _id: image_processing
+        title: en=Work with images;ru=Работа с изобр.
+        icon: image
+        order: 30
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  generate_image:
+    version: 1
+    icon: image
+    order: 5
+    package: artworks
+    title: en=Generate SDXL & Flux;ru=Генерация SDXL & Flux
+    tags:
+      - text-to-image
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@ad35e191f5873ec7636f2ea90670020e3c419b1b/nodes/artworks/generate_image/script.js
+    app: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@ad35e191f5873ec7636f2ea90670020e3c419b1b/nodes/artworks/generate_image/app.html
+    sign: e0a44b33e6678a7b6548094abebe119046261129736ec6584788ca7cac4f197e
+    arrange:
+      x: 850
+      y: 170
+    groups:
+      inputs:
+        base:
+          order: 1
+          title: en=Base parameters;ru=Базовые параметры
+        SDXL:
+          order: 2
+          title: SDXL
+          description: Only for SDXL checkpoints
+    inputs:
+      checkpoint:
+        order: 2
+        title: en=Checkpoint;ru=Модель
+        group: base
+        type: string
+        required: true
+        default: juggernautXL_v9Rundiffusionphoto2.safetensors
+        enum:
+          - juggernautXL_v9Rundiffusionphoto2.safetensors|Juggernaut XL <SDXL>
+          - STOIQONewrealityFLUXSD_F1DPreAlpha.safetensors|New Reality Flux <Flux>
+          - dynavisionXLAllInOneStylized_releaseV0610Bakedvae.safetensors|DynaVision XL All In One <SDXL>
+          - flux1DevHyperNF4Flux1DevBNB_flux1DevHyperNF4.safetensors|Hyper NF4 Flux 1 <Flux>
+          - aamXLAnimeMix_v10.safetensors|AAM XL (Anime Mix) <SDXL> <Fantasy>
+          - raemuXL_v40.safetensors|Raemu XL <SDXL>
+          - animaPencilXL_v260.safetensors|Anima Pencil XL <SDXL> <Fantasy>
+          - leosamsHelloworldXL_helloworldXL50GPT4V.safetensors|Helloworld XL <SDXL>
+          - albedobaseXL_v20.safetensors|AlbedoBase XL <SDXL>
+          - afroditexlNudePeople_20Bkdvae.safetensors|Nude People <NSFW>
+          - nosft-float8-e4m3fn.safetensors|Flux Nude People <NSFW>
+          - asdf_0.4a_lorapov_0.2_lust_0.4.fp16.safetensors|Real Porn <NSFW>
+          - PonyASDF_0.4_f6cosineb.fp16.safetensors|Real Porn Pony <NSFW>
+          - Sexy_Aesthetic_SDXL_0.4x0.2.fp16.safetensors|Sexy & Beauty <NSFW>
+          - aniku_0.2.fp16.safetensors|Anime Desire <NSFW>
+          - anikurender_0.4b.fp16.safetensors|Hardcore Fantasy <NSFW>
+      prompt:
+        order: 1
+        title: en=Prompt;ru=Подсказка
+        group: base
+        type: string
+        required: true
+        featured: true
+        multiline: true
+        default: cat walking on the moon
+      imageSize:
+        order: 4
+        title: en=Size;ru=Размер
+        group: base
+        type: string
+        required: true
+        default: 1024x1024
+        enum:
+          - 960x1024|960x1024 <SDXL>
+          - 960x1088|960x1088 <SDXL>
+          - 1024x1024|1024x1024 <SDXL>
+          - 1024x960|1024x960 <SDXL>
+          - 1088x896|1088x896 <SDXL>
+          - 1088x960|1088x960 <SDXL>
+          - 1152x832|1152x832 <SDXL>
+          - 1152x896|1152x896 <SDXL>
+          - 1216x832|1216x832 <SDXL> <Flux>
+          - 1280x768|1280x768 <SDXL> <Flux>
+          - 1344x704|1344x704 <SDXL> <Flux>
+          - 1344x768|1344x768 <SDXL> <Flux>
+          - 1408x704|1408x704 <SDXL> <Flux>
+          - 1472x704|1472x704 <SDXL> <Flux>
+          - 1536x640|1536x640 <SDXL> <Flux>
+          - 1600x640|1600x640 <SDXL> <Flux>
+          - 1664x576|1664x576 <SDXL> <Flux>
+          - 1728x576|1728x576 <SDXL> <Flux>
+      batchSize:
+        order: 7
+        title: en=Batch size;ru=Кол-во изобр.
+        group: base
+        type: integer
+        min: 1
+        max: 4
+        step: 1
+        default: 1
+      negativePrompt:
+        order: 3
+        title: en=Negative prompt;ru=Негативная подсказка
+        group: base
+        type: string
+        multiline: true
+      cfgScale:
+        order: 5
+        title: en=CFG scale;ru=Креативность
+        group: base
+        type: float
+        min: 1
+        max: 20
+        step: 1
+        default: 7
+      performance:
+        order: 6
+        title: en=Performance;ru=Производительность
+        group: base
+        type: string
+        default: speed
+        enum:
+          - express|en=⚡ Express;ru=⚡ Экспресс
+          - speed|en=🚅 Speed;ru=🚅 Скорость
+          - quality|en=💎 Quality;ru=💎 Качество
+      sharpness:
+        order: 1
+        title: en=Sharpness;ru=Фотоэффект
+        group: SDXL
+        type: integer
+        min: 0
+        max: 30
+        step: 1
+        default: 2
+      seed:
+        order: 8
+        title: en=Seed;ru=Начальный шум
+        group: base
+        type: integer
+        default: -1
+      templates:
+        order: 1
+        title: en=Templates;ru=Шаблоны
+        type: json
+        schema:
+          id: templates
+    outputs:
+      images:
+        title: en=Images;ru=Изображения
+        type: image[]
+        featured: true
+    catalog:
+      _id: generate_image_artworks
+      version: 40
+      category:
+        _id: generate_images
+        title: en=Generate images;ru=Ген. изображений
+        icon: image
+        order: 5
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  extract_mask:
+    version: 1
+    icon: image
+    order: 5
+    title: en=Extract mask on image;ru=Выделить маску
+    tags:
+      - object-detection
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 3000;
+      const MAX_ATTEMPTS = 20;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.001;
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+        const sharp = require("sharp/lib/index.js");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const {
+            image,
+            type = "yolo",
+            model = "deepfashion2_yolov8s-seg.pt",
+            prompt,
+            threshold,
+            applyConvexHull,
+          } = inputs;
+
+          const payload = {
+            type: "image-to-mask",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+              type,
+              model,
+              prompt,
+              threshold,
+              applyConvexHull,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: CHECK_TASK_INTERVAL,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            const { masks: detected } = results;
+            const { image } = inputs;
+            const { data } = await download(image);
+            const { width, height } = await sharp(data).metadata();
+
+            const areas = [];
+            const masks = [];
+            for (const m of detected) {
+              const {
+                mask,
+                confidence,
+                className,
+                coordinates: [left, top],
+              } = m;
+
+              const buffer = Buffer.from(mask, "base64");
+
+              areas.push({
+                input: buffer,
+                top,
+                left,
+              });
+
+              const { width, height } = await sharp(buffer).metadata();
+              masks.push({
+                top,
+                left,
+                width,
+                height,
+                className,
+                confidence,
+              });
+            }
+
+            let merged = await sharp({
+              create: {
+                width,
+                height,
+                channels: 3,
+                background: { r: 0, g: 0, b: 0 },
+              },
+            }).composite(areas);
+            return next({
+              outputs: {
+                masks,
+                merged: await merged.png().toBuffer(),
+              },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    app: ""
+    sign: 74794240fa196ae5c71ff8e1c6cbdf4695ec4d0f38ec4b147caef8295490fff4
+    arrange:
+      x: 1430
+      y: 1110
+    groups:
+      inputs: {}
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+      type:
+        order: 2
+        title: en=Type;ru=Тип поиска
+        type: string
+        required: true
+        default: yolo
+        enum:
+          - yolo|Yolo
+          - default|en=Prompt;ru=Подсказка
+      prompt:
+        order: 4
+        title: en=Prompt;ru=Подсказка
+        type: string
+        required: false
+        featured: true
+        multiline: true
+      model:
+        order: 3
+        title: en=Yolo model;ru=Yolo модель
+        type: string
+        required: false
+        default: deepfashion2_yolov8s-seg.pt
+        enum:
+          - deepfashion2_yolov8s-seg.pt|en=Clothes;ru=Одежда
+          - face_yolov8m.pt|en=Face (Medium);ru=Лицо (среднее)
+          - face_yolov8n.pt|en=Face (Nano);ru=Лицо (нано)
+          - face_yolov8s.pt|en=Face (Small);ru=Лицо (маленькое)
+          - female_breast_v3.2.pt|en=Female Breast;ru=Женская грудь
+          - hand_yolov8n.pt|en=Hands (Nano);ru=Руки (нано)
+          - hand_yolov8s.pt|en=Hands (Small);ru=Руки (маленькие)
+          - person_yolov8m-seg.pt|en=Persons (Medium);ru=Персоны (средние)
+          - person_yolov8n-seg.pt|en=Persons (Nano);ru=Персоны (нано)
+          - person_yolov8s-seg.pt|en=Persons (Small);ru=Персоны (маленькие)
+          - penisV2.pt|en=Penis <NSFW>;ru=Пенис
+          - vagina-v2.6.pt|en=Vagina <NSFW>;ru=Влагалище
+      threshold:
+        order: 5
+        title: en=Threshold;ru=Чувствительность
+        type: float
+        required: true
+        min: 0.1
+        max: 0.69
+        step: 0.1
+        default: 0.5
+      applyConvexHull:
+        order: 6
+        title: en=Apply convex hull;ru=Сгладить края
+        type: boolean
+        default: false
+    outputs:
+      merged:
+        title: en=Merged;ru=Общая маска
+        type: image
+        featured: true
+      masks:
+        title: en=Masks;ru=Контуры
+        type: json
+        schema: image-masks
+    catalog:
+      _id: exctract_mask_on_image_artworks
+      version: 35
+      category:
+        _id: image_analysis
+        title: en=Image analysis;ru=Анализ изображений
+        icon: image
+        order: 25
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  upscale_image:
+    version: 1
+    title: en=Upscale image;ru=Увеличить изображение
+    tags:
+      - upscale
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 3000;
+      const MAX_ATTEMPTS = 20;
+
+      export async function costs({ env, inputs }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+
+        const { upscalingResize } = inputs;
+        return 0.005 * upscalingResize;
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { image, upscalingResize } = inputs;
+
+          const payload = {
+            type: "upscale-image",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+              upscalingResize,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 5000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            let {
+              image: { url: image },
+            } = results;
+            const { data } = await download(image);
+            return next({
+              outputs: {
+                image: data,
+              },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    app: ""
+    sign: 32fc41c1fb14b862a4e92f2ac39aaa4f7494d31a14ae0fbe98d750c74e52f858
+    arrange:
+      x: 2000
+      y: 150
+    groups:
+      inputs: {}
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+      upscalingResize:
+        order: 2
+        title: en=Resize;ru=Увеличение
+        type: float
+        required: true
+        min: 0.1
+        max: 4
+        step: 0.1
+        default: 2
+    outputs:
+      image:
+        title: en=Image;ru=Изображение
+        type: image
+        featured: true
+    catalog:
+      _id: upscale_image_artworks
+      version: 35
+      category:
+        _id: generate_images
+        title: en=Generate images;ru=Ген. изображений
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  classify_image:
+    version: 0
+    icon: image
+    order: 15
+    title: en=Classify image;ru=Тегировать изображение
+    tags:
+      - vlm
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 1000;
+      const MAX_ATTEMPTS = 20;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.0001;
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { image, labels } = inputs;
+
+          const payload = {
+            type: "classify-image",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+              model: "siglip-2",
+              labels: Object.values(labels),
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            let { probs } = results;
+            const { labels } = inputs;
+            const tags = {};
+            for (const key of Object.keys(labels)) {
+              tags[key] = probs[labels[key]];
+            }
+            return next({
+              outputs: { labels: tags },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    app: ""
+    sign: 8c63b24ed7f32fe66c57d90a153759c2c0f4aa777b0fc60f75e7fb7fa13fa0a6
+    arrange:
+      x: 500
+      y: 440
+    groups:
+      inputs: {}
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+      labels:
+        order: 2
+        title: en=Labels;ru=Теги
+        type: json
+        required: true
+        default: '{ "girl": "girl on photo", "male": "male on photo" }'
+        schema:
+          id: image-labels
+    outputs:
+      labels:
+        title: en=Labels;ru=Теги
+        type: json
+        featured: true
+    catalog:
+      _id: classify_image_artworks
+      version: 35
+      category:
+        _id: image_analysis
+        title: en=Image analysis;ru=Анализ изображений
+        icon: image
+        order: 25
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  ask_llm_agent:
+    version: 0
+    icon: text
+    order: 5
+    title: en=Ask LLM agent;ru=Спросить LLM
+    tags:
+      - llm
+      - multimodal
+      - en=cheap;ru=дешево
+    source: catalog
+    execution: protracted
+    script: |
+      const CHECK_TASK_INTERVAL = 2000;
+      const MAX_ATTEMPTS = 20;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.001;
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const {
+          model = "deepseek-r1:8b",
+          image,
+        } = inputs;
+
+        const isVisionModel = model.includes("qwen3-vl");
+
+        let artworks;
+
+        if (isVisionModel) {
+          // Dev API with static credentials for Qwen3-VL
+          artworks = new ArtWorks({
+            baseUrl: "https://dev-api.artworks.ai",
+            username: "pw",
+            password: "G8THxvqKQLLdWvgf",
+          });
+        } else {
+          // Production API with user credentials
+          const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+          if (!ARTWORKS_USER) {
+            throwError.fatal("Please, set ARTWORKS_USER in environment");
+          }
+          if (!ARTWORKS_PASSWORD) {
+            throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+          }
+
+          artworks = new ArtWorks({
+            baseUrl: "https://api.artworks.ai",
+            username: ARTWORKS_USER,
+            password: ARTWORKS_PASSWORD,
+          });
+        }
+
+        if (!state) {
+          const {
+            question = "What do you think about AI?",
+            answerFormat = "text",
+            instructions,
+          } = inputs;
+
+          let userMessage;
+
+          // Qwen3-VL with image: use array format
+          if (isVisionModel && image) {
+            userMessage = {
+              role: "user",
+              content: [
+                { type: "text", text: question },
+                {
+                  type: "image_url",
+                  image_url: { url: image },
+                },
+              ],
+            };
+          } else {
+            // Standard text format for all other cases
+            userMessage = {
+              role: "user",
+              content: question,
+            };
+          }
+
+          const payload = {
+            type: "ask-llm",
+            isFast: true,
+            payload: {
+              base64: false,
+              model,
+              format: answerFormat,
+              messages: [
+                ...(instructions
+                  ? [
+                      {
+                        role: "system",
+                        content: instructions,
+                      },
+                    ]
+                  : []),
+                userMessage,
+              ],
+            },
+          };
+
+          try {
+            const task = await artworks.createTask(payload);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 5000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+
+            const { answerFormat } = inputs;
+            const {
+              message: { content: answer },
+            } = results;
+
+            switch (answerFormat) {
+              case "text":
+                return next({
+                  outputs: { text: answer.replace(/<think>[\s\S]*?<\/think>/g, "") },
+                  costs: await costs({ env, inputs }),
+                });
+              case "json":
+                try {
+                  const json = answer
+                    .replace(/^\`\`\`json\s*/gi, "")
+                    .replace(/\`\`\`\s*$/gi, "");
+                  return next({
+                    outputs: { json: JSON.parse(json) },
+                    costs: await costs({ env, inputs }),
+                  });
+                } catch (e) {
+                  throwError.fatal("Can't parse JSON answer from LLM");
+                }
+              default:
+                throwError.fatal(`Wrong answer format ${answerFormat}`);
+            }
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    sign: 6e84f834b85acdfa164838825511d7903d8ef54f198874174fff60b305add1b6
+    arrange:
+      x: 240
+      y: 1540
+    groups:
+      inputs:
+        main:
+          order: 1
+          title: en=Main Settings;ru=Основные настройки
+        vision:
+          order: 2
+          title: en=Vision;ru=Изображение
+        advanced:
+          order: 3
+          title: en=Advanced;ru=Дополнительно
+    inputs:
+      model:
+        order: 1
+        title: en=Model;ru=Модель
+        description: en=Select LLM model (Qwen3-VL supports images);ru=Выберите модель LLM (Qwen3-VL поддерживает изображения)
+        group: main
+        type: string
+        featured: true
+        default: deepseek-r1:8b
+        enum:
+          - deepseek-r1:8b|DeepSeek R1 8b
+          - qwen3-vl:8b-instruct|Qwen3-VL 8b (Vision)
+      answerFormat:
+        order: 4
+        title: en=Answer format;ru=Формат ответа
+        description: en=Don't forget to add instructions for JSON format;ru=Не забудьте добавить инструкции для JSON формата
+        group: advanced
+        type: string
+        required: true
+        default: text
+        enum:
+          - text|Text
+          - json|JSON
+      question:
+        order: 2
+        title: en=Question;ru=Вопрос
+        description: en=Your question or prompt;ru=Ваш вопрос или промпт
+        group: main
+        type: string
+        required: true
+        featured: true
+        multiline: true
+        default: What do you think about AI?
+      instructions:
+        order: 5
+        title: en=System instructions;ru=Инструкции системе
+        description: en=System prompt to guide the model's behavior;ru=Системный промпт для управления поведением модели
+        group: advanced
+        type: string
+        multiline: true
+      image:
+        order: 3
+        title: en=Image;ru=Изображение
+        description: en=Optional image for Qwen3-VL model. Model works without it too.;ru=Опциональное изображение для Qwen3-VL. Модель работает и без него.
+        group: vision
+        type: image
+    outputs:
+      text:
+        title: en=Text;ru=Текст
+        type: string
+        format: markdown
+        featured: true
+      json:
+        title: JSON
+        type: json
+        featured: true
+    catalog:
+      _id: ask_llm_agent_artworks
+      version: 35
+      category:
+        _id: llm_agents
+        title: en=Language Agents;ru=Языковые агенты
+        icon: agent
+        order: 15
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/ (not required for Qwen3-VL)
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        description: Not required for Qwen3-VL
+        type: string
+        scope: global
+  outpaint_on_image:
+    version: 2
+    title: en=Outpaint on image;ru=Расширить изображение
+    tags:
+      - image-to-image
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 5000;
+      const MAX_ATTEMPTS = 100;
+
+      export async function costs({ env, inputs }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        const { performance, batchSize } = inputs;
+
+        const imageCost = (() => {
+          switch (performance) {
+            case "express":
+              return 0.005;
+            case "speed":
+              return 0.01;
+            case "quality":
+              return 0.015;
+            default:
+              throw new Error("Unknown performance type");
+          }
+        })();
+
+        return batchSize * imageCost;
+      }
+
+      export async function run({ inputs, state, env }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const {
+            image,
+            prompt = "extend image",
+            checkpoint,
+            negativePrompt,
+            denoisingStrength,
+            cfgScale,
+            performance,
+            batchSize,
+            seed,
+            // distance
+            distanceTop = 50,
+            distanceRight = 50,
+            distanceBottom = 50,
+            distanceLeft = 50,
+          } = inputs;
+
+          const payload = {
+            type: "outpaint-on-image",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+              prompt,
+              checkpoint,
+              negativePrompt,
+              denoisingStrength,
+              cfgScale,
+              performance,
+              batchSize,
+              seed,
+              // distance
+              distanceTop,
+              distanceRight,
+              distanceBottom,
+              distanceLeft,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 5000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            let images = results.images.map((i) => i.url);
+            return next({
+              outputs: {
+                images: (await Promise.all(images.map((url) => download(url)))).map(
+                  ({ data }) => data,
+                ),
+              },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    sign: 0ffebbbc65f048daa69424e2e76a03beff94d6a43f02e218fe489822951f6f6f
+    arrange:
+      x: 1990
+      y: 550
+    groups:
+      inputs:
+        base:
+          order: 1
+          title: en=Base;ru=Базовые параметры
+        distance:
+          order: 2
+          title: en=Distance;ru=Расширение
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        group: base
+        type: image
+        required: true
+        featured: true
+      prompt:
+        order: 2
+        title: en=Prompt;ru=Подсказка
+        group: base
+        type: string
+        required: true
+        featured: true
+        multiline: true
+        default: extend image
+      negativePrompt:
+        order: 4
+        title: en=Negative prompt;ru=Негативная подсказка
+        group: base
+        type: string
+        multiline: true
+      checkpoint:
+        order: 3
+        title: en=Checkpoint;ru=Модель
+        group: base
+        type: string
+        required: true
+        default: juggernautXL_v9Rundiffusionphoto2.safetensors
+        enum:
+          - juggernautXL_v9Rundiffusionphoto2.safetensors|Juggernaut XL <SDXL>
+          - STOIQONewrealityFLUXSD_F1DPreAlpha.safetensors|New Reality Flux <Flux>
+          - dynavisionXLAllInOneStylized_releaseV0610Bakedvae.safetensors|DynaVision XL All In One <SDXL>
+          - flux1DevHyperNF4Flux1DevBNB_flux1DevHyperNF4.safetensors|Hyper NF4 Flux 1 <Flux>
+          - aamXLAnimeMix_v10.safetensors|AAM XL (Anime Mix) <SDXL> <Fantasy>
+          - raemuXL_v40.safetensors|Raemu XL <SDXL>
+          - animaPencilXL_v260.safetensors|Anima Pencil XL <SDXL> <Fantasy>
+          - leosamsHelloworldXL_helloworldXL50GPT4V.safetensors|Helloworld XL <SDXL>
+          - albedobaseXL_v20.safetensors|AlbedoBase XL <SDXL>
+          - afroditexlNudePeople_20Bkdvae.safetensors|Nude People <NSFW>
+          - nosft-float8-e4m3fn.safetensors|Flux Nude People <NSFW>
+          - asdf_0.4a_lorapov_0.2_lust_0.4.fp16.safetensors|Real Porn <NSFW>
+          - PonyASDF_0.4_f6cosineb.fp16.safetensors|Real Porn Pony <NSFW>
+          - Sexy_Aesthetic_SDXL_0.4x0.2.fp16.safetensors|Sexy & Beauty <NSFW>
+          - aniku_0.2.fp16.safetensors|Anime Desire <NSFW>
+          - anikurender_0.4b.fp16.safetensors|Hardcore Fantasy <NSFW>
+      denoisingStrength:
+        order: 5
+        title: en=Denoising strength;ru=Степень изменения
+        group: base
+        type: float
+        min: 0.1
+        max: 1
+        step: 0.05
+        default: 0.5
+      cfgScale:
+        order: 6
+        title: en=CFG scale;ru=Креативность
+        group: base
+        type: integer
+        min: 1
+        max: 20
+        step: 1
+        default: 7
+      performance:
+        order: 7
+        title: en=Performance;ru=Производительность
+        group: base
+        type: string
+        default: speed
+        enum:
+          - express|en=⚡ Express;ru=⚡ Экспресс
+          - speed|en=🚅 Speed;ru=🚅 Скорость
+          - quality|en=💎 Quality;ru=💎 Качество
+      seed:
+        order: 9
+        title: en=Seed;ru=Начальный шум
+        group: base
+        type: integer
+        placeholder: "-1"
+      batchSize:
+        order: 8
+        title: en=Batch size;ru=Кол-во
+        group: base
+        type: integer
+        min: 1
+        max: 4
+        step: 1
+        default: 1
+      distanceTop:
+        order: 1
+        title: en=Distance top;ru=Расширить сверху
+        group: distance
+        type: integer
+        min: 0
+        max: 200
+        step: 5
+        default: 50
+      distanceRight:
+        order: 2
+        title: en=Distance right;ru=Расширить справа
+        group: distance
+        type: integer
+        min: 0
+        max: 200
+        step: 5
+        default: 50
+      distanceBottom:
+        order: 3
+        title: en=Distance bottom;ru=Расширить снизу
+        group: distance
+        type: integer
+        min: 0
+        max: 200
+        step: 5
+        default: 50
+      distanceLeft:
+        order: 4
+        title: en=Distance left;ru=Расширить слева
+        group: distance
+        type: integer
+        min: 0
+        max: 200
+        step: 5
+        default: 50
+    outputs:
+      images:
+        title: en=Images;ru=Изображения
+        type: image[]
+        featured: true
+    catalog:
+      _id: outpaint_image_artworks
+      version: 35
+      category:
+        _id: generate_images
+        title: en=Generate images;ru=Ген. изображений
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  detect_nsfw:
+    version: 0
+    order: 25
+    title: en=Detect NSFW;ru=Определить NSFW
+    tags:
+      - scoring
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 1000;
+      const MAX_ATTEMPTS = 20;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.001;
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { image } = inputs;
+
+          const payload = {
+            type: "detect-nsfw",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            return next({
+              outputs: {
+                scores: results,
+              },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    sign: f5b70e9a89b8dd0bff97a83826461c8723e5f5f5bb2e65ae98c92d9803c2b6b6
+    arrange:
+      x: 1610
+      y: 1790
+    groups:
+      inputs: {}
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+    outputs:
+      scores:
+        title: en=Scores;ru=Оценки
+        type: json
+        featured: true
+    catalog:
+      _id: detect_nsfw_artworks
+      version: 35
+      category:
+        _id: image_analysis
+        title: en=Image analysis;ru=Анализ изображений
+        icon: image
+        order: 25
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  srore_aesthetics:
+    version: 0
+    icon: image
+    order: 30
+    title: en=Score aesthetics;ru=Оценить эстестику
+    tags:
+      - scoring
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 1000;
+      const MAX_ATTEMPTS = 20;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.001;
+      }
+
+      export async function run({ inputs, state, env }) {
+        const { throwError, repeat, next } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { image } = inputs;
+
+          const payload = {
+            type: "score-aesthetics",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            return next({
+              outputs: {
+                scores: results,
+              },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    sign: 69fd48b8fbf29c61b3154f2b47228bec1647daccc0ea9aac6cf1bb4950350318
+    arrange:
+      x: 1420
+      y: 800
+    groups:
+      inputs: {}
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+    outputs:
+      scores:
+        title: en=Scores;ru=Оценки
+        type: json
+        featured: true
+    catalog:
+      _id: srore_aesthetics_artworks
+      version: 35
+      category:
+        _id: image_analysis
+        title: en=Image analysis;ru=Анализ изображений
+        icon: image
+        order: 25
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  image_to_image:
+    _id: image_to_image_artworks
+    version: 1
+    title: en=Image to image;ru=Пересоздать изображение
+    tags:
+      - image-to-image
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 3000;
+      const MAX_ATTEMPTS = 100;
+
+      export async function costs({ env, inputs }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+
+        const { performance, batchSize } = inputs;
+        const imageCost = (() => {
+          switch (performance) {
+            case "express":
+              return 0.005;
+            case "speed":
+              return 0.01;
+            case "quality":
+              return 0.015;
+            default:
+              throw new Error("Unknown performance type");
+          }
+        })();
+
+        return batchSize * imageCost;
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, fitSize, FatalError } = require("artworks");
+        const sharp = require("sharp/lib/index.js");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const {
+            image,
+            prompt = "cat walking on the Mars",
+            checkpoint,
+            negativePrompt,
+            imageSize,
+            denoisingStrength,
+            cfgScale,
+            performance,
+            batchSize,
+            seed,
+            // SDXL
+            sharpness,
+          } = inputs;
+          const payload = {
+            type: "image-to-image",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+              prompt,
+              checkpoint,
+              negativePrompt,
+              ...(!!imageSize
+                ? await (async () => {
+                    const { data } = await download(image);
+                    const buffer = sharp(data);
+                    const { width, height } = await buffer.metadata();
+                    if (imageSize !== "auto:auto") {
+                      const { width: w, height: h } = fitSize(
+                        imageSize,
+                        height / width,
+                      );
+                      return { size: `${w}x${h}` };
+                    }
+
+                    return {};
+                  })()
+                : {}),
+              denoisingStrength,
+              cfgScale,
+              performance,
+              batchSize,
+              seed,
+              // SDXL
+              sharpness,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            const images = results.images.map((i) => i.url);
+            return next({
+              outputs: {
+                images: (await Promise.all(images.map((url) => download(url)))).map(
+                  ({ data }) => data,
+                ),
+              },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    app: ""
+    sign: ed80eecfbe02da83d766042cfc2ced7a8885658bb94f453da3c6608a0cc4bd56
+    arrange:
+      x: 1500
+      y: 150
+    groups:
+      inputs:
+        base:
+          order: 1
+          title: en=Base;ru=Базовые параметры
+        SDXL:
+          order: 2
+          title: SDXL
+          description: Only for SDXL checkpoints
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        group: base
+        type: image
+        required: true
+        featured: true
+      prompt:
+        order: 2
+        title: en=Prompt;ru=Подсказка
+        group: base
+        type: string
+        required: true
+        featured: true
+        multiline: true
+        default: cat walking on the Mars
+      negativePrompt:
+        order: 4
+        title: en=Negative prompt;ru=Негативная подсказка
+        group: base
+        type: string
+        multiline: true
+      checkpoint:
+        order: 3
+        title: en=Checkpoint;ru=Модель
+        group: base
+        type: string
+        required: true
+        default: juggernautXL_v9Rundiffusionphoto2.safetensors
+        enum:
+          - juggernautXL_v9Rundiffusionphoto2.safetensors|Juggernaut XL <SDXL>
+          - STOIQONewrealityFLUXSD_F1DPreAlpha.safetensors|New Reality Flux <Flux>
+          - dynavisionXLAllInOneStylized_releaseV0610Bakedvae.safetensors|DynaVision XL All In One <SDXL>
+          - flux1DevHyperNF4Flux1DevBNB_flux1DevHyperNF4.safetensors|Hyper NF4 Flux 1 <Flux>
+          - aamXLAnimeMix_v10.safetensors|AAM XL (Anime Mix) <SDXL> <Fantasy>
+          - raemuXL_v40.safetensors|Raemu XL <SDXL>
+          - animaPencilXL_v260.safetensors|Anima Pencil XL <SDXL> <Fantasy>
+          - leosamsHelloworldXL_helloworldXL50GPT4V.safetensors|Helloworld XL <SDXL>
+          - albedobaseXL_v20.safetensors|AlbedoBase XL <SDXL>
+          - afroditexlNudePeople_20Bkdvae.safetensors|Nude People <NSFW>
+          - nosft-float8-e4m3fn.safetensors|Flux Nude People <NSFW>
+          - asdf_0.4a_lorapov_0.2_lust_0.4.fp16.safetensors|Real Porn <NSFW>
+          - PonyASDF_0.4_f6cosineb.fp16.safetensors|Real Porn Pony <NSFW>
+          - Sexy_Aesthetic_SDXL_0.4x0.2.fp16.safetensors|Sexy & Beauty <NSFW>
+          - aniku_0.2.fp16.safetensors|Anime Desire <NSFW>
+          - anikurender_0.4b.fp16.safetensors|Hardcore Fantasy <NSFW>
+      denoisingStrength:
+        order: 6
+        title: en=Denoising strength;ru=Степень изменения
+        group: base
+        type: float
+        min: 0.1
+        max: 1
+        step: 0.05
+        default: 0.5
+      cfgScale:
+        order: 7
+        title: en=CFG scale;ru=Креативность
+        group: base
+        type: integer
+        min: 1
+        max: 20
+        step: 1
+        default: 7
+      imageSize:
+        order: 5
+        title: en=Image size;ru=Размер изображения
+        group: base
+        type: string
+        placeholder: auto:auto
+        default: auto:auto
+        enum:
+          - auto:1024|en=auto:1024;ru=авто:1024
+          - 1024:auto|en=1024:auto;ru=1024:авто
+          - auto:auto|en=auto:auto;ru=авто:авто
+      performance:
+        order: 8
+        title: en=Performance;ru=Производительность
+        group: base
+        type: string
+        default: speed
+        enum:
+          - express|en=⚡ Express;ru=⚡ Экспресс
+          - speed|en=🚅 Speed;ru=🚅 Скорость
+          - quality|en=💎 Quality;ru=💎 Качество
+      seed:
+        order: 10
+        title: en=Seed;ru=Начальный шум
+        group: base
+        type: integer
+        placeholder: "-1"
+      batchSize:
+        order: 9
+        title: en=Batch size;ru=Кол-во
+        group: base
+        type: integer
+        min: 1
+        max: 4
+        step: 1
+        default: 1
+      sharpness:
+        order: 1
+        title: en=Sharpness;ru=Фотоэффект
+        group: SDXL
+        type: integer
+        min: 0
+        max: 30
+        step: 1
+        default: 2
+    outputs:
+      images:
+        title: en=Images;ru=Изображения
+        type: image[]
+        featured: true
+    catalog:
+      _id: image_to_image_artworks
+      version: 35
+      category:
+        _id: generate_images
+        title: en=Generate images;ru=Ген. изображений
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  dress_on_image:
+    version: 5
+    order: 20
+    title: en=Dress on image;ru=Переодеть
+    tags:
+      - deep-swap
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 3000;
+      const MAX_ATTEMPTS = 100;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+
+        return 0.05;
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { image, gender, prompt = "red swimsuit" } = inputs;
+
+          const payload = {
+            type: "dress-on-image",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+              gender,
+              prompt,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            let [url] = results.images.map((i) => i.url);
+            const { data: image } = await download(url);
+            return next({
+              outputs: {
+                image,
+              },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    sign: 2b1fe882e717cd35fbf961a9d9dcf117125defca09aad09cc8997fd3f4bcf875
+    arrange:
+      x: 1160
+      y: 2040
+    groups:
+      inputs: {}
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+      prompt:
+        order: 3
+        title: en=Prompt;ru=Подсказка
+        type: string
+        required: true
+        featured: true
+        multiline: true
+        default: red swimsuit
+      gender:
+        order: 2
+        title: en=Gender;ru=Пол
+        type: string
+        default: auto
+        enum:
+          - auto|en=Auto;ru=Авто
+          - male|en=Male;ru=Мужчина
+          - female|en=Female;ru=Женщина
+    outputs:
+      image:
+        title: en=Image;ru=Изображение
+        type: image
+        featured: true
+    catalog:
+      _id: dress_on_image_artworks
+      version: 35
+      category:
+        _id: deep_swap
+        title: en=Deep swap;ru=Глубокая замена
+        icon: face
+        order: 20
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  image_to_prompt:
+    version: 1
+    icon: image
+    order: 35
+    title: en=Image to prompt;ru=Промпт по изображению
+    tags:
+      - vlm
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 3000;
+      const MAX_ATTEMPTS = 20;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.001;
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { image, type = "photo" } = inputs;
+
+          const payload = {
+            type: "image-to-prompt",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+              type,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 5000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(
+              `Task for image to prompt ${task} timeout in ${time} sec`,
+            );
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            let { prompt } = results;
+            return next({
+              outputs: { prompt },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    sign: 0fe3085e2405025d7027d4c503ed3a528c13f06500280441213f0a5160d5cb87
+    arrange:
+      x: 1610
+      y: 2040
+    groups:
+      inputs: {}
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+      type:
+        order: 2
+        title: en=Prompt type;ru=Тип описания
+        type: string
+        required: false
+        default: photo
+        enum:
+          - photo|en=Photo;ru=Фото
+          - anime|en=Anime;ru=Аниме
+          - mixed|en=Mixed;ru=Любой
+    outputs:
+      prompt:
+        title: en=Prompt;ru=Подсказка
+        type: string
+        featured: true
+    catalog:
+      _id: image_to_prompt_artworks
+      version: 35
+      category:
+        _id: image_analysis
+        title: en=Image analysis;ru=Анализ изображений
+        icon: image
+        order: 25
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  pulid:
+    _id: pulid_artworks
+    version: 0
+    order: 5
+    title: en=Portrait studio;ru=Фото будка
+    tags:
+      - deep-swap
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 5000;
+      const MAX_ATTEMPTS = 150;
+
+      export async function costs({ env, inputs }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+
+        const { upscale } = inputs;
+        return (
+          0.01 *
+          (() => {
+            switch (upscale) {
+              case "skin_detailing":
+                return 2;
+              case "enhancing_quality":
+                return 3;
+              case "full_enhancing":
+                return 4;
+              case "no":
+              default:
+                return 1;
+            }
+          })()
+        );
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const {
+            person,
+            prompt = "Close-up portrait of Iron Man",
+            upscale,
+            aspectRatio = "9:16",
+          } = inputs;
+
+          const payload = {
+            type: "run-comfy",
+            isFast: true,
+            payload: {
+              pipeline: (() => {
+                switch (upscale) {
+                  case "skin_detailing":
+                    return "pullid_upscale_x1";
+                  case "enhancing_quality":
+                    return "pullid_upscale_x4";
+                  case "full_enhancing":
+                    return "pullid_upscale_full";
+                  case "no":
+                  default:
+                    return "pullid_upscale_off";
+                }
+              })(),
+              args: {
+                image: person,
+                prompt,
+                aspect_ratio: aspectRatio,
+              },
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            const {
+              images: [{ url }],
+            } = results;
+            const { data: image } = await download(url);
+            return next({
+              outputs: { image },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    sign: a9ea22c0e03533e5e2de3874020eeb5de81cc3a834add4a1a988e6fa980916e0
+    arrange:
+      x: 1080
+      y: 1380
+    groups:
+      inputs: {}
+    inputs:
+      person:
+        order: 1
+        title: en=Person;ru=Персона
+        type: image
+        required: true
+        featured: true
+      prompt:
+        order: 2
+        title: en=Prompt;ru=Подсказка
+        type: string
+        required: true
+        featured: true
+        multiline: true
+        default: Close-up portrait of Harry Potter
+      upscale:
+        order: 3
+        title: en=Upscale;ru=Качество
+        type: string
+        default: no
+        enum:
+          - no|en=No enhancing;ru=Без улучшений
+          - skin_detailing|en=Skin detailing;ru=Детализаци кожи
+          - enhancing_quality|en=Enhancing quality;ru=Высокое разрешение
+          - full_enhancing|en=Full enhancing;ru=Все улучшения
+      aspectRatio:
+        order: 4
+        title: en=Aspect ratio;ru=Соотношение сторон
+        type: string
+        default: 9:16
+        enum:
+          - 1:1
+          - 2:3
+          - 3:4
+          - 5:8
+          - 9:16
+          - 9:19
+          - 9:21
+          - 3:2
+          - 4:3
+          - 8:5
+          - 16:9
+          - 19:9
+          - 21:9
+    outputs:
+      image:
+        title: Image
+        type: image
+        featured: true
+    catalog:
+      _id: pulid_artworks
+      version: 35
+      category:
+        _id: deep_swap
+        title: en=Deep swap;ru=Глубокая замена
+        icon: face
+        order: 20
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  inpaint_image:
+    _id: inpaint_image_artworks
+    version: 1
+    title: en=Inpaint on image;ru=Улучшить изображение
+    tags:
+      - image-to-image
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 3000;
+      const MAX_ATTEMPTS = 100;
+
+      export async function costs({ env, inputs }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+
+        const { performance } = inputs;
+
+        switch (performance) {
+          case "express":
+            return 0.0032;
+          case "speed":
+            return 0.0043;
+          case "quality":
+            return 0.0054;
+          default:
+            throw new Error("Unknown performance type");
+        }
+      }
+
+      export async function run({ inputs, state, env }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, fitSize, FatalError } = require("artworks");
+        const sharp = require("sharp/lib/index.js");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const {
+            image,
+            prompt = "change image area",
+            checkpoint,
+            negativePrompt,
+            imageSize,
+            denoisingStrength = 1,
+            cfgScale = 7,
+            performance,
+            batchSize,
+            seed = -1,
+            // mask
+            mask,
+            maskMargin,
+            // SDXL
+            invertMask,
+          } = inputs;
+
+          const payload = {
+            type: "inpaint-on-image",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+              prompt,
+              checkpoint,
+              negativePrompt,
+              ...(!!imageSize
+                ? await (async () => {
+                    const { data } = await download(image);
+                    const buffer = sharp(data);
+                    const { width, height } = await buffer.metadata();
+                    if (imageSize !== "auto:auto") {
+                      const { width: w, height: h } = fitSize(
+                        imageSize,
+                        height / width,
+                      );
+                      return { size: `${w}x${h}` };
+                    }
+
+                    return {};
+                  })()
+                : {}),
+              denoisingStrength,
+              cfgScale,
+              performance,
+              ...(batchSize > 1 ? { batchSize } : {}),
+              ...(seed > 0 ? { seed } : {}),
+              // mask
+              mask,
+              maskMargin,
+              // SDXL
+              invertMask,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            let images = results.images.map((i) => i.url);
+            return next({
+              outputs: {
+                images: (await Promise.all(images.map((url) => download(url)))).map(
+                  ({ data }) => data,
+                ),
+              },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    app: ""
+    sign: 9aaca4023122d07563cf1ba26f880b3fce044b72c15b5aa09493996d7528424e
+    arrange:
+      x: 1840
+      y: 930
+    groups:
+      inputs:
+        base:
+          order: 1
+          title: en=Base;ru=Базовые параметры
+        SDXL:
+          order: 2
+          title: SDXL
+          description: Only for SDXL checkpoints
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        group: base
+        type: image
+        required: true
+        featured: true
+      prompt:
+        order: 3
+        title: en=Prompt;ru=Подсказка
+        group: base
+        type: string
+        multiline: true
+      negativePrompt:
+        order: 6
+        title: en=Negative prompt;ru=Негативная подсказка
+        group: base
+        type: string
+        multiline: true
+      checkpoint:
+        order: 5
+        title: en=Checkpoint;ru=Модель
+        group: base
+        type: string
+        required: true
+        default: juggernautXL_v9Rundiffusionphoto2.safetensors
+        enum:
+          - juggernautXL_v9Rundiffusionphoto2.safetensors|Juggernaut XL <SDXL>
+          - STOIQONewrealityFLUXSD_F1DPreAlpha.safetensors|New Reality Flux <Flux>
+          - dynavisionXLAllInOneStylized_releaseV0610Bakedvae.safetensors|DynaVision XL All In One <SDXL>
+          - flux1DevHyperNF4Flux1DevBNB_flux1DevHyperNF4.safetensors|Hyper NF4 Flux 1 <Flux>
+          - aamXLAnimeMix_v10.safetensors|AAM XL (Anime Mix) <SDXL> <Fantasy>
+          - raemuXL_v40.safetensors|Raemu XL <SDXL>
+          - animaPencilXL_v260.safetensors|Anima Pencil XL <SDXL> <Fantasy>
+          - leosamsHelloworldXL_helloworldXL50GPT4V.safetensors|Helloworld XL <SDXL>
+          - albedobaseXL_v20.safetensors|AlbedoBase XL <SDXL>
+          - afroditexlNudePeople_20Bkdvae.safetensors|Nude People <NSFW>
+          - nosft-float8-e4m3fn.safetensors|Flux Nude People <NSFW>
+          - asdf_0.4a_lorapov_0.2_lust_0.4.fp16.safetensors|Real Porn <NSFW>
+          - PonyASDF_0.4_f6cosineb.fp16.safetensors|Real Porn Pony <NSFW>
+          - Sexy_Aesthetic_SDXL_0.4x0.2.fp16.safetensors|Sexy & Beauty <NSFW>
+          - aniku_0.2.fp16.safetensors|Anime Desire <NSFW>
+          - anikurender_0.4b.fp16.safetensors|Hardcore Fantasy <NSFW>
+      denoisingStrength:
+        order: 8
+        title: en=Denoising strength;ru=Степень изменения
+        group: base
+        type: float
+        required: true
+        min: 0.1
+        max: 1
+        step: 0.05
+        default: 1
+      cfgScale:
+        order: 9
+        title: en=CFG scale;ru=Креативность
+        group: base
+        type: integer
+        required: true
+        min: 1
+        max: 20
+        step: 1
+        default: 7
+      imageSize:
+        order: 7
+        title: en=Image size;ru=Размер изображения
+        group: base
+        type: string
+        placeholder: auto:auto
+        default: auto:auto
+        enum:
+          - auto:1024
+          - 1024:auto
+          - auto:auto
+      performance:
+        order: 10
+        title: en=Performance;ru=Производительность
+        group: base
+        type: string
+        default: speed
+        enum:
+          - express|⚡ Express
+          - speed|🚅 Speed
+          - quality|💎 Quality
+      seed:
+        order: 12
+        title: en=Seed;ru=Начальный шум
+        group: base
+        type: integer
+        default: -1
+      batchSize:
+        order: 11
+        title: en=Batch size;ru=Кол-во
+        group: base
+        type: integer
+        min: 1
+        max: 4
+        step: 1
+        default: 1
+      mask:
+        order: 2
+        title: en=Mask;ru=Маска
+        group: base
+        type: image
+        required: true
+        featured: true
+      invertMask:
+        order: 1
+        title: en=Invert mask;ru=Инвертировать маску
+        group: SDXL
+        type: boolean
+        default: false
+      maskMargin:
+        order: 4
+        title: en=Mask margin;ru=Отступ от маски
+        group: base
+        type: integer
+        default: 10
+    outputs:
+      images:
+        title: en=Images;ru=Изображения
+        type: image[]
+        featured: true
+    catalog:
+      _id: inpaint_image_artworks
+      version: 35
+      category:
+        _id: generate_images
+        title: en=Generate images;ru=Ген. изображений
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  wan_2_2:
+    version: 5
+    category:
+      _id: generate_videos
+      title: en=Generate videos;ru=Генерация видео
+    icon: video
+    order: 5
+    package: artworks
+    title: en=WAN 2.x animate;ru=WAN 2.x анимация
+    tags:
+      - image-to-video
+      - en=cheap;ru=дешево
+    source: node
+    execution: deferred
+    script: |
+      const CHECK_TASK_INTERVAL = 5000;
+      const MAX_ATTEMPTS = 150;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.05;
+      }
+
+      export async function run({ inputs, state, env }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, FatalError: FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const {
+            version,
+            prompt = "cat astronaut walking at a moon",
+            image,
+            videoSize,
+            length = "5s",
+            resolution,
+            fps,
+          } = inputs;
+
+          const payload = {
+            type: !!image ? "image-to-video" : "text-to-video",
+            payload: {
+              base64: false,
+              version: (() => {
+                switch (version) {
+                  case "2_1":
+                    return "v1";
+                  case "2_2":
+                  default:
+                    return "v2";
+                }
+              })(),
+              prompt,
+              size: videoSize,
+              image,
+              ...(() => {
+                switch (length) {
+                  case "8s":
+                    return {
+                      numFrames: 128,
+                    };
+                  case "5s":
+                  default:
+                    return {
+                      numFrames: 80,
+                    };
+                }
+              })(),
+              ...(() => {
+                switch (fps) {
+                  case "24":
+                    return {
+                      applyInterpolation: true,
+                      interpolationFps: 24,
+                    };
+                  case "30":
+                    return {
+                      applyInterpolation: true,
+                      interpolationFps: 30,
+                    };
+                  case "60":
+                    return {
+                      applyInterpolation: true,
+                      interpolationFps: 60,
+                    };
+                  case "16":
+                  default:
+                    return {};
+                }
+              })(),
+              resolution
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 7000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(
+              `PaaS task for text to image ${task} timeout in ${time} sec`,
+            );
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+            let {
+              video: { url },
+            } = results;
+            const { data: video } = await download(url);
+            return next({ outputs: { video }, costs: costs({ env, inputs }) });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    app: ""
+    sign: 980df84c999a2cc34a49a5e3951c5b2764ca82e4c4b53e529efb3f8b07e8668b
+    locked: false
+    arrange:
+      x: 1650
+      y: 2230
+    groups:
+      inputs: {}
+    inputs:
+      prompt:
+        order: 3
+        title: en=Prompt;ru=Подсказка
+        type: string
+        required: true
+        featured: true
+        multiline: true
+        default: cat astronaut walking at a moon
+      videoSize:
+        order: 4
+        title: en=Video size;ru=Размер видео
+        type: string
+        default: 512x512
+        enum:
+          - 512x512|en=512x512 (1:1) <Horizontal>;ru=512x512 (1:1) <Горизонтальное>
+          - 960x960|en=960x960 (1:1) <Horizontal>;ru=960x960 (1:1) <Горизонтальное>
+          - 720x720|en=720x720 (1:1) <Horizontal>;ru=720x720 (1:1) <Горизонтальное>
+          - 832x480|en=832x480 (26:15) <Horizontal>;ru=832x480 (26:15) <Горизонтальное>
+          - 832x624|en=832x624 (4:3) <Horizontal>;ru=832x624 (4:3) <Горизонтальное>
+          - 960x544|en=960x544 (30:17) <Horizontal>;ru=960x544 (30:17) <Горизонтальное>
+          - 1104x832|en=1104x832 (69:52) <Horizontal>;ru=1104x832 (69:52) <Горизонтальное>
+          - 1280x544|en=1280x544 (40:17) <Horizontal>;ru=1280x544 (40:17) <Горизонтальное>
+          - 1280x720|en=1280x720 (16:9) <Horizontal>;ru=1280x720 (16:9) <Горизонтальное>
+          - 480x832|en=480x832 (15:26) <Vertical>;ru=480x832 (15:26) <Вертикальное>
+          - 544x960|en=544x960 (17:30) <Vertical>;ru=544x960 (17:30) <Вертикальное>
+          - 544x1280|en=544x1280 (17:40) <Vertical>;ru=544x1280 (17:40) <Вертикальное>
+          - 624x832|en=624x832 (3:4) <Vertical>;ru=624x832 (3:4) <Вертикальное>
+          - 720x1280|en=720x1280 (9:16) <Vertical>;ru=720x1280 (9:16) <Вертикальное>
+          - 832x1104|en=832x1104 (52:69) <Vertical>;ru=832x1104 (52:69) <Вертикальное>
+      image:
+        order: 2
+        title: en=Image;ru=Изображение
+        type: image
+        required: true
+        featured: true
+      resolution:
+        order: 6
+        title: en=Resolution;ru=Разрешение
+        type: string
+        default: 480p
+        enum:
+          - 480p
+          - 720p
+          - 1080p
+      length:
+        order: 5
+        title: en=Length;ru=Длительность
+        type: string
+        default: 5s
+        enum:
+          - 5s|en=5s;ru=5 сек
+          - 8s|en=8s;ru=8 сек
+      fps:
+        order: 7
+        title: en=Fps;ru=Кадров в секунду
+        type: string
+        default: "16"
+        enum:
+          - 16|en=16;ru=16
+          - 24|en=24;ru=24
+          - 30|en=30;ru=30
+          - 60|en=60;ru=60
+      version:
+        order: 1
+        title: en=Version;ru=Версия
+        type: string
+        default: 2_2
+        enum:
+          - 2_1|Wan 2.1
+          - 2_2|Wan 2.2
+    outputs:
+      video:
+        title: en=Video;ru=Видео
+        type: video
+        featured: true
+    catalog:
+      _id: wan_2_2_animate
+      version: 40
+      category:
+        _id: generate_videos
+        title: en=Video generation;ru=Генерация видео
+        icon: video
+        order: 10
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  extract_frame:
+    version: 0
+    icon: video
+    order: 5
+    title: en=Extract frame;ru=Извлечь кадр
+    tags:
+      - edit-video
+      - en=cheap;ru=дешево
+    source: node
+    execution: deferred
+    script: |
+      const MAX_ATTEMPTS = 1000;
+      const CHECK_TASK_INTERVAL = 5000;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.001;
+      }
+
+      export async function run({ inputs, state, env }) {
+        const { next, repeat, throwError, download } = require("@piper/node");
+        const { ArtWorks, FatalError: FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { video, position } = inputs;
+
+          const payload = {
+            type: "run-ffmpeg",
+            isFast: true,
+            payload: {
+              command: (() => {
+                switch (position) {
+                  case "first":
+                    return "-i {{video}} -frames:v 1 {{frame}}";
+                  case "last":
+                  default:
+                    return "-sseof -0.1 -i {{video}} -frames:v 1 {{frame}}";
+                }
+              })(),
+              inputFiles: {
+                video,
+              },
+              outputFiles: {
+                frame: "frame.png",
+              },
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: CHECK_TASK_INTERVAL,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`PaaS task ${task} timeout in ${time} sec`);
+          }
+        }
+
+        const { task, attempt, startedAt } = state;
+        const results = await artworks.checkState(task);
+        if (!results) {
+          return repeat({
+            delay: CHECK_TASK_INTERVAL,
+            state: {
+              task,
+              attempt: attempt + 1,
+              startedAt,
+            },
+            progress: {
+              total: MAX_ATTEMPTS,
+              processed: attempt,
+            },
+          });
+        }
+
+        const {
+          files: {
+            frame: { url },
+          },
+        } = results;
+
+        const { data: frame } = await download(url);
+        return next({ outputs: { frame }, costs: costs({ env }) });
+      }
+    app: ""
+    sign: ea74e8f1664877e3bce102fb5e6842b2ac6d378435909f4b05de3dce876ca5a1
+    arrange:
+      x: 2560
+      y: 2080
+    groups:
+      inputs: {}
+    inputs:
+      video:
+        order: 1
+        title: en=Video;ru=Видео
+        type: video
+        required: true
+        featured: true
+      position:
+        order: 2
+        title: en=Position;ru=Позиция
+        type: string
+        default: last
+        enum:
+          - first|en=First frame;ru=Первый кадр
+          - last|en=Last frame;ru=Последний кадр
+    outputs:
+      frame:
+        title: en=Frame;ru=Фрейм
+        type: image
+        featured: true
+    catalog:
+      _id: extract_frame_artworks
+      version: 35
+      category:
+        _id: video_processing
+        title: en=Video processing;ru=Обработка видео
+        icon: video
+        order: 30
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  merge_videos:
+    version: 0
+    icon: video
+    order: 10
+    title: en=Merge videos;ru=Объединить видео
+    tags:
+      - edit-video
+      - en=cheap;ru=дешево
+    source: node
+    execution: deferred
+    script: |
+      const MAX_ATTEMPTS = 100;
+      const CHECK_TASK_INTERVAL = 3000;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.005;
+      }
+
+      export async function run({ schema, inputs, state, env }) {
+        const { next, repeat, throwError, download } = require("@piper/node");
+        const { ArtWorks, FatalError: FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const videos = [];
+          for (const id of Object.keys(schema.node.inputs)) {
+            const input = schema.node.inputs[id];
+            const value = inputs[id];
+            if (input.type === "video" && !!value) {
+              videos.push(value);
+            }
+          }
+
+          const payload = {
+            type: "run-ffmpeg",
+            isFast: true,
+            payload: {
+              command: (() => {
+                const i = videos.map((_, i) => `-i {{video_${i}}}`).join(" ");
+
+                const { width, height } = inputs;
+
+                const filters = videos.map(
+                  (_, idx) =>
+                    `[${idx}:v]` +
+                    `scale=${width}:${height}:force_original_aspect_ratio=decrease,` +
+                    `pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:black,` +
+                    `setsar=1,` +
+                    `setpts=PTS-STARTPTS` +
+                    `[v${idx}]`,
+                );
+
+                const ci = videos.map((_, idx) => `[v${idx}]`).join("");
+                const cf = `${ci}concat=n=${videos.length}:v=1:a=0[merged_video]`;
+                const complexFilter = [filters.join(";"), cf].join(";");
+                return `${i} -filter_complex "${complexFilter}" -map "[merged_video]" {{merged_video}}`;
+              })(),
+              inputFiles: (() => {
+                const files = {};
+                videos.forEach((v, i) => {
+                  files[`video_${i}`] = v;
+                });
+                return files;
+              })(),
+              outputFiles: {
+                merged_video: "merged_video.mp4",
+              },
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: CHECK_TASK_INTERVAL,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`PaaS task ${task} timeout in ${time} sec`);
+          }
+        }
+
+        const { task, attempt, startedAt } = state;
+        const results = await artworks.checkState(task);
+        if (!results) {
+          return repeat({
+            delay: CHECK_TASK_INTERVAL,
+            state: {
+              task,
+              attempt: attempt + 1,
+              startedAt,
+            },
+            progress: {
+              total: MAX_ATTEMPTS,
+              processed: attempt,
+            },
+          });
+        }
+
+        const {
+          files: {
+            merged_video: { url },
+          },
+        } = results;
+
+        const { data: video } = await download(url);
+        return next({ outputs: { video }, costs: costs({ env }) });
+      }
+    app: ""
+    sign: 7f5e1477b4310b046a9a54089af3396c6e3dd4cea23c0e0ac7187f78a9bf0c91
+    arrange:
+      x: 2130
+      y: 2080
+    groups:
+      inputs: {}
+    inputs:
+      video1:
+        order: 3
+        title: en=Video 1;ru=Видео 1
+        type: video
+        required: true
+        featured: true
+        dynamic:
+          group: videos
+          id: video#
+          title: "en=Video #;ru=Видео #"
+          index: 1
+      video2:
+        order: 4
+        title: en=Video 2;ru=Видео 2
+        type: video
+        required: true
+        featured: true
+        dynamic:
+          group: videos
+          id: video#
+          title: "en=Video #;ru=Видео #"
+          index: 2
+        cloned: true
+      width:
+        order: 1
+        title: en=Width;ru=Ширина
+        type: integer
+        required: true
+        default: "1024"
+      height:
+        order: 2
+        title: en=Height;ru=Высота
+        type: integer
+        required: true
+        default: 768
+    outputs:
+      video:
+        title: en=Video;ru=Видео
+        type: video
+        featured: true
+    catalog:
+      _id: merge_videos_artworks
+      version: 36
+      category:
+        _id: video_processing
+        title: en=Video processing;ru=Обработка видео
+        icon: video
+        order: 30
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  faceswap_on_video:
+    version: 1
+    icon: video
+    order: 15
+    title: en=Face swap on video;ru=Замена лица на видео
+    tags:
+      - deep-swap
+      - en=cheap;ru=дешево
+    source: node
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 5000;
+      const MAX_ATTEMPTS = 100;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.005;
+      }
+
+      export async function run({ inputs, state, env }) {
+        const { throwError, repeat, next, download } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { face, video } = inputs;
+
+          const payload = {
+            type: "faceswap-on-video",
+            isFast: true,
+            payload: {
+              base64: false,
+              face,
+              video,
+            },
+          };
+
+          console.log(JSON.stringify(payload, null, 2));
+
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                task,
+                attempt: 0,
+                startedAt: new Date().toISOString(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throwError.timeout(`Task ${task} timeout in ${time} sec`);
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+
+            let {
+              video: { url },
+            } = results;
+            const { data: video } = await download(url);
+            return next({
+              outputs: { video },
+              costs: costs({ env, inputs }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    sign: 663d8734664d59576e895083f032933f5e76c204699e12b5dbdafcff2250a607
+    arrange:
+      x: 1550
+      y: 1520
+    groups:
+      inputs: {}
+    inputs:
+      face:
+        order: 1
+        title: en=Face;ru=Лицо
+        type: image
+        required: true
+        featured: true
+      video:
+        order: 2
+        title: en=Video;ru=Видео
+        type: video
+        required: true
+        featured: true
+    outputs:
+      video:
+        title: en=Video;ru=Видео
+        type: video
+        featured: true
+    catalog:
+      _id: face_swap_on_video_artworks
+      version: 35
+      category:
+        _id: deep_swap
+        title: en=Deep swap;ru=Глубокая замена
+        icon: face
+        order: 20
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global
+  describe_image_artworks:
+    version: 0
+    icon: image
+    order: 20
+    title: en=Descrive image;ru=Описать изображение
+    tags:
+      - vlm
+      - en=cheap;ru=дешево
+    source: catalog
+    execution: regular
+    script: |
+      const CHECK_TASK_INTERVAL = 5000;
+      const MAX_ATTEMPTS = 150;
+
+      export async function costs({ env }) {
+        if (env.scope.ARTWORKS_USER === "user") {
+          return 0;
+        }
+        return 0.0013;
+      }
+
+      export async function run({ env, inputs, state }) {
+        const { throwError, repeat, next } = require("@piper/node");
+        const { ArtWorks, FatalError } = require("artworks");
+
+        const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
+        if (!ARTWORKS_USER) {
+          throwError.fatal("Please, set ARTWORKS_USER in environment");
+        }
+        if (!ARTWORKS_PASSWORD) {
+          throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
+        }
+
+        const artworks = new ArtWorks({
+          baseUrl: "https://api.artworks.ai",
+          username: ARTWORKS_USER,
+          password: ARTWORKS_PASSWORD,
+        });
+
+        if (!state) {
+          const { image, prompt, details } = inputs;
+
+          const payload = {
+            type: "caption-image",
+            isFast: true,
+            payload: {
+              base64: false,
+              image,
+              prompt,
+              details,
+            },
+          };
+          try {
+            const task = await artworks.createTask(payload);
+            console.log(`Task created ${task}`);
+            return repeat({
+              state: {
+                payload,
+                task,
+                attempt: 0,
+                startedAt: new Date(),
+              },
+              progress: {
+                total: MAX_ATTEMPTS,
+                processed: 0,
+              },
+              delay: 2000,
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        } else {
+          const { payload, task, attempt, startedAt } = state;
+
+          if (attempt > MAX_ATTEMPTS) {
+            try {
+              await artworks.cancelTask(task);
+            } catch (e) {}
+
+            const now = new Date();
+            const time = (now - new Date(startedAt)) / 1000;
+            throw new TimeoutError(
+              `PaaS task for text to image ${task} timeout in ${time} sec`,
+            );
+          }
+
+          console.log(`Check task ${attempt} ${task}`);
+
+          try {
+            const results = await artworks.checkState(task);
+            if (!results) {
+              return repeat({
+                delay: CHECK_TASK_INTERVAL,
+                state: {
+                  payload,
+                  task,
+                  attempt: attempt + 1,
+                  startedAt,
+                },
+                progress: {
+                  total: MAX_ATTEMPTS,
+                  processed: attempt,
+                },
+              });
+            }
+
+            let { caption, text, description } = results;
+            return next({
+              outputs: {
+                text: caption || text || description,
+              },
+              costs: costs({ env }),
+            });
+          } catch (e) {
+            if (e instanceof FatalError) {
+              throwError.fatal(e.message);
+            }
+            throw e;
+          }
+        }
+      }
+    sign: 1054d21988f4a1932fe3747ebaac51086f573e1860d40e66995197a3c8109529
+    arrange:
+      x: 440
+      y: 660
+    groups:
+      inputs:
+        main:
+          order: 1
+          title: en=Main settings;ru=Основные настройки
+    inputs:
+      image:
+        order: 1
+        title: en=Image;ru=Изображение
+        group: main
+        type: image
+        required: true
+        featured: true
+      prompt:
+        order: 2
+        title: en=Prompt (optional);ru=Подсказка (опционально)
+        group: main
+        type: string
+        required: false
+        multiline: true
+        placeholder: en=Describe the image in detail;ru=Подробно опишите изображение
+      details:
+        order: 3
+        title: en=Detail level;ru=Уровень детализации
+        group: main
+        type: string
+        required: true
+        default: high
+        enum:
+          - low|Low
+          - middle|Middle
+          - high|High
+    outputs:
+      text:
+        title: en=Caption;ru=Описание
+        type: string
+        featured: true
+    catalog:
+      _id: describe_image_artworks
+      version: 35
+      category:
+        _id: image_analysis
+        title: en=Image analysis;ru=Анализ изображений
+        icon: image
+        order: 25
+      package: artworks
+    environment:
+      ARTWORKS_USER:
+        title: ArtWorks user
+        description: Signup at https://artworks.ai/
+        type: string
+        scope: global
+      ARTWORKS_PASSWORD:
+        title: ArtWorks password
+        type: string
+        scope: global

@@ -1,0 +1,41 @@
+inputs:
+  height:
+    default: 768
+    order: 2
+    required: true
+    title: en=Height;ru=Высота
+    type: integer
+  video1:
+    dynamic:
+      group: videos
+      id: video#
+      index: 1
+      title: 'en=Video #;ru=Видео #'
+    featured: true
+    order: 3
+    required: true
+    title: en=Video 1;ru=Видео 1
+    type: video
+  video2:
+    cloned: true
+    dynamic:
+      group: videos
+      id: video#
+      index: 2
+      title: 'en=Video #;ru=Видео #'
+    featured: true
+    order: 4
+    required: true
+    title: en=Video 2;ru=Видео 2
+    type: video
+  width:
+    default: '1024'
+    order: 1
+    required: true
+    title: en=Width;ru=Ширина
+    type: integer
+outputs:
+  video:
+    featured: true
+    title: en=Video;ru=Видео
+    type: video

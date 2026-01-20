@@ -1,0 +1,18 @@
+inputs:
+  face:
+    featured: true
+    order: 1
+    required: true
+    title: en=Face;ru=Лицо
+    type: image
+  video:
+    featured: true
+    order: 2
+    required: true
+    title: en=Video;ru=Видео
+    type: video
+outputs:
+  video:
+    featured: true
+    title: en=Video;ru=Видео
+    type: video

@@ -1,0 +1,23 @@
+inputs:
+  image:
+    featured: true
+    order: 1
+    required: true
+    title: en=Image;ru=Изображение
+    type: image
+  index:
+    default: 0
+    order: 2
+    required: true
+    title: en=Index;ru=Индекс
+    type: integer
+outputs:
+  face:
+    featured: true
+    title: en=Face;ru=Лицо
+    type: image
+  features:
+    featured: true
+    schema: face-features
+    title: en=Features;ru=Характеристики
+    type: json
