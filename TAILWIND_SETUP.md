@@ -16,8 +16,8 @@ This downloads and caches the npm packages in Deno's cache, then runs them.
 
 - **`deno.json`** - Contains build tasks and enables `nodeModulesDir: "auto"`
 - **`postcss.config.js`** - PostCSS configuration (ESM format for Deno)
-- **`nodes/styles/tailwind.css`** - Source CSS with `@theme` directive
-- **`nodes/styles/ui.css`** - Compiled output (gitignored)
+- **`styles/tailwind.css`** - Source CSS with `@theme` directive
+- **`styles/ui.css`** - Compiled output
 
 ## Commands
 
@@ -34,7 +34,7 @@ deno task dev
 
 ## Custom Theme
 
-Defined in `nodes/styles/tailwind.css` using the `@theme` directive:
+Defined in `styles/tailwind.css` using the `@theme` directive:
 
 - **Graphite colors**: 50, 75, 100, 200, 300, 400, 500, 600
 - **Primary**: #00d1d1

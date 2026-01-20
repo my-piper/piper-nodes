@@ -10,8 +10,8 @@
   "tasks": {
     "start": "deno run --allow-net --allow-read jsr:@std/http@1.0/file-server --port 3000 --cors",
     "dev": "deno run --allow-net --allow-read jsr:@std/http@1.0/file-server --port 3000 --cors",
-    "build:css": "deno run -A npm:postcss-cli@11 ./nodes/styles/tailwind.css -o ./nodes/styles/ui.css",
-    "watch:css": "deno run -A npm:postcss-cli@11 ./nodes/styles/tailwind.css -o ./nodes/styles/ui.css --watch",
+    "build:css": "deno run -A npm:postcss-cli@11 ./styles/tailwind.css -o ./styles/ui.css",
+    "watch:css": "deno run -A npm:postcss-cli@11 ./styles/tailwind.css -o ./styles/ui.css --watch",
     "test": "deno test **/*test.js --allow-net --allow-read --allow-env",
     "test:watch": "deno test **/*test.js --allow-net --allow-read --allow-env --watch",
     "test:coverage": "deno test **/*test.js --allow-net --allow-read --allow-env --coverage=coverage",

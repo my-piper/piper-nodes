@@ -43,7 +43,8 @@ deno task watch:css
 Include the compiled CSS in your HTML files:
 
 ```html
-<link rel="stylesheet" href="../../styles/ui.css" />
+<!-- From nodes/*/app.html -->
+<link rel="stylesheet" href="../../../styles/ui.css" />
 ```
 
 ## Tailwind Version
