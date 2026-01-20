@@ -36,6 +36,9 @@
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 1000,
   "editor.lineNumbers": "on",
-  "editor.rulers": [80, 120]
+  "editor.rulers": [80, 120],
+  "augment.generateCommitMessages": true,
+  "augment.commitMessageStyle": "conventional",
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false
 }
-

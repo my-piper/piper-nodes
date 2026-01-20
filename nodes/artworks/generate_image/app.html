@@ -1,284 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image Generation</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/@picocss/pico@latest/css/pico.colors.min.css"
-    />
+
+    <!-- Tailwind CSS with common config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../../tailwind.config.js"></script>
+
+    <!-- Vue.js -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-    <style id="app-styles">
-      .search-container {
-        border-bottom: 1px solid var(--graphite-300);
-        padding: 8px 12px;
-        background-color: var(--graphite-600);
-      }
+    <!-- Fonts -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+    </style>
 
-      .search-container input {
-        width: 100%;
-        box-sizing: border-box;
-        margin: 0;
-      }
-
-      .current-templates {
-        padding: 8px 12px;
-        margin-bottom: 0;
-        background-color: var(--graphite-600);
-        border-bottom: 1px solid var(--graphite-300);
-        flex-shrink: 0;
-      }
-
-      .current-templates h2 {
-        font-size: 14px;
-        font-weight: bold;
-        margin: 0 0 8px 0;
-        color: white;
-      }
-
-      .current-templates-list {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-        width: 100%;
-      }
-
-      .template-chip {
-        display: flex;
-        align-items: flex-start;
-        gap: 6px;
-        padding: 8px 28px 8px 8px;
-        background-color: var(--graphite-500);
-        border: 1px solid var(--graphite-200);
-        border-radius: 6px;
-        font-size: 13px;
-        color: white;
-        min-width: 0;
-        overflow: hidden;
-        transition: background-color 0.2s ease, border-color 0.2s ease;
-        position: relative;
-      }
-
-      .template-chip:hover {
-        background-color: var(--graphite-400);
-        border-color: var(--graphite-100);
-      }
-
-      .template-chip img {
-        width: 32px;
-        height: 32px;
-        object-fit: cover;
-        border-radius: 2px;
-        flex-shrink: 0;
-      }
-
-      .template-chip .template-info {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        flex: 1;
-        min-width: 0;
-        overflow: hidden;
-      }
-
-      .template-chip .template-name {
-        font-weight: bold;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: 100%;
-      }
-
-      .template-chip .weight-control {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .template-chip .weight-value {
-        font-size: 13px;
-        color: white;
-        min-width: 32px;
-        text-align: right;
-        font-weight: 500;
-      }
-
-      .template-chip input[type="range"] {
-        flex: 1;
-        height: 4px;
-        background: var(--graphite-200);
-        border-radius: 2px;
-        outline: none;
+    <style>
+      /* Custom range slider styling for template weight control */
+      input[type="range"] {
         -webkit-appearance: none;
         appearance: none;
-        margin: 0;
-        padding: 0;
+        background: transparent;
         cursor: pointer;
-        position: relative;
       }
 
-      .template-chip input[type="range"]::-webkit-slider-runnable-track {
+      input[type="range"]::-webkit-slider-runnable-track {
         width: 100%;
         height: 4px;
-        background: transparent;
+        background: #535353;
         border-radius: 2px;
       }
 
-      .template-chip input[type="range"]::-moz-range-track {
+      input[type="range"]::-moz-range-track {
         width: 100%;
         height: 4px;
-        background: transparent;
+        background: #535353;
         border-radius: 2px;
         border: none;
       }
 
-      .template-chip input[type="range"]::-webkit-slider-thumb {
+      input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
         width: 18px;
         height: 18px;
-        background: var(--graphite-75);
+        background: #aaaaaa;
         cursor: pointer;
         border-radius: 50%;
         margin-top: -7px;
         transition: background 0.2s ease;
       }
 
-      .template-chip input[type="range"]::-webkit-slider-thumb:hover {
-        background: var(--graphite-50);
+      input[type="range"]::-webkit-slider-thumb:hover {
+        background: #eaeaea;
       }
 
-      .template-chip input[type="range"]::-moz-range-thumb {
+      input[type="range"]::-moz-range-thumb {
         width: 18px;
         height: 18px;
-        background: var(--graphite-75);
+        background: #aaaaaa;
         cursor: pointer;
         border-radius: 50%;
         border: none;
         transition: background 0.2s ease;
       }
 
-      .template-chip input[type="range"]::-moz-range-thumb:hover {
-        background: var(--graphite-50);
+      input[type="range"]::-moz-range-thumb:hover {
+        background: #eaeaea;
       }
 
-      .template-chip .remove-btn {
-        background: none;
-        border: none;
-        color: var(--pico-muted-color);
-        cursor: pointer;
-        padding: 0;
-        margin: 0;
-        font-size: 20px;
-        line-height: 1;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-family: Arial, sans-serif;
-        font-weight: normal;
-        position: absolute;
-        top: 4px;
-        right: 4px;
-      }
-
-      .template-chip .remove-btn:hover {
-        color: var(--red-color);
-        background: none;
-        transform: none;
-      }
-
-      .template-chip .remove-btn:active {
-        transform: scale(0.9);
-      }
-
-      input[type="text"].searching {
-        opacity: 0.8;
-      }
-
-      /* Pico will handle article (card) styling via global variables */
-      article {
-        overflow: hidden;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-        padding: 0;
-        background-color: #303030 !important; /* Force card background */
-        border-color: #535353 !important; /* Force card border */
-      }
-
-      article:hover {
-        transform: translateY(-4px);
-      }
-
-      article img,
-      article video {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        display: block;
-      }
-
-      article > footer {
-        margin: 0;
-      }
-
-      article h3 {
-        margin: 0;
-        padding: 4px;
-        font-size: 13px; /* $font-size-small */
-        font-weight: bold;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .loading {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        font-size: 1.2rem;
-      }
-
-      .error {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        color: #ff6b6b;
-        font-size: 1rem;
+      /* Grid layout for templates */
+      .templates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+        padding: 12px;
       }
     </style>
   </head>
-  <body>
+  <body
+    class="bg-graphite-600 text-white font-sans text-sm antialiased m-0 p-0"
+  >
     <script type="text/x-template" id="app-tpl">
-      <div v-if="error" class="error">
+      <div v-if="error" class="flex justify-center items-center h-screen text-red text-base">
         {{ error }}
       </div>
       <template v-else>
-        <div v-if="currentTemplates.length > 0" class="current-templates">
-          <div class="current-templates-list">
+        <!-- Current Templates Section -->
+        <div v-if="currentTemplates.length > 0" class="p-3 mb-0 bg-graphite-600 border-b border-graphite-300 flex-shrink-0">
+          <div class="grid grid-cols-3 gap-2 w-full">
             <div
               v-for="(template, index) in currentTemplates"
               :key="index"
-              class="template-chip"
+              class="flex items-start gap-1.5 p-2 pr-7 bg-graphite-500 border border-graphite-200 rounded-md text-[13px] text-white min-w-0 overflow-hidden transition-colors hover:bg-graphite-400 hover:border-graphite-100 relative"
             >
               <img
                 v-if="template.thumbnail"
                 :src="template.thumbnail"
                 :alt="template.name"
+                class="w-8 h-8 object-cover rounded-sm flex-shrink-0"
               />
-              <div class="template-info">
-                <div class="template-name">{{ template.name }}</div>
-                <div class="weight-control">
+              <div class="flex flex-col gap-0.5 flex-1 min-w-0 overflow-hidden">
+                <div class="font-bold whitespace-nowrap overflow-hidden text-ellipsis w-full">
+                  {{ template.name }}
+                </div>
+                <div class="flex items-center gap-1.5">
                   <input
                     type="range"
                     :value="template.weight"
@@ -286,38 +114,49 @@
                     min="0"
                     max="2"
                     step="0.1"
+                    class="flex-1 h-1 m-0 p-0"
                   />
-                  <span class="weight-value">{{ template.weight.toFixed(1) }}</span>
+                  <span class="text-[13px] text-white min-w-[32px] text-right font-medium">
+                    {{ template.weight.toFixed(1) }}
+                  </span>
                 </div>
               </div>
               <button
-                class="remove-btn"
                 @click="removeTemplate(index)"
                 title="Remove template"
+                class="absolute top-1 right-1 bg-transparent border-none text-graphite-75 cursor-pointer p-0 m-0 text-xl leading-none w-5 h-5 flex items-center justify-center flex-shrink-0 hover:text-red active:scale-90 transition-transform"
               >
                 ×
               </button>
             </div>
           </div>
         </div>
-        <div class="search-container">
+
+        <!-- Search Container -->
+        <div class="border-b border-graphite-300 p-3 bg-graphite-600">
           <input
             type="text"
-            :class="{ searching: loading }"
             v-model="searchQuery"
             @input="handleSearch"
             placeholder="Search templates..."
+            :class="loading ? 'opacity-80' : ''"
+            class="w-full px-3 py-2 bg-graphite-500 text-white border border-graphite-200 rounded-md focus:bg-graphite-400 focus:border-graphite-100 focus:outline-none transition-colors"
           />
         </div>
-        <div v-if="loading && templates.length === 0" class="loading">
+
+        <!-- Loading State -->
+        <div v-if="loading && templates.length === 0" class="flex justify-center items-center h-screen text-xl">
           Loading templates...
         </div>
+
+        <!-- Templates Grid -->
         <template v-else>
           <div class="templates-grid">
-            <article
+            <div
               v-for="template in templates"
               :key="template.id"
               @click="selectTemplate(template)"
+              class="overflow-hidden cursor-pointer transition-transform hover:-translate-y-1 p-0 bg-graphite-300 border border-graphite-200 rounded-lg"
             >
               <template v-if="template.lastVersion?.metadata?.samples?.[0]?.preview">
                 <video
@@ -327,29 +166,36 @@
                   loop
                   muted
                   playsinline
+                  class="w-full h-[200px] object-cover block"
                 />
                 <img
                   v-else
                   :src="template.lastVersion.metadata.samples[0].preview.url"
                   :alt="template.name"
+                  class="w-full h-[200px] object-cover block"
                 />
               </template>
-              <footer>
-                <h3 :title="template.name">
+              <div class="m-0 p-1">
+                <h3 :title="template.name" class="m-0 text-[13px] font-bold overflow-hidden text-ellipsis whitespace-nowrap">
                   {{ template.name }}
                 </h3>
-              </footer>
-            </article>
+              </div>
+            </div>
           </div>
-          <button
-            v-if="hasMore"
-            @click="loadMore"
-            :disabled="loadingMore"
-          >
-            {{ loadingMore ? 'Loading...' : 'Load More' }}
-          </button>
-          <div v-else class="loading-more">
-            No more templates
+
+          <!-- Load More Button -->
+          <div class="p-3 text-center">
+            <button
+              v-if="hasMore"
+              @click="loadMore"
+              :disabled="loadingMore"
+              class="px-4 py-2 bg-graphite-400 text-graphite-50 border border-graphite-200 rounded font-bold hover:bg-graphite-300 hover:border-graphite-75 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            >
+              {{ loadingMore ? 'Loading...' : 'Load More' }}
+            </button>
+            <div v-else class="text-graphite-75 text-sm">
+              No more templates
+            </div>
           </div>
         </template>
       </template>
@@ -365,14 +211,14 @@
           prompt: "cat walking on the Mars",
           templates: JSON.stringify([
             {
-              type: 'lora',
-              name: 'Wallace & Gromit',
-              fullFileName: 'wallace-gromit.safetensors',
-              trainedWords: ['Wallace', 'Gromit'],
-              thumbnail: 'https://placehold.co/600x400',
+              type: "lora",
+              name: "Wallace & Gromit",
+              fullFileName: "wallace-gromit.safetensors",
+              trainedWords: ["Wallace", "Gromit"],
+              thumbnail: "https://placehold.co/600x400",
               weight: 0.5,
-            }
-          ])
+            },
+          ]),
         },
         save({ templates }) {
           console.log(templates);
@@ -390,7 +236,9 @@
         setup() {
           console.log("Setup called");
           const templates = ref([]);
-          const currentTemplates = ref(JSON.parse(piper.inputs.templates || "[]"));
+          const currentTemplates = ref(
+            JSON.parse(piper.inputs.templates || "[]")
+          );
           const loading = ref(true);
           const loadingMore = ref(false);
           const error = ref(null);
@@ -534,11 +382,13 @@
             console.log("File name:", fullFileName);
 
             // Get thumbnail from preview
-            const thumbnail = template.lastVersion?.metadata?.samples?.[0]?.preview?.url || null;
+            const thumbnail =
+              template.lastVersion?.metadata?.samples?.[0]?.preview?.url ||
+              null;
 
             // Create template object to add to the array
             const newTemplate = {
-              type: 'lora',
+              type: "lora",
               name: template.name,
               fullFileName,
               trainedWords,
@@ -552,23 +402,29 @@
             currentTemplates.value = [...currentTemplates.value, newTemplate];
 
             // Scroll to top of the app container
-            const container = document.querySelector('#app');
+            const container = document.querySelector("#app");
             if (container) {
-              container.scrollTo({ top: 0, behavior: 'smooth' });
+              container.scrollTo({ top: 0, behavior: "smooth" });
             }
 
             // Save the updated templates array using piper
-            piper.save({ templates: JSON.stringify(currentTemplates.value, null, 2) });
+            piper.save({
+              templates: JSON.stringify(currentTemplates.value, null, 2),
+            });
             piper.close();
           };
 
           // Remove a template from current templates
           const removeTemplate = (index) => {
             console.log("Removing template at index:", index);
-            currentTemplates.value = currentTemplates.value.filter((_, i) => i !== index);
+            currentTemplates.value = currentTemplates.value.filter(
+              (_, i) => i !== index
+            );
 
             // Save the updated templates array
-            piper.save({ templates: JSON.stringify(currentTemplates.value, null, 2) });
+            piper.save({
+              templates: JSON.stringify(currentTemplates.value, null, 2),
+            });
           };
 
           // Update weight of a template
@@ -577,12 +433,15 @@
             console.log(`Updating template ${index} weight to:`, weight);
 
             // Update the weight in the array
-            currentTemplates.value = currentTemplates.value.map((template, i) =>
-              i === index ? { ...template, weight } : template
+            currentTemplates.value = currentTemplates.value.map(
+              (template, i) =>
+                i === index ? { ...template, weight } : template
             );
 
             // Save the updated templates array
-            piper.save({ templates: JSON.stringify(currentTemplates.value, null, 2) });
+            piper.save({
+              templates: JSON.stringify(currentTemplates.value, null, 2),
+            });
           };
 
           // Fetch templates on mount
@@ -608,17 +467,10 @@
         },
       });
 
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = piper.mode === 'dev'
-        ? '../ui.css'
-        : 'https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@6f07f1b585e0b0d9d7e3515dc8447c692bfb9501/nodes/ui.css';
-      piper.appRoot.appendChild(link);
-
       console.log("Creating app...");
       const app = createApp(App);
       console.log("Mounting app...");
-      app.mount(piper.appRoot.querySelector('#app'));
+      app.mount(piper.appRoot.querySelector("#app"));
       console.log("App mounted");
     </script>
   </body>

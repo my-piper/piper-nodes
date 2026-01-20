@@ -1,157 +1,84 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ask any LLM</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/@picocss/pico@latest/css/pico.colors.min.css"
-    />
+    <!-- Tailwind CSS with common config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../../tailwind.config.js"></script>
+    <!-- Vue.js -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-
-    <style id="app-styles">
-      .models-container {
-        display: flex;
-        flex-direction: column;
-        gap: var(--pico-spacing);
-        margin: var(--pico-spacing);
-        height: 100vh;
-      }
-
-      .table-wrapper {
-        flex: 1;
-        overflow-y: auto;
-        overflow-x: auto;
-      }
-
-      .models-table th {
-        background-color: var(--graphite-400);
-        color: white;
-        padding: var(--pico-spacing);
-        border-bottom: 2px solid var(--graphite-200);
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        cursor: pointer;
-        user-select: none;
-      }
-
-      .models-table th:hover {
-        background-color: var(--graphite-300);
-      }
-
-      .sort-indicator {
-        display: inline-block;
-        margin-left: 4px;
-        font-size: 10px;
-        opacity: 0.5;
-      }
-
-      .models-table td {
-        padding: var(--pico-spacing);
-        border-bottom: 1px solid var(--graphite-300);
-      }
-
-      .col-input {
-        width: 200px;
-        text-align: right;
-      }
-
-      .col-output {
-        width: 200px;
-        text-align: right;
-      }
-
-      .col-context {
-        width: 100px;
-        text-align: right;
-      }
-
-      .col-vision {
-        width: 120px;
-      }
-
-      .models-table tbody tr {
-        cursor: pointer;
-        transition: background-color 0.15s ease;
-      }
-
-      .no-results {
-        text-align: center;
-        padding: 32px;
-        color: var(--graphite-75);
-      }
+    <!-- Fonts -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
     </style>
   </head>
-  <body>
+  <body class="bg-graphite-600 text-white font-sans text-sm antialiased">
     <script type="text/x-template" id="app-tpl">
-      <div class="models-container">
-        <div class="search-box">
+      <div class="flex flex-col gap-2 p-2 h-screen">
+        <div class="mb-2">
           <input
             type="text"
             v-model="searchQuery"
-            placeholder="Search..."
+            placeholder="Search models..."
+            class="w-full px-3 py-2 bg-graphite-500 text-white border border-graphite-200 rounded-md focus:bg-graphite-400 focus:border-graphite-100 focus:outline-none transition-colors"
           />
         </div>
-        <div class="table-wrapper">
-          <table class="models-table" v-if="hasResults">
+        <div class="flex-1 overflow-auto">
+          <table class="w-full border-collapse" v-if="hasResults">
             <thead>
               <tr>
-                <th @click="sortBy('name')">
+                <th @click="sortBy('name')" class="bg-graphite-400 text-white p-2 border-b-2 border-graphite-200 sticky top-0 z-10 cursor-pointer select-none hover:bg-graphite-300 text-left">
                   Model Name
-                  <span v-if="sortKey === 'name'" class="sort-indicator">
+                  <span v-if="sortKey === 'name'" class="inline-block ml-1 text-[10px] opacity-50">
                     {{ sortOrder === 'asc' ? '▲' : '▼' }}
                   </span>
                 </th>
-                <th @click="sortBy('in')" class="col-input">
+                <th @click="sortBy('in')" class="bg-graphite-400 text-white p-2 border-b-2 border-graphite-200 sticky top-0 z-10 cursor-pointer select-none hover:bg-graphite-300 text-right w-[200px]">
                   Input | $ 1M tokens
-                  <span v-if="sortKey === 'in'" class="sort-indicator">
+                  <span v-if="sortKey === 'in'" class="inline-block ml-1 text-[10px] opacity-50">
                     {{ sortOrder === 'asc' ? '▲' : '▼' }}
                   </span>
                 </th>
-                <th @click="sortBy('out')" class="col-output">
+                <th @click="sortBy('out')" class="bg-graphite-400 text-white p-2 border-b-2 border-graphite-200 sticky top-0 z-10 cursor-pointer select-none hover:bg-graphite-300 text-right w-[200px]">
                   Output | $ 1M tokens
-                  <span v-if="sortKey === 'out'" class="sort-indicator">
+                  <span v-if="sortKey === 'out'" class="inline-block ml-1 text-[10px] opacity-50">
                     {{ sortOrder === 'asc' ? '▲' : '▼' }}
                   </span>
                 </th>
-                <th @click="sortBy('context')" class="col-context">
+                <th @click="sortBy('context')" class="bg-graphite-400 text-white p-2 border-b-2 border-graphite-200 sticky top-0 z-10 cursor-pointer select-none hover:bg-graphite-300 text-right w-[100px]">
                   Context
-                  <span v-if="sortKey === 'context'" class="sort-indicator">
+                  <span v-if="sortKey === 'context'" class="inline-block ml-1 text-[10px] opacity-50">
                     {{ sortOrder === 'asc' ? '▲' : '▼' }}
                   </span>
                 </th>
-                <th @click="sortBy('vision')" class="col-vision">
+                <th @click="sortBy('vision')" class="bg-graphite-400 text-white p-2 border-b-2 border-graphite-200 sticky top-0 z-10 cursor-pointer select-none hover:bg-graphite-300 text-left w-[120px]">
                   Vision
-                  <span v-if="sortKey === 'vision'" class="sort-indicator">
+                  <span v-if="sortKey === 'vision'" class="inline-block ml-1 text-[10px] opacity-50">
                     {{ sortOrder === 'asc' ? '▲' : '▼' }}
                   </span>
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(model, name) in sortedModels" :key="name" @click="selectModel(name)">
-                <td>
+              <tr v-for="(model, name) in sortedModels" :key="name" @click="selectModel(name)" class="cursor-pointer transition-colors hover:bg-graphite-200">
+                <td class="p-2 border-b border-graphite-300">
                   <div>{{ model.title || name }}</div>
-                  <small v-if="model.title" style="opacity: 0.6;">{{ name }}</small>
+                  <small v-if="model.title" class="opacity-60">{{ name }}</small>
                 </td>
-                <td class="col-input">{{ model.in }}</td>
-                <td class="col-output">{{ model.out }}</td>
-                <td class="col-context">{{ formatContext(model.context) }}</td>
-                <td class="col-vision">
-                  <span :class="['badge', model.vision ? 'green' : 'gray']">
+                <td class="p-2 border-b border-graphite-300 text-right">{{ model.in }}</td>
+                <td class="p-2 border-b border-graphite-300 text-right">{{ model.out }}</td>
+                <td class="p-2 border-b border-graphite-300 text-right">{{ formatContext(model.context) }}</td>
+                <td class="p-2 border-b border-graphite-300">
+                  <span :class="['inline-block px-2 py-0.5 rounded text-[11px] font-bold', model.vision ? 'bg-green text-graphite-500' : 'bg-graphite-300 text-graphite-75']">
                     {{ model.vision ? 'Yes' : 'No' }}
                   </span>
                 </td>
               </tr>
             </tbody>
           </table>
-          <div v-else class="no-results">
+          <div v-else class="text-center py-8 text-graphite-75">
             No models found
           </div>
         </div>
@@ -198,8 +125,20 @@
           context: 256000,
           vision: false,
         },
-        "x-ai/grok-4": { title: "Grok 4", in: 3, out: 15, context: 256000, vision: true },
-        "x-ai/grok-3": { title: "Grok 3", in: 3, out: 15, context: 131072, vision: false },
+        "x-ai/grok-4": {
+          title: "Grok 4",
+          in: 3,
+          out: 15,
+          context: 256000,
+          vision: true,
+        },
+        "x-ai/grok-3": {
+          title: "Grok 3",
+          in: 3,
+          out: 15,
+          context: 131072,
+          vision: false,
+        },
         "x-ai/grok-3-mini": {
           title: "Grok 3 Mini",
           in: 0.3,
@@ -697,7 +636,13 @@
           context: 400000,
           vision: true,
         },
-        "openai/gpt-5.2": { title: "GPT-5.2", in: 1.75, out: 14, context: 400000, vision: true },
+        "openai/gpt-5.2": {
+          title: "GPT-5.2",
+          in: 1.75,
+          out: 14,
+          context: 400000,
+          vision: true,
+        },
         "openai/gpt-5.2-chat": {
           title: "GPT-5.2 Chat",
           in: 1.75,
@@ -712,7 +657,13 @@
           context: 400000,
           vision: true,
         },
-        "openai/gpt-5.1": { title: "GPT-5.1", in: 1.25, out: 10, context: 400000, vision: true },
+        "openai/gpt-5.1": {
+          title: "GPT-5.1",
+          in: 1.25,
+          out: 10,
+          context: 400000,
+          vision: true,
+        },
         "openai/gpt-5.1-chat": {
           title: "GPT-5.1 Chat",
           in: 1.25,
@@ -769,7 +720,13 @@
           context: 200000,
           vision: true,
         },
-        "openai/gpt-5-pro": { title: "GPT-5 Pro", in: 15, out: 120, context: 400000, vision: true },
+        "openai/gpt-5-pro": {
+          title: "GPT-5 Pro",
+          in: 15,
+          out: 120,
+          context: 400000,
+          vision: true,
+        },
         "openai/gpt-5-codex": {
           title: "GPT-5 Codex",
           in: 1.25,
@@ -791,7 +748,13 @@
           context: 128000,
           vision: true,
         },
-        "openai/gpt-5": { title: "GPT-5", in: 1.25, out: 10, context: 400000, vision: true },
+        "openai/gpt-5": {
+          title: "GPT-5",
+          in: 1.25,
+          out: 10,
+          context: 400000,
+          vision: true,
+        },
         "openai/gpt-5-mini": {
           title: "GPT-5 Mini",
           in: 0.25,
@@ -841,8 +804,20 @@
           context: 131072,
           vision: false,
         },
-        "openai/o3-pro": { title: "o3 Pro", in: 20, out: 80, context: 200000, vision: true },
-        "openai/codex-mini": { title: "Codex Mini", in: 1.5, out: 6, context: 200000, vision: true },
+        "openai/o3-pro": {
+          title: "o3 Pro",
+          in: 20,
+          out: 80,
+          context: 200000,
+          vision: true,
+        },
+        "openai/codex-mini": {
+          title: "Codex Mini",
+          in: 1.5,
+          out: 6,
+          context: 200000,
+          vision: true,
+        },
         "openai/o4-mini-high": {
           title: "o4-mini High",
           in: 1.1,
@@ -850,9 +825,27 @@
           context: 200000,
           vision: true,
         },
-        "openai/o3": { title: "o3", in: 2, out: 8, context: 200000, vision: true },
-        "openai/o4-mini": { title: "o4-mini", in: 1.1, out: 4.4, context: 200000, vision: true },
-        "openai/gpt-4.1": { title: "GPT-4.1", in: 2, out: 8, context: 1047576, vision: true },
+        "openai/o3": {
+          title: "o3",
+          in: 2,
+          out: 8,
+          context: 200000,
+          vision: true,
+        },
+        "openai/o4-mini": {
+          title: "o4-mini",
+          in: 1.1,
+          out: 4.4,
+          context: 200000,
+          vision: true,
+        },
+        "openai/gpt-4.1": {
+          title: "GPT-4.1",
+          in: 2,
+          out: 8,
+          context: 1047576,
+          vision: true,
+        },
         "openai/gpt-4.1-mini": {
           title: "GPT-4.1 Mini",
           in: 0.4,
@@ -867,7 +860,13 @@
           context: 1047576,
           vision: true,
         },
-        "openai/o1-pro": { title: "o1 Pro", in: 150, out: 600, context: 200000, vision: true },
+        "openai/o1-pro": {
+          title: "o1 Pro",
+          in: 150,
+          out: 600,
+          context: 200000,
+          vision: true,
+        },
         "openai/o3-mini-high": {
           title: "o3-mini High",
           in: 1.1,
@@ -875,8 +874,20 @@
           context: 200000,
           vision: false,
         },
-        "openai/o3-mini": { title: "o3-mini", in: 1.1, out: 4.4, context: 200000, vision: false },
-        "openai/o1": { title: "o1", in: 15, out: 60, context: 200000, vision: true },
+        "openai/o3-mini": {
+          title: "o3-mini",
+          in: 1.1,
+          out: 4.4,
+          context: 200000,
+          vision: false,
+        },
+        "openai/o1": {
+          title: "o1",
+          in: 15,
+          out: 60,
+          context: 200000,
+          vision: true,
+        },
         "openai/gpt-4o-mini-search-preview": {
           title: "GPT-4o Mini Search Preview",
           in: 0.15,
@@ -933,8 +944,20 @@
           context: 16385,
           vision: false,
         },
-        "openai/gpt-4-0314": { title: "GPT-4 (0314)", in: 30, out: 60, context: 8191, vision: false },
-        "openai/gpt-4": { title: "GPT-4", in: 30, out: 60, context: 8191, vision: false },
+        "openai/gpt-4-0314": {
+          title: "GPT-4 (0314)",
+          in: 30,
+          out: 60,
+          context: 8191,
+          vision: false,
+        },
+        "openai/gpt-4": {
+          title: "GPT-4",
+          in: 30,
+          out: 60,
+          context: 8191,
+          vision: false,
+        },
         "openai/gpt-3.5-turbo": {
           title: "GPT-3.5 Turbo",
           in: 0.5,
@@ -984,7 +1007,13 @@
           context: 128000,
           vision: true,
         },
-        "openai/gpt-4o": { title: "GPT-4o", in: 2.5, out: 10, context: 128000, vision: true },
+        "openai/gpt-4o": {
+          title: "GPT-4o",
+          in: 2.5,
+          out: 10,
+          context: 128000,
+          vision: true,
+        },
         "openai/gpt-4o:extended": {
           title: "GPT-4o Extended",
           in: 6,
@@ -992,17 +1021,72 @@
           context: 128000,
           vision: true,
         },
-        "anthropic/claude-opus-4.5": { title: "Claude Opus 4.5", in: 5, out: 25, context: 200000 },
-        "anthropic/claude-haiku-4.5": { title: "Claude Haiku 4.5", in: 1, out: 5, context: 200000 },
-        "anthropic/claude-sonnet-4.5": { title: "Claude Sonnet 4.5", in: 3, out: 15, context: 1000000 },
-        "anthropic/claude-opus-4.1": { title: "Claude Opus 4.1", in: 15, out: 75, context: 200000 },
-        "anthropic/claude-opus-4": { title: "Claude Opus 4", in: 15, out: 75, context: 200000 },
-        "anthropic/claude-sonnet-4": { title: "Claude Sonnet 4", in: 3, out: 15, context: 1000000 },
-        "anthropic/claude-3.7-sonnet": { title: "Claude 3.7 Sonnet", in: 3, out: 15, context: 200000 },
-        "anthropic/claude-3.5-haiku": { title: "Claude 3.5 Haiku", in: 0.8, out: 4, context: 200000 },
-        "anthropic/claude-3.5-sonnet": { title: "Claude 3.5 Sonnet", in: 6, out: 30, context: 200000 },
-        "anthropic/claude-3-haiku": { title: "Claude 3 Haiku", in: 0.25, out: 1.25, context: 200000 },
-        "anthropic/claude-3-opus": { title: "Claude 3 Opus", in: 15, out: 75, context: 200000 },
+        "anthropic/claude-opus-4.5": {
+          title: "Claude Opus 4.5",
+          in: 5,
+          out: 25,
+          context: 200000,
+        },
+        "anthropic/claude-haiku-4.5": {
+          title: "Claude Haiku 4.5",
+          in: 1,
+          out: 5,
+          context: 200000,
+        },
+        "anthropic/claude-sonnet-4.5": {
+          title: "Claude Sonnet 4.5",
+          in: 3,
+          out: 15,
+          context: 1000000,
+        },
+        "anthropic/claude-opus-4.1": {
+          title: "Claude Opus 4.1",
+          in: 15,
+          out: 75,
+          context: 200000,
+        },
+        "anthropic/claude-opus-4": {
+          title: "Claude Opus 4",
+          in: 15,
+          out: 75,
+          context: 200000,
+        },
+        "anthropic/claude-sonnet-4": {
+          title: "Claude Sonnet 4",
+          in: 3,
+          out: 15,
+          context: 1000000,
+        },
+        "anthropic/claude-3.7-sonnet": {
+          title: "Claude 3.7 Sonnet",
+          in: 3,
+          out: 15,
+          context: 200000,
+        },
+        "anthropic/claude-3.5-haiku": {
+          title: "Claude 3.5 Haiku",
+          in: 0.8,
+          out: 4,
+          context: 200000,
+        },
+        "anthropic/claude-3.5-sonnet": {
+          title: "Claude 3.5 Sonnet",
+          in: 6,
+          out: 30,
+          context: 200000,
+        },
+        "anthropic/claude-3-haiku": {
+          title: "Claude 3 Haiku",
+          in: 0.25,
+          out: 1.25,
+          context: 200000,
+        },
+        "anthropic/claude-3-opus": {
+          title: "Claude 3 Opus",
+          in: 15,
+          out: 75,
+          context: 200000,
+        },
         "google/gemini-3-flash-preview": {
           title: "Gemini 3 Flash Preview",
           in: 0.5,
@@ -1199,7 +1283,13 @@
           context: 262144,
           vision: true,
         },
-        "qwen/qwen3-max": { title: "Qwen3 Max", in: 1.2, out: 6, context: 256000, vision: false },
+        "qwen/qwen3-max": {
+          title: "Qwen3 Max",
+          in: 1.2,
+          out: 6,
+          context: 256000,
+          vision: false,
+        },
         "qwen/qwen3-coder-plus": {
           title: "Qwen3 Coder Plus",
           in: 1,
@@ -1298,7 +1388,13 @@
           context: 262144,
           vision: false,
         },
-        "qwen/qwen3-4b:free": { title: "Qwen3 4B (Free)", in: 0, out: 0, context: 40960, vision: false },
+        "qwen/qwen3-4b:free": {
+          title: "Qwen3 4B (Free)",
+          in: 0,
+          out: 0,
+          context: 40960,
+          vision: false,
+        },
         "qwen/qwen3-30b-a3b": {
           title: "Qwen3 30B A3B",
           in: 0.06,
@@ -1348,7 +1444,13 @@
           context: 16384,
           vision: true,
         },
-        "qwen/qwq-32b": { title: "QwQ 32B", in: 0.15, out: 0.4, context: 32768, vision: false },
+        "qwen/qwq-32b": {
+          title: "QwQ 32B",
+          in: 0.15,
+          out: 0.4,
+          context: 32768,
+          vision: false,
+        },
         "qwen/qwen-vl-plus": {
           title: "Qwen VL Plus",
           in: 0.21,
@@ -1377,8 +1479,20 @@
           context: 32768,
           vision: true,
         },
-        "qwen/qwen-plus": { title: "Qwen Plus", in: 0.4, out: 1.2, context: 131072, vision: false },
-        "qwen/qwen-max": { title: "Qwen Max", in: 1.6, out: 6.4, context: 32768, vision: false },
+        "qwen/qwen-plus": {
+          title: "Qwen Plus",
+          in: 0.4,
+          out: 1.2,
+          context: 131072,
+          vision: false,
+        },
+        "qwen/qwen-max": {
+          title: "Qwen Max",
+          in: 1.6,
+          out: 6.4,
+          context: 32768,
+          vision: false,
+        },
         "qwen/qwen-2.5-coder-32b-instruct": {
           title: "Qwen 2.5 Coder 32B Instruct",
           in: 0.03,
@@ -1487,7 +1601,13 @@
           context: 127000,
           vision: false,
         },
-        "perplexity/sonar": { title: "Sonar", in: 1, out: 1, context: 127072, vision: true },
+        "perplexity/sonar": {
+          title: "Sonar",
+          in: 1,
+          out: 1,
+          context: 127072,
+          vision: true,
+        },
         "perplexity/sonar-deep-research": {
           title: "Sonar Deep Research",
           in: 2,
@@ -1497,9 +1617,27 @@
         },
 
         // Z.AI (Zhipu) GLM models
-        "z-ai/glm-4.7": { title: "GLM 4.7", in: 0.44, out: 1.74, context: 202752, vision: false },
-        "z-ai/glm-4.6v": { title: "GLM 4.6V", in: 0.3, out: 0.9, context: 131072, vision: true },
-        "z-ai/glm-4.6": { title: "GLM 4.6", in: 0.39, out: 1.9, context: 204800, vision: false },
+        "z-ai/glm-4.7": {
+          title: "GLM 4.7",
+          in: 0.44,
+          out: 1.74,
+          context: 202752,
+          vision: false,
+        },
+        "z-ai/glm-4.6v": {
+          title: "GLM 4.6V",
+          in: 0.3,
+          out: 0.9,
+          context: 131072,
+          vision: true,
+        },
+        "z-ai/glm-4.6": {
+          title: "GLM 4.6",
+          in: 0.39,
+          out: 1.9,
+          context: 204800,
+          vision: false,
+        },
         "z-ai/glm-4.6:exacto": {
           title: "GLM 4.6 (Exacto)",
           in: 0.44,
@@ -1507,8 +1645,20 @@
           context: 204800,
           vision: false,
         },
-        "z-ai/glm-4.5v": { title: "GLM 4.5V", in: 0.48, out: 1.44, context: 65536, vision: true },
-        "z-ai/glm-4.5": { title: "GLM 4.5", in: 0.35, out: 1.55, context: 131072, vision: false },
+        "z-ai/glm-4.5v": {
+          title: "GLM 4.5V",
+          in: 0.48,
+          out: 1.44,
+          context: 65536,
+          vision: true,
+        },
+        "z-ai/glm-4.5": {
+          title: "GLM 4.5",
+          in: 0.35,
+          out: 1.55,
+          context: 131072,
+          vision: false,
+        },
         "z-ai/glm-4.5-air:free": {
           title: "GLM 4.5 Air (Free)",
           in: 0,
@@ -1523,7 +1673,13 @@
           context: 131072,
           vision: false,
         },
-        "z-ai/glm-4-32b": { title: "GLM 4 32B", in: 0.1, out: 0.1, context: 128000, vision: false },
+        "z-ai/glm-4-32b": {
+          title: "GLM 4 32B",
+          in: 0.1,
+          out: 0.1,
+          context: 128000,
+          vision: false,
+        },
 
         // NVIDIA
         "nvidia/nemotron-3-nano-30b-a3b:free": {
@@ -2281,7 +2437,13 @@
         },
 
         // AionLabs
-        "aion-labs/aion-1.0": { title: "Aion 1.0", in: 4, out: 8, context: 131072, vision: false },
+        "aion-labs/aion-1.0": {
+          title: "Aion 1.0",
+          in: 4,
+          out: 8,
+          context: 131072,
+          vision: false,
+        },
         "aion-labs/aion-1.0-mini": {
           title: "Aion 1.0 Mini",
           in: 0.7,
@@ -2378,7 +2540,13 @@
           context: 6144,
           vision: false,
         },
-        "mancer/weaver": { title: "Weaver", in: 0.75, out: 1, context: 8000, vision: false },
+        "mancer/weaver": {
+          title: "Weaver",
+          in: 0.75,
+          out: 1,
+          context: 8000,
+          vision: false,
+        },
         "undi95/remm-slerp-l2-13b": {
           title: "REMM SLERP L2 13B",
           in: 0.45,
@@ -2401,9 +2569,9 @@
         template: piper.appRoot.querySelector("#app-tpl").textContent,
         setup() {
           const models = ref(MODELS);
-          const searchQuery = ref('');
+          const searchQuery = ref("");
           const sortKey = ref(null);
-          const sortOrder = ref('asc');
+          const sortOrder = ref("asc");
 
           const filteredModels = Vue.computed(() => {
             if (!searchQuery.value.trim()) {
@@ -2415,7 +2583,8 @@
 
             for (const [name, model] of Object.entries(models.value)) {
               const nameMatch = name.toLowerCase().includes(query);
-              const titleMatch = model.title && model.title.toLowerCase().includes(query);
+              const titleMatch =
+                model.title && model.title.toLowerCase().includes(query);
 
               if (nameMatch || titleMatch) {
                 filtered[name] = model;
@@ -2438,10 +2607,10 @@
 
               let valueA, valueB;
 
-              if (sortKey.value === 'name') {
+              if (sortKey.value === "name") {
                 valueA = nameA.toLowerCase();
                 valueB = nameB.toLowerCase();
-              } else if (sortKey.value === 'vision') {
+              } else if (sortKey.value === "vision") {
                 valueA = modelA.vision ? 1 : 0;
                 valueB = modelB.vision ? 1 : 0;
               } else {
@@ -2450,10 +2619,10 @@
               }
 
               if (valueA < valueB) {
-                return sortOrder.value === 'asc' ? -1 : 1;
+                return sortOrder.value === "asc" ? -1 : 1;
               }
               if (valueA > valueB) {
-                return sortOrder.value === 'asc' ? 1 : -1;
+                return sortOrder.value === "asc" ? 1 : -1;
               }
               return 0;
             });
@@ -2467,10 +2636,10 @@
 
           const sortBy = (key) => {
             if (sortKey.value === key) {
-              sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+              sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
             } else {
               sortKey.value = key;
-              sortOrder.value = 'asc';
+              sortOrder.value = "asc";
             }
           };
 
@@ -2502,13 +2671,6 @@
           };
         },
       });
-
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = piper.mode === 'dev'
-        ? '../ui.css'
-        : 'https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@6f07f1b585e0b0d9d7e3515dc8447c692bfb9501/nodes/ui.css';
-      piper.appRoot.appendChild(link);
 
       console.log("Creating app...");
       const app = createApp(App);

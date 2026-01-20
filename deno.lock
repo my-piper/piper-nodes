@@ -1,5 +1,13 @@
 {
   "version": "5",
+  "specifiers": {
+    "jsr:@std/encoding@1": "1.0.10"
+  },
+  "jsr": {
+    "@std/encoding@1.0.10": {
+      "integrity": "8783c6384a2d13abd5e9e87a7ae0520a30e9f56aeeaa3bdf910a3eaaf5c811a1"
+    }
+  },
   "remote": {
     "https://cdn.jsdelivr.net/gh/my-piper/piper-node@v2.0.1/index.js": "87f30e0a30326ea10a64a358b364f530a88af5a576a66415f36de85b8acc0bd3",
     "https://cdn.jsdelivr.net/gh/my-piper/piper-node@v2.0.1/utils/download.js": "1ce373ab1c0265c80a8c851dc5fc4838dee01363933b78124c6e1a15eb737b19",
