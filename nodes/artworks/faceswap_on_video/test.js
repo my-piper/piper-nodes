@@ -42,7 +42,7 @@ Deno.test("ArtWorks Face Swap Video: swap face on video", async () => {
     inputs: {
       face: "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/girl_posting.jpg",
       video:
-        "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/girl_posting.mp4",
+        "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/gir_camera_posing.mp4",
     },
   });
   console.log("Face swap video result:", video);
