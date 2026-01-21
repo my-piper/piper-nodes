@@ -68,7 +68,7 @@ Deno.test("ArtWorks Inpaint Image: inpaint image with mask", async () => {
       prompt: "reddress fashionable clothes",
       checkpoint: "juggernautXL_v9Rundiffusionphoto2.safetensors",
       performance: "express",
-      denoisingStrength: 0.8,
+      denoisingStrength: 0.9,
       cfgScale: 7,
       batchSize: 1,
       imageSize: "auto:auto",

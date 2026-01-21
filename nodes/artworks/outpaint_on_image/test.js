@@ -59,7 +59,6 @@ Deno.test("ArtWorks Outpaint on Image: costs are zero for user scope", () => {
 
 Deno.test({
   name: "ArtWorks Outpaint on Image: outpaint image with custom distances",
-  ignore: !ARTWORKS_USER || !ARTWORKS_PASSWORD,
   fn: async () => {
     const {
       costs: resultCosts,
