@@ -1,108 +1,43 @@
-const CHECK_TASK_INTERVAL = 1000;
-const MAX_ATTEMPTS = 20;
+import { next } from "../../../utils/node.js";
+import { ArtWorks } from "../utils.js";
 
-export async function costs({ env }) {
+export function costs({ env }) {
   if (env.scope.ARTWORKS_USER === "user") {
     return 0;
   }
   return 0.001;
 }
 
-export async function run({ inputs, state, env }) {
-  const { throwError, repeat, next } = require("@piper/node");
-  const { ArtWorks, FatalError } = require("artworks");
+const CHECK_INTERVAL = 1_000;
+const MAX_ATTEMPTS = 100;
 
-  const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
-  if (!ARTWORKS_USER) {
-    throwError.fatal("Please, set ARTWORKS_USER in environment");
-  }
-  if (!ARTWORKS_PASSWORD) {
-    throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
-  }
-
-  const artworks = new ArtWorks({
-    baseUrl: "https://api.artworks.ai",
-    username: ARTWORKS_USER,
-    password: ARTWORKS_PASSWORD,
+export async function run({ env, inputs, state }) {
+  const artworks = new ArtWorks(env, {
+    checkInterval: CHECK_INTERVAL,
+    maxAttempts: MAX_ATTEMPTS,
   });
 
   if (!state) {
     const { image } = inputs;
 
-    const payload = {
+    return await artworks.createTask({
       type: "score-aesthetics",
-      isFast: true,
       payload: {
         base64: false,
         image,
       },
-    };
-
-    console.log(JSON.stringify(payload, null, 2));
-
-    try {
-      const task = await artworks.createTask(payload);
-      console.log(`Task created ${task}`);
-      return repeat({
-        state: {
-          task,
-          attempt: 0,
-          startedAt: new Date().toISOString(),
-        },
-        progress: {
-          total: MAX_ATTEMPTS,
-          processed: 0,
-        },
-        delay: 2000,
-      });
-    } catch (e) {
-      if (e instanceof FatalError) {
-        throwError.fatal(e.message);
-      }
-      throw e;
-    }
-  } else {
-    const { task, attempt, startedAt } = state;
-
-    if (attempt > MAX_ATTEMPTS) {
-      try {
-        await artworks.cancelTask(task);
-      } catch (e) {}
-
-      const now = new Date();
-      const time = (now - new Date(startedAt)) / 1000;
-      throwError.timeout(`Task ${task} timeout in ${time} sec`);
-    }
-
-    console.log(`Check task ${attempt} ${task}`);
-
-    try {
-      const results = await artworks.checkState(task);
-      if (!results) {
-        return repeat({
-          delay: CHECK_TASK_INTERVAL,
-          state: {
-            task,
-            attempt: attempt + 1,
-            startedAt,
-          },
-          progress: {
-            total: MAX_ATTEMPTS,
-            processed: attempt,
-          },
-        });
-      }
-      return next({
-        outputs: {
-          scores: results,
-        },
-        costs: costs({ env, inputs }),
-      });
-    } catch (e) {
-      if (e instanceof FatalError) {
-        throwError.fatal(e.message);
-      }
-      throw e;
-    }
+    });
   }
+
+  const results = await artworks.checkState(state);
+  if ("__repeat" in results) {
+    return results.__repeat;
+  }
+
+  return next({
+    outputs: {
+      scores: results,
+    },
+    costs: costs({ env, inputs }),
+  });
 }

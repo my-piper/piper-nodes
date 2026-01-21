@@ -1,30 +1,32 @@
-const CHECK_TASK_INTERVAL = 3000;
-const MAX_ATTEMPTS = 10;
+import { Image } from "https://deno.land/x/imagescript@1.2.15/mod.ts";
+import { next, throwError } from "../../../utils/node.js";
+import { ArtWorks } from "../utils.js";
 
-export async function costs({ env }) {
+export function costs({ env }) {
   if (env.scope.ARTWORKS_USER === "user") {
     return 0;
   }
   return 0.005;
 }
 
+const CHECK_INTERVAL = 3_000;
+const MAX_ATTEMPTS = 10;
+
 const FIT_FACE_SIZE = 512;
 
-export async function fit(image, { maxWidth, maxHeight }) {
-  const { width, height } = await image.metadata();
+export function fit(image, { maxWidth, maxHeight }) {
+  const { width, height } = image;
   const orientation = width >= height ? "-" : "|";
-
-  const sharp = require("sharp/lib/index.js");
 
   switch (orientation) {
     case "-":
       if (width > maxWidth) {
-        return sharp(await image.resize({ width: maxWidth }).toBuffer());
+        return image.resize(maxWidth, Image.RESIZE_AUTO);
       }
       break;
     case "|":
       if (height > maxHeight) {
-        return sharp(await image.resize({ height: maxHeight }).toBuffer());
+        return image.resize(Image.RESIZE_AUTO, maxHeight);
       }
       break;
   }
@@ -33,10 +35,7 @@ export async function fit(image, { maxWidth, maxHeight }) {
 }
 
 export async function crop(source, face) {
-  const sharp = require("sharp/lib/index.js");
-
-  const image = await sharp(source);
-  const metadata = await image.metadata();
+  const image = await Image.decode(source);
 
   const UNCROP = 0.6;
 
@@ -52,142 +51,69 @@ export async function crop(source, face) {
 
   const [left, top] = [Math.max(x, 0), Math.max(y, 0)];
   [width, height] = [
-    Math.min(width, metadata.width - left),
-    Math.min(height, metadata.height - top),
+    Math.min(width, image.width - left),
+    Math.min(height, image.height - top),
   ];
 
-  const crop = {
-    left,
-    top,
-    width,
-    height,
-  };
+  let cropped = image.crop(left, top, width, height);
 
-  const area = await fit(await image.clone().extract(crop).webp(), {
+  cropped = fit(cropped, {
     maxWidth: FIT_FACE_SIZE,
     maxHeight: FIT_FACE_SIZE,
   });
 
-  return area.toBuffer();
+  return await cropped.encode();
 }
 
 export async function run({ env, inputs, state }) {
-  const { throwError, repeat, next, download } = require("@piper/node");
-  const { ArtWorks, FatalError } = require("artworks");
-
-  const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
-  if (!ARTWORKS_USER) {
-    throwError.fatal("Please, set ARTWORKS_USER in environment");
-  }
-  if (!ARTWORKS_PASSWORD) {
-    throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
-  }
-
-  const artworks = new ArtWorks({
-    baseUrl: "https://api.artworks.ai",
-    username: ARTWORKS_USER,
-    password: ARTWORKS_PASSWORD,
+  const artworks = new ArtWorks(env, {
+    checkInterval: CHECK_INTERVAL,
+    maxAttempts: MAX_ATTEMPTS,
   });
 
   if (!state) {
     const { image } = inputs;
 
-    const payload = {
+    return await artworks.createTask({
       type: "detect-faces",
-      isFast: true,
       payload: {
         base64: false,
         image,
         features: ["age", "gender", "race", "emotion"],
       },
-    };
-
-    console.log(JSON.stringify(payload, null, 2));
-
-    try {
-      const task = await artworks.createTask(payload);
-      console.log(`Task created ${task}`);
-      return repeat({
-        state: {
-          task,
-          attempt: 0,
-          startedAt: new Date().toISOString(),
-        },
-        progress: {
-          total: MAX_ATTEMPTS,
-          processed: 0,
-        },
-        delay: 2000,
-      });
-    } catch (e) {
-      if (e instanceof FatalError) {
-        throwError.fatal(e.message);
-      }
-      throw e;
-    }
-  } else {
-    const { task, attempt, startedAt } = state;
-
-    if (attempt > MAX_ATTEMPTS) {
-      try {
-        await artworks.cancelTask(task);
-      } catch (e) {}
-
-      const now = new Date();
-      const time = (now - new Date(startedAt)) / 1000;
-      throwError.timeout(`Task ${task} timeout in ${time} sec`);
-    }
-
-    console.log(`Check task ${attempt} ${task}`);
-
-    try {
-      const results = await artworks.checkState(task);
-      if (!results) {
-        return repeat({
-          delay: CHECK_TASK_INTERVAL,
-          state: {
-            task,
-            attempt: attempt + 1,
-            startedAt,
-          },
-          progress: {
-            total: MAX_ATTEMPTS,
-            processed: attempt,
-          },
-        });
-      }
-      const { faces } = results;
-      const { image, index } = inputs;
-      const face = faces[index];
-      if (!face) {
-        throwError.fatal("Face with such index was not found");
-      }
-      const { x, y, width, height, ageFrom, ageTo, gender, race, emotion } =
-        face;
-      const { data } = await download(image);
-      return next({
-        outputs: {
-          face: await crop(data, {
-            x,
-            y,
-            width,
-            height,
-          }),
-          features: {
-            ageFrom,
-            ageTo,
-            gender,
-            race,
-            emotion,
-          },
-          costs: costs({ env, inputs }),
-        },
-      });
-    } catch (e) {
-      if (e instanceof FatalError) {
-        throwError.fatal(e.message);
-      }
-      throw e;
-    }
+    });
   }
+
+  const results = await artworks.checkState(state);
+  if ("__repeat" in results) {
+    return results.__repeat;
+  }
+
+  const { faces } = results;
+  const { image, index } = inputs;
+  const face = faces[index];
+  if (!face) {
+    throwError.fatal("Face with such index was not found");
+  }
+  const { x, y, width, height, ageFrom, ageTo, gender, race, emotion } = face;
+  const response = await fetch(image);
+  const data = new Uint8Array(await response.arrayBuffer());
+  return next({
+    outputs: {
+      face: await crop(data, {
+        x,
+        y,
+        width,
+        height,
+      }),
+      features: {
+        ageFrom,
+        ageTo,
+        gender,
+        race,
+        emotion,
+      },
+    },
+    costs: costs({ env, inputs }),
+  });
 }

@@ -10,7 +10,7 @@ NC='\033[0m' # No Color
 # Default values
 FILTER=""
 FILE_PATTERN="**/*test.js"
-PERMISSIONS="--allow-net --allow-read --allow-env"
+PERMISSIONS="--allow-net --allow-read --allow-write --allow-env"
 WATCH=false
 COVERAGE=false
 NO_CHECK=true

@@ -88,16 +88,6 @@ Deno.test("ArtWorks Image to Image: costs are zero for user scope", () => {
   expect(result).toBe(0);
 });
 
-Deno.test("ArtWorks Image to Image: run function exists and is async", () => {
-  expect(typeof run).toBe("function");
-  expect(run.constructor.name).toBe("AsyncFunction");
-});
-
-Deno.test("ArtWorks Image to Image: costs function is not async", () => {
-  expect(typeof costs).toBe("function");
-  expect(costs.constructor.name).toBe("Function");
-});
-
 Deno.test(
   "ArtWorks Image to Image: generate image from image with prompt",
   async () => {

@@ -1,9 +1,6 @@
 import { Image } from "https://deno.land/x/imagescript@1.2.15/mod.ts";
-import { next, repeat, throwError } from "../../../utils/node.js";
-import { ArtWorks, FatalError, fitSize } from "../utils.js";
-
-const CHECK_TASK_INTERVAL = 3000;
-const MAX_ATTEMPTS = 100;
+import { next } from "../../../utils/node.js";
+import { ArtWorks, fitSize } from "../utils.js";
 
 export function costs({ env, inputs }) {
   if (env.scope.ARTWORKS_USER === "user") {
@@ -26,19 +23,13 @@ export function costs({ env, inputs }) {
   return batchSize * imageCost;
 }
 
-export async function run({ env, inputs, state }) {
-  const { ARTWORKS_USER, ARTWORKS_PASSWORD } = env.variables;
-  if (!ARTWORKS_USER) {
-    throwError.fatal("Please, set ARTWORKS_USER in environment");
-  }
-  if (!ARTWORKS_PASSWORD) {
-    throwError.fatal("Please, set ARTWORKS_PASSWORD in environment");
-  }
+const CHECK_INTERVAL = 3_000;
+const MAX_ATTEMPTS = 100;
 
-  const artworks = new ArtWorks({
-    baseUrl: "https://api.artworks.ai",
-    username: ARTWORKS_USER,
-    password: ARTWORKS_PASSWORD,
+export async function run({ env, inputs, state }) {
+  const artworks = new ArtWorks(env, {
+    checkInterval: CHECK_INTERVAL,
+    maxAttempts: MAX_ATTEMPTS,
   });
 
   if (!state) {
@@ -56,9 +47,9 @@ export async function run({ env, inputs, state }) {
       // SDXL
       sharpness,
     } = inputs;
-    const payload = {
+
+    return await artworks.createTask({
       type: "image-to-image",
-      isFast: true,
       payload: {
         base64: false,
         image,
@@ -91,74 +82,19 @@ export async function run({ env, inputs, state }) {
         // SDXL
         sharpness,
       },
-    };
-
-    try {
-      const task = await artworks.createTask(payload);
-      console.log(`Task created ${task}`);
-      return repeat({
-        state: {
-          task,
-          attempt: 0,
-          startedAt: new Date().toISOString(),
-        },
-        progress: {
-          total: MAX_ATTEMPTS,
-          processed: 0,
-        },
-        delay: CHECK_TASK_INTERVAL,
-      });
-    } catch (e) {
-      if (e instanceof FatalError) {
-        throwError.fatal(e.message);
-      }
-      throw e;
-    }
-  } else {
-    const { task, attempt, startedAt } = state;
-
-    if (attempt > MAX_ATTEMPTS) {
-      try {
-        await artworks.cancelTask(task);
-      } catch (_e) {
-        // Ignore errors when canceling task
-      }
-
-      const now = new Date();
-      const time = (now - new Date(startedAt)) / 1000;
-      throwError.timeout(`Task ${task} timeout in ${time} sec`);
-    }
-
-    console.log(`Check task ${attempt} ${task}`);
-
-    try {
-      const results = await artworks.checkState(task);
-      if (!results) {
-        return repeat({
-          delay: CHECK_TASK_INTERVAL,
-          state: {
-            task,
-            attempt: attempt + 1,
-            startedAt,
-          },
-          progress: {
-            total: MAX_ATTEMPTS,
-            processed: attempt,
-          },
-        });
-      }
-      const images = results.images.map((i) => i.url);
-      return next({
-        outputs: {
-          images,
-        },
-        costs: costs({ env, inputs }),
-      });
-    } catch (e) {
-      if (e instanceof FatalError) {
-        throwError.fatal(e.message);
-      }
-      throw e;
-    }
+    });
   }
+
+  const results = await artworks.checkState(state);
+  if ("__repeat" in results) {
+    return results.__repeat;
+  }
+
+  const images = results.images.map((i) => i.url);
+  return next({
+    outputs: {
+      images,
+    },
+    costs: costs({ env, inputs }),
+  });
 }

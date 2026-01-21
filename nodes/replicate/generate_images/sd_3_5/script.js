@@ -67,7 +67,7 @@ export async function run({ env, inputs, state }) {
     const { task, retries = 0 } = state;
 
     const output = await getOutput({ apiToken: REPLICATE_TOKEN }, task);
-    if (!output) {
+    if (output) {
       if (retries >= MAX_RETRIES) {
         throwError.timeout();
       }
