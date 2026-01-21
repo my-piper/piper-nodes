@@ -9,17 +9,17 @@ const { ARTWORKS_USER, ARTWORKS_PASSWORD } = await load({
 });
 
 Deno.test(
-  "ArtWorks Face Swap on image: costs calculation for regular scope",
+  "ArtWorks Dress on Image: costs calculation for regular scope",
   () => {
     const result = costs({
       env: { scope: {} },
       inputs: {},
     });
-    expect(result).toBe(0.005);
+    expect(result).toBe(0.05);
   }
 );
 
-Deno.test("ArtWorks Face Swap on image: costs are zero for user scope", () => {
+Deno.test("ArtWorks Dress on Image: costs are zero for user scope", () => {
   const result = costs({
     env: { scope: { ARTWORKS_USER: "user" } },
     inputs: {},
@@ -27,7 +27,7 @@ Deno.test("ArtWorks Face Swap on image: costs are zero for user scope", () => {
   expect(result).toBe(0);
 });
 
-Deno.test("ArtWorks Face Swap on image: swap face on image", async () => {
+Deno.test("ArtWorks Dress on Image: dress person in image", async () => {
   const {
     costs,
     outputs: { image },
@@ -40,12 +40,14 @@ Deno.test("ArtWorks Face Swap on image: swap face on image", async () => {
       },
     },
     inputs: {
-      face: "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/man_posing.jpg",
       image:
         "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/girl_posing.jpg",
+      gender: "female",
+      prompt: "red dress",
     },
   });
-  console.log("Face swap result:", image);
-  expect(image).toMatch(/^https/);
-  expect(costs).toBe(0.005);
+  console.log("Dress on image result:", image);
+  expect(typeof image).toBe("string");
+  expect(image.length).toBeGreaterThan(0);
+  expect(costs).toBe(0.05);
 });

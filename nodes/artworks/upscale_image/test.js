@@ -87,7 +87,7 @@ Deno.test("ArtWorks Upscale Image: costs function is not async", () => {
 
 Deno.test("ArtWorks Upscale Image: upscale image with 2x resize", async () => {
   const {
-    costs: resultCosts,
+    costs,
     outputs: { image },
   } = await runNode(run, {
     env: {
@@ -98,12 +98,13 @@ Deno.test("ArtWorks Upscale Image: upscale image with 2x resize", async () => {
       },
     },
     inputs: {
-      image: "https://httpbin.org/image/jpeg",
-      upscalingResize: 2,
+      image:
+        "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/man_posing.jpg",
+      upscalingResize: 4,
     },
   });
   console.log("Upscaled image URL:", image);
   expect(typeof image).toBe("string");
   expect(image).toMatch(/^https/);
-  expect(resultCosts).toBe(0.01); // 0.005 * 2
+  expect(costs).toBe(0.02); // 0.005 * 4
 });

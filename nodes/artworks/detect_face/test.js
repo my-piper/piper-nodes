@@ -40,7 +40,7 @@ Deno.test(
       },
       inputs: {
         image:
-          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800",
+          "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/man_posing.jpg",
         index: 0,
       },
     });

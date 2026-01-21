@@ -8,13 +8,16 @@ const { ARTWORKS_USER, ARTWORKS_PASSWORD } = await load({
   export: true,
 });
 
-Deno.test("ArtWorks Classify Image: costs calculation for regular scope", () => {
-  const result = costs({
-    env: { scope: {} },
-    inputs: {},
-  });
-  expect(result).toBe(0.0001);
-});
+Deno.test(
+  "ArtWorks Classify Image: costs calculation for regular scope",
+  () => {
+    const result = costs({
+      env: { scope: {} },
+      inputs: {},
+    });
+    expect(result).toBe(0.0001);
+  }
+);
 
 Deno.test("ArtWorks Classify Image: costs are zero for user scope", () => {
   const result = costs({
@@ -39,26 +42,20 @@ Deno.test(
         },
       },
       inputs: {
-        image: "https://picsum.photos/400/300",
+        image:
+          "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/man_posing.jpg",
         labels: {
-          outdoor: "outdoor scene",
-          indoor: "indoor scene",
-          nature: "nature or landscape",
-          urban: "urban or city scene",
+          male: "man posing",
+          female: "girl posing",
         },
       },
     });
     console.log("Classification results:", labels);
     expect(typeof labels).toBe("object");
-    expect(labels).toHaveProperty("outdoor");
-    expect(labels).toHaveProperty("indoor");
-    expect(labels).toHaveProperty("nature");
-    expect(labels).toHaveProperty("urban");
-    expect(typeof labels.outdoor).toBe("number");
-    expect(typeof labels.indoor).toBe("number");
-    expect(typeof labels.nature).toBe("number");
-    expect(typeof labels.urban).toBe("number");
+    expect(labels).toHaveProperty("male");
+    expect(labels).toHaveProperty("female");
+    expect(typeof labels.male).toBe("number");
+    expect(typeof labels.female).toBe("number");
     expect(actualCosts).toBe(0.0001);
   }
 );
-

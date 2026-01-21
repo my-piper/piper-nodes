@@ -103,8 +103,9 @@ Deno.test(
         },
       },
       inputs: {
-        image: "https://httpbin.org/image/jpeg",
-        prompt: "a beautiful sunset over mountains",
+        image:
+          "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/man_posing.jpg",
+        prompt: "a beautiful man posing in nature, high detail, photorealistic",
         checkpoint: "juggernautXL_v9Rundiffusionphoto2.safetensors",
         performance: "express",
         batchSize: 2,
@@ -122,7 +123,7 @@ Deno.test(
 );
 
 Deno.test(
-  "ArtWorks Image to Image: generate with custom imageSize",
+  "ArtWorks Image to Image: generate with custom image size",
   async () => {
     const {
       costs: resultCosts,
@@ -136,8 +137,9 @@ Deno.test(
         },
       },
       inputs: {
-        image: "https://httpbin.org/image/jpeg",
-        prompt: "a beautiful landscape",
+        image:
+          "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/man_posing.jpg",
+        prompt: "a beautiful man posing in nature, high detail, photorealistic",
         checkpoint: "juggernautXL_v9Rundiffusionphoto2.safetensors",
         performance: "express",
         denoisingStrength: 0.5,

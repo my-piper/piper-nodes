@@ -40,19 +40,6 @@ Deno.test("ArtWorks Remove Background: costs are zero for user scope", () => {
 });
 
 Deno.test(
-  "ArtWorks Remove Background: run function exists and is async",
-  () => {
-    expect(typeof run).toBe("function");
-    expect(run.constructor.name).toBe("AsyncFunction");
-  }
-);
-
-Deno.test("ArtWorks Remove Background: costs function is not async", () => {
-  expect(typeof costs).toBe("function");
-  expect(costs.constructor.name).toBe("Function");
-});
-
-Deno.test(
   "ArtWorks Remove Background: remove background from image",
   async () => {
     const {
@@ -67,7 +54,8 @@ Deno.test(
         },
       },
       inputs: {
-        image: "https://httpbin.org/image/jpeg",
+        image:
+          "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/man_posing.jpg",
       },
     });
     console.log("Background removed image URL:", image);

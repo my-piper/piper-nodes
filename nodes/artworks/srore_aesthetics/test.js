@@ -43,7 +43,7 @@ Deno.test(
       },
       inputs: {
         image:
-          "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
+          "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/man_posing.jpg",
       },
     });
     console.log("Aesthetics scores:", scores);

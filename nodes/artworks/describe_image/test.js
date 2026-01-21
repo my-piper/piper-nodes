@@ -42,7 +42,8 @@ Deno.test(
         },
       },
       inputs: {
-        image: "https://httpbin.org/image/jpeg",
+        image:
+          "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/man_posing.jpg",
         details: "high",
       },
     });

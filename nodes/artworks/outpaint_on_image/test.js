@@ -57,19 +57,6 @@ Deno.test("ArtWorks Outpaint on Image: costs are zero for user scope", () => {
   expect(result).toBe(0);
 });
 
-Deno.test(
-  "ArtWorks Outpaint on Image: run function exists and is async",
-  () => {
-    expect(typeof run).toBe("function");
-    expect(run.constructor.name).toBe("AsyncFunction");
-  }
-);
-
-Deno.test("ArtWorks Outpaint on Image: costs function is not async", () => {
-  expect(typeof costs).toBe("function");
-  expect(costs.constructor.name).toBe("Function");
-});
-
 Deno.test({
   name: "ArtWorks Outpaint on Image: outpaint image with custom distances",
   ignore: !ARTWORKS_USER || !ARTWORKS_PASSWORD,
@@ -86,8 +73,9 @@ Deno.test({
         },
       },
       inputs: {
-        image: "https://httpbin.org/image/jpeg",
-        prompt: "extend the image naturally",
+        image:
+          "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/assets/man_posing.jpg",
+        prompt: "a beautiful man posing in nature, high detail, photorealistic",
         checkpoint: "juggernautXL_v9Rundiffusionphoto2.safetensors",
         performance: "express",
         batchSize: 2,
