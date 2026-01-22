@@ -7,7 +7,7 @@ Removed the following items from the refactoring specification as they are **NOT
 ### ❌ Removed Requirements:
 
 1. **Update `CHECK_INTERVAL`** - Keep existing values (varies by node: 1000ms or 2000ms)
-2. **Update `MAX_RETRIES`** - Keep existing values (varies by node: 20, 30, 40, 60, 90, 100)
+2. **Update `MAX_ATTEMPTS`** - Keep existing values (varies by node: 20, 30, 40, 60, 90, 100)
 
 These constants are already appropriately set for each node based on their expected generation times and should not be changed during refactoring.
 
@@ -31,6 +31,7 @@ The refactoring checklist has been reduced from 10 to 8 steps:
 ## 📋 Key Refactoring Changes
 
 ### What to Change:
+
 - ✅ Add ES6 imports
 - ✅ Remove `catchError` function
 - ✅ Remove `require("@piper/node")`
@@ -40,8 +41,9 @@ The refactoring checklist has been reduced from 10 to 8 steps:
 - ✅ Remove `try-catch` blocks
 
 ### What NOT to Change:
+
 - ❌ `CHECK_INTERVAL` - Keep as is
-- ❌ `MAX_RETRIES` - Keep as is
+- ❌ `MAX_ATTEMPTS` - Keep as is
 - ❌ `costs()` function - Keep as is
 - ❌ Input destructuring - Keep as is
 - ❌ Payload construction - Keep as is
@@ -77,4 +79,3 @@ Use the updated specification to refactor the remaining 17 nodes:
 - [ ] ideogram_v3_character
 - [ ] nano_banana
 - [ ] nano_banana_pro
-

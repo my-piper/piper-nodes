@@ -1,4 +1,4 @@
-import { throwError } from "../../utils/node.js";
+import { repeat, throwError } from "../../utils/node.js";
 
 export async function catchError(res) {
   if (!res.ok) {
@@ -9,49 +9,91 @@ export async function catchError(res) {
 
 const BASE_URL = "https://api.replicate.com";
 
-export async function predict({ apiToken, version = "v1" }, endpoint, payload) {
-  const url = [BASE_URL, version, endpoint].join("/");
-  console.log("Sending request to", url);
-  console.log(JSON.stringify(payload, null, 2));
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      input: payload,
-    }),
-  });
+export class Replicate {
+  apiToken;
+  options;
+  constructor(env, options = {}) {
+    const { REPLICATE_TOKEN } = env.variables;
+    if (!REPLICATE_TOKEN) {
+      throwError.fatal("Please, set your API token for Replicate AI");
+    }
 
-  await catchError(res);
-  const { id: task } = await res.json();
-  return task;
-}
+    this.apiToken = REPLICATE_TOKEN;
+    this.options = {
+      version: "v1",
+      checkInterval: 3_000,
+      maxAttempts: 100,
+      ...options,
+    };
+  }
 
-export async function getOutput({ apiToken, version = "v1" }, task) {
-  const url = [BASE_URL, version, `predictions/${task}`].join("/");
-  const res = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${apiToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-  await catchError(res);
+  async createTask(endpoint, payload) {
+    const { version, checkInterval: delay } = this.options;
+    const url = [BASE_URL, version, endpoint].join("/");
+    console.log("Sending request to", url);
+    console.log(JSON.stringify(payload, null, 2));
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        input: payload,
+      }),
+    });
 
-  const { status, error, output } = await res.json();
-  switch (status) {
-    case "starting":
-    case "processing":
-      return null;
-    case "failed":
-    case "canceled":
-      throwError.fatal(error || "Generation failed");
-      break;
-    case "succeeded":
-      return output;
-    default:
-      throwError.fatal(`Unknown status: ${status}`);
+    await catchError(res);
+    const { id: task } = await res.json();
+    return repeat({
+      state: { task, createdAt: new Date().toISOString() },
+      delay,
+    });
+  }
+
+  async checkTask(state) {
+    const { task, attempt = 0, startedAt } = state;
+
+    const { version } = this.options;
+    const url = [BASE_URL, version, `predictions/${task}`].join("/");
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${this.apiToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    await catchError(res);
+
+    const { status, error, output } = await res.json();
+    switch (status) {
+      case "starting":
+      case "processing": {
+        const { maxAttempts, checkInterval } = this.options;
+        if (attempt >= maxAttempts) {
+          const now = new Date();
+          const time = (now - new Date(startedAt)) / 1_000;
+          throwError.timeout(`Task ${task} timeout in ${time} sec`);
+        }
+        return {
+          __repeat: repeat({
+            state: { task, attempt: attempt + 1 },
+            progress: {
+              total: maxAttempts,
+              processed: attempt,
+            },
+            delay: checkInterval,
+          }),
+        };
+      }
+      case "failed":
+      case "canceled":
+        throwError.fatal(error || "Generation failed");
+        break;
+      case "succeeded":
+        return { output };
+      default:
+        throwError.fatal(`Unknown status: ${status}`);
+    }
   }
 }

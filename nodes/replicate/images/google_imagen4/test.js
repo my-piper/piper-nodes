@@ -33,7 +33,7 @@ Deno.test("Google Imagen 4: text-to-image with Imagen 4", async () => {
   expect(costs).toBe(0.04);
 });
 
-Deno.test("Google Imagen 4 Fast: text-to-image", async () => {
+Deno.test("Google Imagen 4 Fast: text to image", async () => {
   const {
     costs,
     outputs: { image },

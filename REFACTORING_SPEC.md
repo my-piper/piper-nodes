@@ -204,13 +204,13 @@ if (!state) {
     switch (status) {
       case "starting":
       case "processing":
-        if (retries >= MAX_RETRIES) {
+        if (retries >= MAX_ATTEMPTS) {
           throwError.fatal("Generation timeout exceeded");
         }
         return repeat({
           state: { task, retries: retries + 1 },
           progress: {
-            total: MAX_RETRIES,
+            total: MAX_ATTEMPTS,
             processed: retries,
           },
           delay: CHECK_INTERVAL,
@@ -242,13 +242,13 @@ if (!state) {
 
   const output = await getOutput({ apiToken: REPLICATE_TOKEN }, task);
   if (!output) {
-    if (retries >= MAX_RETRIES) {
+    if (retries >= MAX_ATTEMPTS) {
       throwError.fatal("Generation timeout exceeded");
     }
     return repeat({
       state: { task, retries: retries + 1 },
       progress: {
-        total: MAX_RETRIES,
+        total: MAX_ATTEMPTS,
         processed: retries,
       },
       delay: CHECK_INTERVAL,
@@ -522,7 +522,7 @@ export async function costs({ env, inputs }) {
 }
 
 const CHECK_INTERVAL = 2000;
-const MAX_RETRIES = 100;
+const MAX_ATTEMPTS = 100;
 
 const MODEL_PATHS = {
   medium: "stability-ai/stable-diffusion-3.5-medium",
@@ -611,12 +611,12 @@ export async function run({ env, inputs, state }) {
       switch (status) {
         case "starting":
         case "processing":
-          if (retries >= MAX_RETRIES) {
+          if (retries >= MAX_ATTEMPTS) {
             throwError.fatal("Generation timeout exceeded");
           }
           return repeat({
             state: { task, retries: retries + 1 },
-            progress: { total: MAX_RETRIES, processed: retries },
+            progress: { total: MAX_ATTEMPTS, processed: retries },
             delay: CHECK_INTERVAL,
           });
         case "failed":
@@ -659,7 +659,7 @@ export async function costs({ env, inputs }) {
 }
 
 const CHECK_INTERVAL = 2000;
-const MAX_RETRIES = 100;
+const MAX_ATTEMPTS = 100;
 
 const MODEL_PATHS = {
   medium: "stability-ai/stable-diffusion-3.5-medium",
@@ -705,12 +705,12 @@ export async function run({ env, inputs, state }) {
     const { task, retries = 0 } = state;
     const output = await getOutput({ apiToken: REPLICATE_TOKEN }, task);
     if (!output) {
-      if (retries >= MAX_RETRIES) {
+      if (retries >= MAX_ATTEMPTS) {
         throwError.fatal("Generation timeout exceeded");
       }
       return repeat({
         state: { task, retries: retries + 1 },
-        progress: { total: MAX_RETRIES, processed: retries },
+        progress: { total: MAX_ATTEMPTS, processed: retries },
         delay: CHECK_INTERVAL,
       });
     }

@@ -9,7 +9,7 @@ const env = await load({
 
 import { run } from "./script.js";
 
-Deno.test("Hunyuan Image: text-to-image with Hunyuan 2.1", async () => {
+Deno.test("Hunyuan Image: text to image with Hunyuan 2.1", async () => {
   const {
     costs,
     outputs: { image },
@@ -36,7 +36,7 @@ Deno.test("Hunyuan Image: text-to-image with Hunyuan 2.1", async () => {
   expect(costs).toBe(0.02);
 });
 
-Deno.test("Hunyuan Image: text-to-image with Hunyuan 3", async () => {
+Deno.test("Hunyuan Image: text to image with Hunyuan 3", async () => {
   const {
     costs,
     outputs: { image },

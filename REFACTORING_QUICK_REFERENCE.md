@@ -102,12 +102,12 @@ try {
   switch (status) {
     case "starting":
     case "processing":
-      if (retries >= MAX_RETRIES) {
+      if (retries >= MAX_ATTEMPTS) {
         throwError.fatal("Generation timeout exceeded");
       }
       return repeat({
         state: { task, retries: retries + 1 },
-        progress: { total: MAX_RETRIES, processed: retries },
+        progress: { total: MAX_ATTEMPTS, processed: retries },
         delay: CHECK_INTERVAL,
       });
     case "failed":
@@ -126,12 +126,12 @@ try {
 // WITH:
 const output = await getOutput({ apiToken: REPLICATE_TOKEN }, task);
 if (!output) {
-  if (retries >= MAX_RETRIES) {
+  if (retries >= MAX_ATTEMPTS) {
     throwError.fatal("Generation timeout exceeded");
   }
   return repeat({
     state: { task, retries: retries + 1 },
-    progress: { total: MAX_RETRIES, processed: retries },
+    progress: { total: MAX_ATTEMPTS, processed: retries },
     delay: CHECK_INTERVAL,
   });
 }

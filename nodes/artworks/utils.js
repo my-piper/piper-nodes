@@ -140,7 +140,7 @@ export class ArtWorks {
           }
 
           const now = new Date();
-          const time = (now - new Date(startedAt)) / 1000;
+          const time = (now - new Date(startedAt)) / 1_000;
           throwError.timeout(`Task ${task} timeout in ${time} sec`);
         }
         return {
