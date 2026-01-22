@@ -1,0 +1,119 @@
+_id: seedance_1_replicate
+version: 7
+category:
+  _id: generate_videos
+  title: en=Generate videos;ru=Генерация видео
+package: replicate
+title: Seedance 1
+description: Generate videos from text or images using Seedance Lite, Pro and Pro Fast models
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/replicate/videos/seedance_1/script.js
+tags:
+  - text-to-video
+  - image-to-video
+source: catalog
+execution: protracted
+arrange:
+  x: 290
+  y: 180
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 2
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for video generation;ru=Текстовая подсказка для генерации видео
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking on the moon
+  seed:
+    order: 9
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation (-1 for random);ru=Случайное число для воспроизводимости (-1 для случайного)
+    type: integer
+    default: -1
+  image:
+    order: 3
+    title: en=Image;ru=Изображение
+    description: en=Optional input image for image-to-video generation;ru=Необязательное изображение для режима image-to-video
+    type: image
+    featured: true
+  last_frame_image:
+    order: 4
+    title: en=Last Frame Image;ru=Последний кадр
+    description: en=Optional last frame image (not supported in Pro Fast mode);ru=Необязательное изображение последнего кадра (не поддерживается в Pro Fast)
+    type: image
+  duration:
+    order: 5
+    title: en=Duration;ru=Длительность
+    description: en=Video duration in seconds (2-12);ru=Длительность видео в секундах (2-12)
+    type: integer
+    required: true
+    min: 2
+    max: 12
+    step: 1
+    default: 5
+  resolution:
+    order: 6
+    title: en=Resolution;ru=Разрешение
+    description: en=Video resolution (all modes support 480p/720p/1080p);ru=Разрешение видео (все режимы поддерживают 480p/720p/1080p)
+    type: string
+    required: true
+    default: 1080p
+    enum:
+      - 480p|480p
+      - 720p|720p
+      - 1080p|1080p
+  aspect_ratio:
+    order: 7
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Video aspect ratio (ignored if image is used);ru=Соотношение сторон (игнорируется при использовании изображения)
+    type: string
+    required: true
+    default: 16:9
+    enum:
+      - 16:9|16:9
+      - 4:3|4:3
+      - 1:1|1:1
+      - 3:4|3:4
+      - 9:16|9:16
+      - 21:9|21:9
+      - 9:21|9:21
+  camera_fixed:
+    order: 8
+    title: en=Camera Fixed;ru=Фиксированная камера
+    description: en=Keep camera position fixed during generation;ru=Зафиксировать положение камеры
+    type: boolean
+    default: false
+  mode:
+    order: 1
+    title: en=Mode;ru=Режим
+    type: string
+    required: true
+    default: pro_fast
+    enum:
+      - lite|en=Lite;ru=Lite
+      - pro|en=Pro;ru=Pro
+      - pro_fast|en=Pro Fast;ru=Pro Fast
+outputs:
+  video:
+    title: en=Video;ru=Видео
+    type: video
+    featured: true
+catalog:
+  _id: seedance_1_replicate
+  version: 10
+  category:
+    _id: generate_videos
+    title: en=Generate videos;ru=Генерация видео
+    icon: video
+    order: 10
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
+    type: string
+    scope: global

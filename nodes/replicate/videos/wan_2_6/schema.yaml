@@ -1,0 +1,126 @@
+version: 1
+title: Wan 2.6
+description: Generate video from text or image using WAN-2.6 models with up to 15s duration
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+  - text-to-video
+  - image-to-video
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/replicate/videos/wan_2_6/script.js
+arrange:
+  x: 660
+  y: 150
+groups:
+  inputs:
+    main:
+      order: 1
+      title: en=Main settings;ru=Основные настройки
+    advanced:
+      order: 2
+      title: en=Advanced settings;ru=Дополнительные настройки
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for video generation;ru=Текстовая подсказка для генерации видео
+    group: main
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  seed:
+    order: 5
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation (leave empty for random);ru=Случайное число для воспроизводимости (оставьте пустым для случайного)
+    group: advanced
+    type: integer
+    default: -1
+  image:
+    order: 2
+    title: en=Image;ru=Изображение
+    description: en=Add image to automatically switch to image-to-video mode;ru=Добавьте изображение, чтобы автоматически перейти в режим image-to-video
+    group: main
+    type: image
+    required: false
+    featured: true
+  resolution:
+    order: 3
+    title: en=Resolution;ru=Разрешение
+    description: en=Video resolution;ru=Разрешение видео
+    group: main
+    type: string
+    default: 720p
+    enum:
+      - 720p|en=720p;ru=720p
+      - 1080p|en=1080p;ru=1080p
+  orientation:
+    order: 4
+    title: en=Orientation;ru=Ориентация
+    description: en=Video orientation (applies to T2V mode);ru=Ориентация видео (применяется к Text-to-Video режиму)
+    group: main
+    type: string
+    default: landscape
+    enum:
+      - landscape|en=Landscape (16:9);ru=Горизонтальное (16:9)
+      - portrait|en=Portrait (9:16);ru=Вертикальное (9:16)
+  duration:
+    order: 5
+    title: en=Duration;ru=Длительность
+    description: en=Duration of the generated video in seconds;ru=Длительность сгенерированного видео в секундах
+    group: main
+    type: string
+    default: "5"
+    enum:
+      - 5|en=5 seconds;ru=5 секунд
+      - 10|en=10 seconds;ru=10 секунд
+      - 15|en=15 seconds;ru=15 секунд
+  negative_prompt:
+    order: 1
+    title: en=Negative Prompt;ru=Негативная подсказка
+    description: en=Describe what you don't want in the video;ru=Укажите, чего не должно быть в видео
+    group: advanced
+    type: string
+    multiline: true
+    placeholder: low resolution, error, worst quality, low quality, defects
+  audio:
+    order: 2
+    title: en=Audio;ru=Аудио
+    description: en=Audio file (wav/mp3, 3-30s, ≤15MB) for voice/music synchronization;ru=Аудиофайл (wav/mp3, 3-30 сек, ≤15МБ) для синхронизации музыки/голоса
+    group: advanced
+    type: audio
+  enable_prompt_expansion:
+    order: 3
+    title: en=Enable Prompt Expansion;ru=Улучшать промпт
+    description: en=If enabled, the prompt optimizer will enhance your prompt;ru=Если включено, оптимизатор улучшит ваш промпт
+    group: advanced
+    type: boolean
+    default: true
+  multi_shots:
+    order: 4
+    title: en=Multi Shots;ru=Несколько сцен
+    description: en=Enable intelligent multi-shot segmentation (requires Enable Prompt Expansion);ru=Включить интеллектуальное разделение на несколько сцен (требуется улучшение промпта)
+    group: advanced
+    type: boolean
+    default: false
+outputs:
+  video:
+    title: en=Video;ru=Видео
+    type: video
+    featured: true
+catalog:
+  _id: wan_2_6_replicate
+  version: 10
+  category:
+    _id: generate_videos
+    title: en=Generate video;ru=Генерация видео
+    icon: video
+    order: 10
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate token
+    description: Get your token from https://replicate.com/account/api-tokens
+    type: string
+    scope: global

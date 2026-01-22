@@ -1,0 +1,104 @@
+version: 1
+title: Vidu Q2
+description: Generate and continue video using Vidu Q2 models
+tags:
+  - text-to-video
+  - image-to-video
+  - video-to-video
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/fal/videos/vidu_q2/script.js
+arrange:
+  x: 1980
+  y: 480
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for video generation (max 3000 characters);ru=Текстовая подсказка для генерации видео (макс. 3000 символов)
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  seed:
+    order: 8
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation;ru=Случайный шум для воспроизводимости
+    type: integer
+    default: -1
+  image:
+    order: 2
+    title: en=Image;ru=Изображение
+    description: en=Image for I2V mode (auto-switches to I2V if provided);ru=Изображение для режима image-to-video (автоматически переключает на I2V при наличии)
+    type: image
+    featured: true
+  video:
+    order: 3
+    title: en=Video;ru=Видео
+    description: en=Video for V2V extension mode (auto-switches to V2V if provided);ru=Видео для режима расширения V2V (автоматически переключает на V2V при наличии)
+    type: video
+  resolution:
+    order: 4
+    title: en=Resolution;ru=Разрешение
+    description: en=Video resolution;ru=Разрешение видео
+    type: string
+    default: 720p
+    enum:
+      - 720p|en=720p;ru=720p
+      - 1080p|en=1080p;ru=1080p
+  duration:
+    order: 5
+    title: en=Duration (seconds);ru=Длительность (сек)
+    description: en=Video duration (T2V/I2V max 8s, V2V auto-limits 8s→7s);ru=Длительность видео (T2V/I2V максимум 8 с, V2V авт. максимум 7 с)
+    type: string
+    default: "4"
+    enum:
+      - 2|en=2 seconds;ru=2 секунды
+      - 3|en=3 seconds;ru=3 секунды
+      - 4|en=4 seconds;ru=4 секунды
+      - 5|en=5 seconds;ru=5 секунд
+      - 6|en=6 seconds;ru=6 секунд
+      - 7|en=7 seconds;ru=7 секунд
+      - 8|en=8 seconds;ru=8 секунд
+  aspect_ratio:
+    order: 6
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Video aspect ratio (T2V only);ru=Соотношение сторон видео (только для T2V)
+    type: string
+    default: 16:9
+    enum:
+      - 16:9|en=16:9;ru=16:9
+      - 9:16|en=9:16;ru=9:16
+      - 1:1|en=1:1;ru=1:1
+  movement_amplitude:
+    order: 7
+    title: en=Movement Amplitude;ru=Амплитуда движения
+    description: en=Control movement intensity in the video;ru=Контролировать интенсивность движения в видео
+    type: string
+    default: auto
+    enum:
+      - auto|en=Auto;ru=Авто
+      - small|en=Small;ru=Маленькая
+      - medium|en=Medium;ru=Средняя
+      - large|en=Large;ru=Большая
+outputs:
+  video:
+    title: Video
+    type: video
+    featured: true
+catalog:
+  _id: vidu_q2_fal
+  version: 15
+  category:
+    _id: generate_videos
+    title: en=Generate videos;ru=Генерация видео
+    icon: video
+    order: 10
+  package: fal
+environment:
+  FAL_KEY:
+    title: Fal AI Key
+    description: Go to [Fal AI](https://fal.ai/dashboard/keys) to get your API key
+    type: string
+    scope: global

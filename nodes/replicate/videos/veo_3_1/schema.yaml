@@ -1,0 +1,111 @@
+version: 1
+title: Veo 3.1
+description: Generate videos with Google Veo 3.1 standard & fast
+tags:
+  - text-to-video
+  - image-to-video
+source: catalog
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/replicate/videos/veo_3_1/script.js
+arrange:
+  x: 1100
+  y: 420
+inputs:
+  prompt:
+    order: 2
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for video generation;ru=Текстовая подсказка для генерации видео
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  seed:
+    order: 11
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation;ru=Случайный шум для воспроизводимости
+    type: integer
+    default: -1
+  model:
+    order: 1
+    title: en=Model;ru=Модель
+    description: en=Select Veo 3.1 model variant;ru=Выберите вариант модели Veo 3.1
+    type: string
+    default: 3_1_fast
+    enum:
+      - 3_1|en=Veo 3.1;ru=Veo 3.1
+      - 3_1_fast|en=Veo 3.1 Fast;ru=Veo 3.1 Быстрый
+  duration:
+    order: 3
+    title: en=Duration;ru=Длительность
+    description: en=Video duration (4, 6, or 8 seconds);ru=Длительность видео (4, 6 или 8 секунд)
+    type: string
+    default: "8"
+    enum:
+      - 4|en=4 seconds;ru=4 секунды
+      - 6|en=6 seconds;ru=6 секунд
+      - 8|en=8 seconds;ru=8 секунд
+  aspect_ratio:
+    order: 4
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Video aspect ratio (reference images require 16:9);ru=Соотношение сторон видео (референс изображения требуют 16:9)
+    type: string
+    default: 16:9
+    enum:
+      - 16:9|en=16:9;ru=16:9
+      - 9:16|en=9:16;ru=9:16
+  resolution:
+    order: 5
+    title: en=Resolution;ru=Разрешение
+    description: en=Output resolution (720p or 1080p);ru=Разрешение вывода (720p или 1080p)
+    type: string
+    default: 720p
+    enum:
+      - 720p|en=720p;ru=720p
+      - 1080p|en=1080p;ru=1080p
+  image:
+    order: 6
+    title: en=Image;ru=Изображение
+    description: en=Optional starting image (16:9 or 9:16 recommended). Ignored if reference images are provided.;ru=Необязательное начальное изображение (рекомендуется 16:9 или 9:16). Игнорируется если заданы референсы.
+    type: image
+    featured: true
+  last_frame:
+    order: 7
+    title: en=Last Frame;ru=Последний кадр
+    description: en=Optional ending image for interpolation (ignored when reference images are used).;ru=Необязательное финальное изображение (игнорируется если заданы референсы)
+    type: image
+  reference_images:
+    order: 8
+    title: en=Reference Images;ru=Референсы
+    description: en=Up to 3 reference images for subject consistency (standard model only, forces 16:9 & 8s; conflicts with input image).;ru=До 3 референсов для постоянства объекта (только стандарт модель, форсит 16:9 и 8с; конфликтует с основным изображением)
+    type: image[]
+  negative_prompt:
+    order: 9
+    title: en=Negative Prompt;ru=Негативная подсказка
+    description: en=Describe what to avoid in generated video;ru=Опишите, чего не должно быть на сгенерированном видео
+    type: string
+    multiline: true
+  generate_audio:
+    order: 10
+    title: en=Generate Audio;ru=Генерировать аудио
+    description: en=Include AI audio track in the video;ru=Добавить аудиодорожку
+    type: boolean
+    default: true
+outputs:
+  video:
+    title: en=Video;ru=Видео
+    type: video
+    featured: true
+catalog:
+  _id: veo_3_1_replicate
+  version: 10
+  category:
+    _id: generate_videos
+    title: en=Generate videos;ru=Генерация видео
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate token
+    description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
+    type: string
+    scope: global

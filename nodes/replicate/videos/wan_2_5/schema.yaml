@@ -1,0 +1,124 @@
+version: 1
+title: Wan 2.5
+description: Generate video from text or image using WAN-2.5 models (standard and fast modes)
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+  - text-to-video
+  - image-to-video
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/replicate/videos/wan_2_5/script.js
+arrange:
+  x: 1110
+  y: 140
+groups:
+  inputs:
+    main:
+      order: 1
+      title: en=Main settings;ru=Основные настройки
+    advanced:
+      order: 2
+      title: en=Advanced settings;ru=Дополнительные настройки
+inputs:
+  prompt:
+    order: 2
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for video generation;ru=Текстовая подсказка для генерации видео
+    group: main
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  seed:
+    order: 4
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation. Leave empty for random;ru=Случайный шум для воспроизводимости (оставьте пустым для случайного)
+    group: advanced
+    type: integer
+    default: -1
+  image:
+    order: 3
+    title: en=Image;ru=Изображение
+    description: en=Add image to automatically switch to image-to-video mode;ru=Добавьте изображение, чтобы перейти в режим image-to-video
+    group: main
+    type: image
+    required: false
+    featured: true
+  mode:
+    order: 1
+    title: en=Mode;ru=Режим
+    description: |-
+      en=Standard - Higher quality, slower (480p/720p/1080p)
+      Fast - Faster generation, good quality (720p/1080p);ru=Стандартный — выше качество, медленнее (480p/720p/1080p)
+      Быстрый — быстрее, хорошее качество (720p/1080p)
+    group: main
+    type: string
+    default: standard
+    enum:
+      - standard|en=Standard;ru=Стандартный
+      - fast|en=Fast;ru=Быстрый
+  resolution:
+    order: 4
+    title: en=Resolution;ru=Разрешение
+    description: en=Video resolution (480p auto-switches Fast mode to Standard);ru=Разрешение видео (480p автоматически переводит Fast режим в Стандарт)
+    group: main
+    type: string
+    default: 720p
+    enum:
+      - 480p|en=480p;ru=480p
+      - 720p|en=720p;ru=720p
+      - 1080p|en=1080p;ru=1080p
+  duration:
+    order: 5
+    title: en=Duration;ru=Длительность
+    description: |-
+      en=Duration of the generated video in seconds;ru=Длительность итогового видео (сек)
+      5 — 5 секунд, 10 — 10 секунд
+    group: main
+    type: string
+    default: "5"
+    enum:
+      - 5|en=5 seconds;ru=5 секунд
+      - 10|en=10 seconds;ru=10 секунд
+  negative_prompt:
+    order: 1
+    title: en=Negative Prompt;ru=Негативная подсказка
+    description: en=Describe what you don't want in the video;ru=Укажите, чего не должно быть в видео
+    group: advanced
+    type: string
+    multiline: true
+    placeholder: low resolution, error, worst quality, low quality, defects
+  audio:
+    order: 2
+    title: en=Audio;ru=Аудио
+    description: en=Audio file (wav/mp3, 3-30s, ≤15MB) for voice/music synchronization;ru=Аудиофайл (wav/mp3, 3-30 сек, ≤15МБ) для синхронизации музыки/голоса
+    group: advanced
+    type: audio
+  enable_prompt_expansion:
+    order: 3
+    title: en=Enable Prompt Expansion;ru=Улучшение промпта
+    description: en=If enabled, the prompt optimizer will enhance your prompt;ru=Если включено, оптимизатор улучшит ваш промпт
+    group: advanced
+    type: boolean
+    default: true
+outputs:
+  video:
+    title: en=Video;ru=Видео
+    type: video
+    featured: true
+catalog:
+  _id: wan_2_5_replicate
+  version: 10
+  category:
+    _id: generate_videos
+    title: en=Generate video;ru=Генерация видео
+    icon: video
+    order: 10
+  package: replicate
+environment:
+  REPLICATE_TOKEN:
+    title: Replicate token
+    description: Get your token from https://replicate.com/account/api-tokens
+    type: string
+    scope: global

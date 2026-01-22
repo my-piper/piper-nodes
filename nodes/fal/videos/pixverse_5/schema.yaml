@@ -1,0 +1,130 @@
+version: 1
+title: Pixverse 5.5
+description: Generate videos from text or images using Pixverse V5.5 model (T2V & I2V)
+tags:
+  - text-to-video
+  - image-to-video
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/fal/videos/pixverse_5/script.js
+arrange:
+  x: 1550
+  y: 180
+groups:
+  inputs: {}
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=Text prompt for video generation;ru=Текстовая подсказка для генерации видео
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
+  seed:
+    order: 11
+    title: en=Seed;ru=Начальный шум
+    description: en=Random seed for reproducible generation;ru=Случайный шум для воспроизводимости
+    type: integer
+    default: -1
+  image:
+    order: 2
+    title: en=Image;ru=Изображение
+    description: en=Image to use as the first frame (I2V mode). Leave empty for T2V mode.;ru=Изображение для первого кадра видео (режим I2V). Оставьте пустым для режима T2V.
+    type: image
+    featured: true
+  aspect_ratio:
+    order: 3
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Video aspect ratio;ru=Соотношение сторон видео
+    type: string
+    default: 16:9
+    enum:
+      - 16:9|en=16:9;ru=16:9
+      - 4:3|en=4:3;ru=4:3
+      - 1:1|en=1:1;ru=1:1
+      - 3:4|en=3:4;ru=3:4
+      - 9:16|en=9:16;ru=9:16
+  resolution:
+    order: 4
+    title: en=Resolution;ru=Разрешение
+    description: en=Video resolution (1080p limited to 5 or 8 seconds);ru=Разрешение видео (1080p ограничено 5 или 8 секундами)
+    type: string
+    default: 720p
+    enum:
+      - 360p|en=360p;ru=360p
+      - 540p|en=540p;ru=540p
+      - 720p|en=720p;ru=720p
+      - 1080p|en=1080p;ru=1080p
+  duration:
+    order: 5
+    title: en=Duration;ru=Длительность
+    description: en=Video duration in seconds (1080p auto-switches to 8s if 10s selected);ru=Длительность видео (в секундах, для 1080p автоматически ставит 8 сек при выборе 10 сек)
+    type: string
+    default: 5
+    enum:
+      - 5|en=5 seconds;ru=5 секунд
+      - 8|en=8 seconds;ru=8 секунд
+      - 10|en=10 seconds;ru=10 секунд
+  style:
+    order: 6
+    title: en=Style;ru=Стиль
+    description: en=Optional artistic style for the video;ru=Опциональный художественный стиль для видео
+    type: string
+    default: default
+    enum:
+      - default|en=Default;ru=Обычный
+      - anime|en=Anime;ru=Аниме
+      - 3d_animation|en=3D Animation;ru=3D анимация
+      - clay|en=Clay;ru=Глина
+      - comic|en=Comic;ru=Комиксы
+      - cyberpunk|en=Cyberpunk;ru=Киберпанк
+  thinking_type:
+    order: 7
+    title: en=Thinking Type;ru=Режим оптимизации
+    description: en=Prompt optimization mode;ru=Режим оптимизации промпта
+    type: string
+    default: auto
+    enum:
+      - auto|en=Auto;ru=Автоматически
+      - enabled|en=Enabled;ru=Включён
+      - disabled|en=Disabled;ru=Выключен
+  generate_multi_clip_switch:
+    order: 8
+    title: en=Multi-Clip Generation;ru=Генерация нескольких клипов
+    description: en=Enable multi-clip generation with dynamic camera changes;ru=Включить генерацию нескольких клипов с динамичными сменами камеры
+    type: boolean
+    default: false
+  generate_audio_switch:
+    order: 9
+    title: en=Generate Audio;ru=Генерировать аудио
+    description: en=Enable audio generation (BGM, SFX, dialogue);ru=Включить генерацию аудио (музыка, звуки, голос)
+    type: boolean
+    default: false
+  negative_prompt:
+    order: 10
+    title: en=Negative Prompt;ru=Негативная подсказка
+    description: en=What to avoid in the generated video;ru=Что не должно быть на сгенерированном видео
+    type: string
+    multiline: true
+outputs:
+  video:
+    title: en=Video;ru=Видео
+    type: video
+    featured: true
+catalog:
+  _id: pixverse_5_fal
+  version: 10
+  category:
+    _id: generate_videos
+    title: en=Generate videos;ru=Генерация видео
+    icon: video
+    order: 10
+  package: fal
+environment:
+  FAL_KEY:
+    title: Fal AI Key
+    description: Go to [Fal AI](https://fal.ai/dashboard/keys) to get your API key
+    type: string
+    scope: global
