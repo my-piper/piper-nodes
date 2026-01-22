@@ -1,65 +1,99 @@
+version: 1
+icon: image
+order: 5
+title: en=Extract mask on image;ru=Выделить маску
+tags:
+  - object-detection
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/extract_mask/script.js
+arrange:
+  x: 1430
+  y: 1110
+groups:
+  inputs: {}
 inputs:
+  image:
+    order: 1
+    title: en=Image;ru=Изображение
+    type: image
+    required: true
+    featured: true
+  type:
+    order: 2
+    title: en=Type;ru=Тип поиска
+    type: string
+    required: true
+    default: yolo
+    enum:
+      - yolo|Yolo
+      - default|en=Prompt;ru=Подсказка
+  prompt:
+    order: 4
+    title: en=Prompt;ru=Подсказка
+    type: string
+    required: false
+    featured: true
+    multiline: true
+  model:
+    order: 3
+    title: en=Yolo model;ru=Yolo модель
+    type: string
+    required: false
+    default: deepfashion2_yolov8s-seg.pt
+    enum:
+      - deepfashion2_yolov8s-seg.pt|en=Clothes;ru=Одежда
+      - face_yolov8m.pt|en=Face (Medium);ru=Лицо (среднее)
+      - face_yolov8n.pt|en=Face (Nano);ru=Лицо (нано)
+      - face_yolov8s.pt|en=Face (Small);ru=Лицо (маленькое)
+      - female_breast_v3.2.pt|en=Female Breast;ru=Женская грудь
+      - hand_yolov8n.pt|en=Hands (Nano);ru=Руки (нано)
+      - hand_yolov8s.pt|en=Hands (Small);ru=Руки (маленькие)
+      - person_yolov8m-seg.pt|en=Persons (Medium);ru=Персоны (средние)
+      - person_yolov8n-seg.pt|en=Persons (Nano);ru=Персоны (нано)
+      - person_yolov8s-seg.pt|en=Persons (Small);ru=Персоны (маленькие)
+      - penisV2.pt|en=Penis <NSFW>;ru=Пенис
+      - vagina-v2.6.pt|en=Vagina <NSFW>;ru=Влагалище
+  threshold:
+    order: 5
+    title: en=Threshold;ru=Чувствительность
+    type: float
+    required: true
+    min: 0.1
+    max: 0.69
+    step: 0.1
+    default: 0.5
   applyConvexHull:
-    default: false
     order: 6
     title: en=Apply convex hull;ru=Сгладить края
     type: boolean
-  image:
-    featured: true
-    order: 1
-    required: true
-    title: en=Image;ru=Изображение
-    type: image
-  model:
-    default: deepfashion2_yolov8s-seg.pt
-    enum:
-    - deepfashion2_yolov8s-seg.pt|en=Clothes;ru=Одежда
-    - face_yolov8m.pt|en=Face (Medium);ru=Лицо (среднее)
-    - face_yolov8n.pt|en=Face (Nano);ru=Лицо (нано)
-    - face_yolov8s.pt|en=Face (Small);ru=Лицо (маленькое)
-    - female_breast_v3.2.pt|en=Female Breast;ru=Женская грудь
-    - hand_yolov8n.pt|en=Hands (Nano);ru=Руки (нано)
-    - hand_yolov8s.pt|en=Hands (Small);ru=Руки (маленькие)
-    - person_yolov8m-seg.pt|en=Persons (Medium);ru=Персоны (средние)
-    - person_yolov8n-seg.pt|en=Persons (Nano);ru=Персоны (нано)
-    - person_yolov8s-seg.pt|en=Persons (Small);ru=Персоны (маленькие)
-    - penisV2.pt|en=Penis <NSFW>;ru=Пенис
-    - vagina-v2.6.pt|en=Vagina <NSFW>;ru=Влагалище
-    order: 3
-    required: false
-    title: en=Yolo model;ru=Yolo модель
-    type: string
-  prompt:
-    featured: true
-    multiline: true
-    order: 4
-    required: false
-    title: en=Prompt;ru=Подсказка
-    type: string
-  threshold:
-    default: 0.5
-    max: 0.69
-    min: 0.1
-    order: 5
-    required: true
-    step: 0.1
-    title: en=Threshold;ru=Чувствительность
-    type: float
-  type:
-    default: yolo
-    enum:
-    - yolo|Yolo
-    - default|en=Prompt;ru=Подсказка
-    order: 2
-    required: true
-    title: en=Type;ru=Тип поиска
-    type: string
+    default: false
 outputs:
-  masks:
-    schema: image-masks
-    title: en=Masks;ru=Контуры
-    type: json
   merged:
-    featured: true
     title: en=Merged;ru=Общая маска
     type: image
+    featured: true
+  masks:
+    title: en=Masks;ru=Контуры
+    type: json
+    schema: image-masks
+catalog:
+  _id: exctract_mask_on_image_artworks
+  version: 50
+  category:
+    _id: image_analysis
+    title: en=Image analysis;ru=Анализ изображений
+    icon: image
+    order: 25
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

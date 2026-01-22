@@ -1,41 +1,75 @@
+version: 1
+icon: video
+order: 10
+title: en=Merge videos;ru=Объединить видео
+tags:
+  - edit-video
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/merge_videos/script.js
+arrange:
+  x: 2130
+  y: 2080
+groups:
+  inputs: {}
 inputs:
-  height:
-    default: 768
-    order: 2
-    required: true
-    title: en=Height;ru=Высота
-    type: integer
   video1:
-    dynamic:
-      group: videos
-      id: video#
-      index: 1
-      title: 'en=Video #;ru=Видео #'
-    featured: true
     order: 3
-    required: true
     title: en=Video 1;ru=Видео 1
     type: video
-  video2:
-    cloned: true
+    required: true
+    featured: true
     dynamic:
       group: videos
       id: video#
-      index: 2
-      title: 'en=Video #;ru=Видео #'
-    featured: true
+      title: "en=Video #;ru=Видео #"
+      index: 1
+  video2:
     order: 4
-    required: true
     title: en=Video 2;ru=Видео 2
     type: video
-  width:
-    default: '1024'
-    order: 1
     required: true
+    featured: true
+    dynamic:
+      group: videos
+      id: video#
+      title: "en=Video #;ru=Видео #"
+      index: 2
+    cloned: true
+  width:
+    order: 1
     title: en=Width;ru=Ширина
     type: integer
+    required: true
+    default: "1024"
+  height:
+    order: 2
+    title: en=Height;ru=Высота
+    type: integer
+    required: true
+    default: 768
 outputs:
   video:
-    featured: true
     title: en=Video;ru=Видео
     type: video
+    featured: true
+catalog:
+  _id: merge_videos_artworks
+  version: 50
+  category:
+    _id: video_processing
+    title: en=Video processing;ru=Обработка видео
+    icon: video
+    order: 30
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

@@ -1,12 +1,46 @@
+version: 1
+icon: image
+order: 30
+title: en=Score aesthetics;ru=Оценить эстестику
+tags:
+  - scoring
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/srore_aesthetics/script.js
+arrange:
+  x: 1420
+  y: 690
+groups:
+  inputs: {}
 inputs:
   image:
-    featured: true
     order: 1
-    required: true
     title: en=Image;ru=Изображение
     type: image
+    required: true
+    featured: true
 outputs:
   scores:
-    featured: true
     title: en=Scores;ru=Оценки
     type: json
+    featured: true
+catalog:
+  _id: srore_aesthetics_artworks
+  version: 50
+  category:
+    _id: image_analysis
+    title: en=Image analysis;ru=Анализ изображений
+    icon: image
+    order: 25
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

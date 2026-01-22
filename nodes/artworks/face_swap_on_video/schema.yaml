@@ -1,18 +1,52 @@
+version: 1
+icon: video
+order: 15
+title: en=Face swap on video;ru=Замена лица на видео
+tags:
+  - deep-swap
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/face_swap_on_video/script.js
+arrange:
+  x: 1160
+  y: 1520
+groups:
+  inputs: {}
 inputs:
   face:
-    featured: true
     order: 1
-    required: true
     title: en=Face;ru=Лицо
     type: image
-  video:
-    featured: true
-    order: 2
     required: true
+    featured: true
+  video:
+    order: 2
     title: en=Video;ru=Видео
     type: video
+    required: true
+    featured: true
 outputs:
   video:
-    featured: true
     title: en=Video;ru=Видео
     type: video
+    featured: true
+catalog:
+  _id: face_swap_on_video_artworks
+  version: 50
+  category:
+    _id: deep_swap
+    title: en=Deep swap;ru=Глубокая замена
+    icon: face
+    order: 20
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

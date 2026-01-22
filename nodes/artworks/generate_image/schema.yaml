@@ -1,18 +1,18 @@
 version: 1
 icon: image
 order: 5
-package: artworks
 title: en=Generate SDXL & Flux;ru=Генерация SDXL & Flux
 tags:
   - text-to-image
   - en=cheap;ru=дешево
 source: node
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@ad35e191f5873ec7636f2ea90670020e3c419b1b/nodes/artworks/generate_image/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/generate_image/script.js
 app: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@ad35e191f5873ec7636f2ea90670020e3c419b1b/nodes/artworks/generate_image/app.html
+sign: 9fc071101418ff6f548eb149798720152fe14b011e71553f42908d368358a85e
 arrange:
-  x: 860
-  y: 140
+  x: 960
+  y: 100
 groups:
   inputs:
     base:
@@ -144,7 +144,7 @@ outputs:
     featured: true
 catalog:
   _id: generate_image_artworks
-  version: 40
+  version: 50
   category:
     _id: generate_images
     title: en=Generate images;ru=Ген. изображений

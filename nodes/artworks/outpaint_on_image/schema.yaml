@@ -1,131 +1,167 @@
+version: 1
+title: en=Outpaint on image;ru=Расширить изображение
+tags:
+  - image-to-image
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/outpaint_on_image/script.js
+arrange:
+  x: 2030
+  y: 520
+groups:
+  inputs:
+    base:
+      order: 1
+      title: en=Base;ru=Базовые параметры
+    distance:
+      order: 2
+      title: en=Distance;ru=Расширение
 inputs:
-  batchSize:
-    default: 1
-    group: base
-    max: 4
-    min: 1
-    order: 8
-    step: 1
-    title: en=Batch size;ru=Кол-во
-    type: integer
-  cfgScale:
-    default: 7
-    group: base
-    max: 20
-    min: 1
-    order: 6
-    step: 1
-    title: en=CFG scale;ru=Креативность
-    type: integer
-  checkpoint:
-    default: juggernautXL_v9Rundiffusionphoto2.safetensors
-    enum:
-    - juggernautXL_v9Rundiffusionphoto2.safetensors|Juggernaut XL <SDXL>
-    - STOIQONewrealityFLUXSD_F1DPreAlpha.safetensors|New Reality Flux <Flux>
-    - dynavisionXLAllInOneStylized_releaseV0610Bakedvae.safetensors|DynaVision XL All In One <SDXL>
-    - flux1DevHyperNF4Flux1DevBNB_flux1DevHyperNF4.safetensors|Hyper NF4 Flux 1 <Flux>
-    - aamXLAnimeMix_v10.safetensors|AAM XL (Anime Mix) <SDXL> <Fantasy>
-    - raemuXL_v40.safetensors|Raemu XL <SDXL>
-    - animaPencilXL_v260.safetensors|Anima Pencil XL <SDXL> <Fantasy>
-    - leosamsHelloworldXL_helloworldXL50GPT4V.safetensors|Helloworld XL <SDXL>
-    - albedobaseXL_v20.safetensors|AlbedoBase XL <SDXL>
-    - afroditexlNudePeople_20Bkdvae.safetensors|Nude People <NSFW>
-    - nosft-float8-e4m3fn.safetensors|Flux Nude People <NSFW>
-    - asdf_0.4a_lorapov_0.2_lust_0.4.fp16.safetensors|Real Porn <NSFW>
-    - PonyASDF_0.4_f6cosineb.fp16.safetensors|Real Porn Pony <NSFW>
-    - Sexy_Aesthetic_SDXL_0.4x0.2.fp16.safetensors|Sexy & Beauty <NSFW>
-    - aniku_0.2.fp16.safetensors|Anime Desire <NSFW>
-    - anikurender_0.4b.fp16.safetensors|Hardcore Fantasy <NSFW>
-    group: base
-    order: 3
-    required: true
-    title: en=Checkpoint;ru=Модель
-    type: string
-  denoisingStrength:
-    default: 0.5
-    group: base
-    max: 1
-    min: 0.1
-    order: 5
-    step: 0.05
-    title: en=Denoising strength;ru=Степень изменения
-    type: float
-  distanceBottom:
-    default: 50
-    group: distance
-    max: 200
-    min: 0
-    order: 3
-    step: 5
-    title: en=Distance bottom;ru=Расширить снизу
-    type: integer
-  distanceLeft:
-    default: 50
-    group: distance
-    max: 200
-    min: 0
-    order: 4
-    step: 5
-    title: en=Distance left;ru=Расширить слева
-    type: integer
-  distanceRight:
-    default: 50
-    group: distance
-    max: 200
-    min: 0
-    order: 2
-    step: 5
-    title: en=Distance right;ru=Расширить справа
-    type: integer
-  distanceTop:
-    default: 50
-    group: distance
-    max: 200
-    min: 0
-    order: 1
-    step: 5
-    title: en=Distance top;ru=Расширить сверху
-    type: integer
   image:
-    featured: true
-    group: base
     order: 1
-    required: true
     title: en=Image;ru=Изображение
-    type: image
-  negativePrompt:
     group: base
+    type: image
+    required: true
+    featured: true
+  prompt:
+    order: 2
+    title: en=Prompt;ru=Подсказка
+    group: base
+    type: string
+    required: true
+    featured: true
     multiline: true
+    default: extend image
+  negativePrompt:
     order: 4
     title: en=Negative prompt;ru=Негативная подсказка
-    type: string
-  performance:
-    default: speed
-    enum:
-    - express|en=⚡ Express;ru=⚡ Экспресс
-    - speed|en=🚅 Speed;ru=🚅 Скорость
-    - quality|en=💎 Quality;ru=💎 Качество
     group: base
+    type: string
+    multiline: true
+  checkpoint:
+    order: 3
+    title: en=Checkpoint;ru=Модель
+    group: base
+    type: string
+    required: true
+    default: juggernautXL_v9Rundiffusionphoto2.safetensors
+    enum:
+      - juggernautXL_v9Rundiffusionphoto2.safetensors|Juggernaut XL <SDXL>
+      - STOIQONewrealityFLUXSD_F1DPreAlpha.safetensors|New Reality Flux <Flux>
+      - dynavisionXLAllInOneStylized_releaseV0610Bakedvae.safetensors|DynaVision XL All In One <SDXL>
+      - flux1DevHyperNF4Flux1DevBNB_flux1DevHyperNF4.safetensors|Hyper NF4 Flux 1 <Flux>
+      - aamXLAnimeMix_v10.safetensors|AAM XL (Anime Mix) <SDXL> <Fantasy>
+      - raemuXL_v40.safetensors|Raemu XL <SDXL>
+      - animaPencilXL_v260.safetensors|Anima Pencil XL <SDXL> <Fantasy>
+      - leosamsHelloworldXL_helloworldXL50GPT4V.safetensors|Helloworld XL <SDXL>
+      - albedobaseXL_v20.safetensors|AlbedoBase XL <SDXL>
+      - afroditexlNudePeople_20Bkdvae.safetensors|Nude People <NSFW>
+      - nosft-float8-e4m3fn.safetensors|Flux Nude People <NSFW>
+      - asdf_0.4a_lorapov_0.2_lust_0.4.fp16.safetensors|Real Porn <NSFW>
+      - PonyASDF_0.4_f6cosineb.fp16.safetensors|Real Porn Pony <NSFW>
+      - Sexy_Aesthetic_SDXL_0.4x0.2.fp16.safetensors|Sexy & Beauty <NSFW>
+      - aniku_0.2.fp16.safetensors|Anime Desire <NSFW>
+      - anikurender_0.4b.fp16.safetensors|Hardcore Fantasy <NSFW>
+  denoisingStrength:
+    order: 5
+    title: en=Denoising strength;ru=Степень изменения
+    group: base
+    type: float
+    min: 0.1
+    max: 1
+    step: 0.05
+    default: 0.5
+  cfgScale:
+    order: 6
+    title: en=CFG scale;ru=Креативность
+    group: base
+    type: integer
+    min: 1
+    max: 20
+    step: 1
+    default: 7
+  performance:
     order: 7
     title: en=Performance;ru=Производительность
-    type: string
-  prompt:
-    default: extend image
-    featured: true
     group: base
-    multiline: true
-    order: 2
-    required: true
-    title: en=Prompt;ru=Подсказка
     type: string
+    default: speed
+    enum:
+      - express|en=⚡ Express;ru=⚡ Экспресс
+      - speed|en=🚅 Speed;ru=🚅 Скорость
+      - quality|en=💎 Quality;ru=💎 Качество
   seed:
-    group: base
     order: 9
-    placeholder: '-1'
     title: en=Seed;ru=Начальный шум
+    group: base
     type: integer
+    placeholder: "-1"
+  batchSize:
+    order: 8
+    title: en=Batch size;ru=Кол-во
+    group: base
+    type: integer
+    min: 1
+    max: 4
+    step: 1
+    default: 1
+  distanceTop:
+    order: 1
+    title: en=Distance top;ru=Расширить сверху
+    group: distance
+    type: integer
+    min: 0
+    max: 200
+    step: 5
+    default: 50
+  distanceRight:
+    order: 2
+    title: en=Distance right;ru=Расширить справа
+    group: distance
+    type: integer
+    min: 0
+    max: 200
+    step: 5
+    default: 50
+  distanceBottom:
+    order: 3
+    title: en=Distance bottom;ru=Расширить снизу
+    group: distance
+    type: integer
+    min: 0
+    max: 200
+    step: 5
+    default: 50
+  distanceLeft:
+    order: 4
+    title: en=Distance left;ru=Расширить слева
+    group: distance
+    type: integer
+    min: 0
+    max: 200
+    step: 5
+    default: 50
 outputs:
   images:
-    featured: true
     title: en=Images;ru=Изображения
     type: image[]
+    featured: true
+catalog:
+  _id: outpaint_image_artworks
+  version: 50
+  category:
+    _id: generate_images
+    title: en=Generate images;ru=Ген. изображений
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

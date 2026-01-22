@@ -1,29 +1,62 @@
+version: 1
+order: 20
+title: en=Dress on image;ru=Переодеть
+tags:
+  - deep-swap
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/dress_on_image/script.js
+arrange:
+  x: 1160
+  y: 2040
+groups:
+  inputs: {}
 inputs:
+  image:
+    order: 1
+    title: en=Image;ru=Изображение
+    type: image
+    required: true
+    featured: true
+  prompt:
+    order: 3
+    title: en=Prompt;ru=Подсказка
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: red swimsuit
   gender:
-    default: auto
-    enum:
-    - auto|en=Auto;ru=Авто
-    - male|en=Male;ru=Мужчина
-    - female|en=Female;ru=Женщина
     order: 2
     title: en=Gender;ru=Пол
     type: string
-  image:
-    featured: true
-    order: 1
-    required: true
-    title: en=Image;ru=Изображение
-    type: image
-  prompt:
-    default: red swimsuit
-    featured: true
-    multiline: true
-    order: 3
-    required: true
-    title: en=Prompt;ru=Подсказка
-    type: string
+    default: auto
+    enum:
+      - auto|en=Auto;ru=Авто
+      - male|en=Male;ru=Мужчина
+      - female|en=Female;ru=Женщина
 outputs:
   image:
-    featured: true
     title: en=Image;ru=Изображение
     type: image
+    featured: true
+catalog:
+  _id: dress_on_image_artworks
+  version: 50
+  category:
+    _id: deep_swap
+    title: en=Deep swap;ru=Глубокая замена
+    icon: face
+    order: 20
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

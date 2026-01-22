@@ -1,54 +1,32 @@
+version: 1
+icon: video
+order: 5
+title: en=WAN 2.x animate;ru=WAN 2.x анимация
+tags:
+  - image-to-video
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/wan_2_2/script.js
+locked: false
+arrange:
+  x: 1640
+  y: 2240
+groups:
+  inputs: {}
 inputs:
-  fps:
-    default: "16"
-    enum:
-      - 16|en=16;ru=16
-      - 24|en=24;ru=24
-      - 30|en=30;ru=30
-      - 60|en=60;ru=60
-    order: 7
-    title: en=Fps;ru=Кадров в секунду
-    type: string
-  image:
-    featured: true
-    order: 2
-    required: true
-    title: en=Image;ru=Изображение
-    type: image
-  length:
-    default: 5s
-    enum:
-      - 5s|en=5s;ru=5 сек
-      - 8s|en=8s;ru=8 сек
-    order: 5
-    title: en=Length;ru=Длительность
-    type: string
   prompt:
-    default: cat astronaut walking at a moon
-    featured: true
-    multiline: true
     order: 3
-    required: true
     title: en=Prompt;ru=Подсказка
     type: string
-  resolution:
-    default: 480p
-    enum:
-      - 480p
-      - 720p
-      - 1080p
-    order: 6
-    title: en=Resolution;ru=Разрешение
-    type: string
-  version:
-    default: 22
-    enum:
-      - 2_1|Wan 2.1
-      - 2_2|Wan 2.2
-    order: 1
-    title: en=Version;ru=Версия
-    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: cat astronaut walking at a moon
   videoSize:
+    order: 4
+    title: en=Video size;ru=Размер видео
+    type: string
     default: 512x512
     enum:
       - 512x512|en=512x512 (1:1) <Horizontal>;ru=512x512 (1:1) <Горизонтальное>
@@ -66,11 +44,68 @@ inputs:
       - 624x832|en=624x832 (3:4) <Vertical>;ru=624x832 (3:4) <Вертикальное>
       - 720x1280|en=720x1280 (9:16) <Vertical>;ru=720x1280 (9:16) <Вертикальное>
       - 832x1104|en=832x1104 (52:69) <Vertical>;ru=832x1104 (52:69) <Вертикальное>
-    order: 4
-    title: en=Video size;ru=Размер видео
+  image:
+    order: 2
+    title: en=Image;ru=Изображение
+    type: image
+    required: true
+    featured: true
+  resolution:
+    order: 6
+    title: en=Resolution;ru=Разрешение
     type: string
+    default: 480p
+    enum:
+      - 480p
+      - 720p
+      - 1080p
+  length:
+    order: 5
+    title: en=Length;ru=Длительность
+    type: string
+    default: 5s
+    enum:
+      - 5s|en=5s;ru=5 сек
+      - 8s|en=8s;ru=8 сек
+  fps:
+    order: 7
+    title: en=Fps;ru=Кадров в секунду
+    type: string
+    default: "16"
+    enum:
+      - 16|en=16;ru=16
+      - 24|en=24;ru=24
+      - 30|en=30;ru=30
+      - 60|en=60;ru=60
+  version:
+    order: 1
+    title: en=Version;ru=Версия
+    type: string
+    default: 2_2
+    enum:
+      - 2_1|Wan 2.1
+      - 2_2|Wan 2.2
 outputs:
   video:
-    featured: true
     title: en=Video;ru=Видео
     type: video
+    featured: true
+catalog:
+  _id: wan_2_2_animate
+  version: 50
+  category:
+    _id: generate_videos
+    title: en=Video generation;ru=Генерация видео
+    icon: video
+    order: 10
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

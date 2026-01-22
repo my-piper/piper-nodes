@@ -80,10 +80,6 @@ Deno.test({
         batchSize: 2,
         denoisingStrength: 0.5,
         cfgScale: 7,
-        distanceTop: 100,
-        distanceRight: 100,
-        distanceBottom: 100,
-        distanceLeft: 100,
       },
     });
     console.log("Outpainted images:", images);

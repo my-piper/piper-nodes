@@ -1,49 +1,82 @@
+version: 1
+order: 5
+title: en=Portrait studio;ru=Фото будка
+tags:
+  - deep-swap
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/pulid/script.js
+arrange:
+  x: 700
+  y: 1370
+groups:
+  inputs: {}
 inputs:
-  aspectRatio:
-    default: 556
-    enum:
-    - 61
-    - 123
-    - 184
-    - 308
-    - 556
-    - 559
-    - 561
-    - 182
-    - 243
-    - 485
-    - 969
-    - 1149
-    - 1269
-    order: 4
-    title: en=Aspect ratio;ru=Соотношение сторон
-    type: string
   person:
-    featured: true
     order: 1
-    required: true
     title: en=Person;ru=Персона
     type: image
-  prompt:
-    default: Close-up portrait of Harry Potter
-    featured: true
-    multiline: true
-    order: 2
     required: true
+    featured: true
+  prompt:
+    order: 2
     title: en=Prompt;ru=Подсказка
     type: string
+    required: true
+    featured: true
+    multiline: true
+    default: Close-up portrait of Harry Potter
   upscale:
-    default: false
-    enum:
-    - no|en=No enhancing;ru=Без улучшений
-    - skin_detailing|en=Skin detailing;ru=Детализаци кожи
-    - enhancing_quality|en=Enhancing quality;ru=Высокое разрешение
-    - full_enhancing|en=Full enhancing;ru=Все улучшения
     order: 3
     title: en=Upscale;ru=Качество
     type: string
+    default: no
+    enum:
+      - no|en=No enhancing;ru=Без улучшений
+      - skin_detailing|en=Skin detailing;ru=Детализаци кожи
+      - enhancing_quality|en=Enhancing quality;ru=Высокое разрешение
+      - full_enhancing|en=Full enhancing;ru=Все улучшения
+  aspectRatio:
+    order: 4
+    title: en=Aspect ratio;ru=Соотношение сторон
+    type: string
+    default: 9:16
+    enum:
+      - 1:1
+      - 2:3
+      - 3:4
+      - 5:8
+      - 9:16
+      - 9:19
+      - 9:21
+      - 3:2
+      - 4:3
+      - 8:5
+      - 16:9
+      - 19:9
+      - 21:9
 outputs:
   image:
-    featured: true
     title: Image
     type: image
+    featured: true
+catalog:
+  _id: pulid_artworks
+  version: 50
+  category:
+    _id: deep_swap
+    title: en=Deep swap;ru=Глубокая замена
+    icon: face
+    order: 20
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

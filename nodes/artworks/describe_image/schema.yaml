@@ -1,32 +1,70 @@
+version: 1
+icon: image
+order: 20
+title: en=Describe image;ru=Описать изображение
+tags:
+  - vlm
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/describe_image/script.js
+sign: f5bfe4aed06d06ad15dac4db1e02d4b8c34496aca8ea69f6c8445290a52c6352
+arrange:
+  x: 520
+  y: 620
+groups:
+  inputs:
+    main:
+      order: 1
+      title: en=Main settings;ru=Основные настройки
 inputs:
+  image:
+    order: 1
+    title: en=Image;ru=Изображение
+    group: main
+    type: image
+    required: true
+    featured: true
+  prompt:
+    order: 2
+    title: en=Prompt (optional);ru=Подсказка (опционально)
+    group: main
+    type: string
+    required: false
+    multiline: true
+    placeholder: en=Describe the image in detail;ru=Подробно опишите изображение
   details:
+    order: 3
+    title: en=Detail level;ru=Уровень детализации
+    group: main
+    type: string
+    required: true
     default: high
     enum:
-    - low|Low
-    - middle|Middle
-    - high|High
-    group: main
-    order: 3
-    required: true
-    title: en=Detail level;ru=Уровень детализации
-    type: string
-  image:
-    featured: true
-    group: main
-    order: 1
-    required: true
-    title: en=Image;ru=Изображение
-    type: image
-  prompt:
-    group: main
-    multiline: true
-    order: 2
-    placeholder: en=Describe the image in detail;ru=Подробно опишите изображение
-    required: false
-    title: en=Prompt (optional);ru=Подсказка (опционально)
-    type: string
+      - low|Low
+      - middle|Middle
+      - high|High
 outputs:
   text:
-    featured: true
     title: en=Caption;ru=Описание
     type: string
+    featured: true
+catalog:
+  _id: describe_image_artworks
+  version: 50
+  category:
+    _id: image_analysis
+    title: en=Image analysis;ru=Анализ изображений
+    icon: image
+    order: 25
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

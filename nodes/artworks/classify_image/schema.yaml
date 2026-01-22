@@ -1,20 +1,55 @@
+version: 1
+icon: image
+order: 15
+title: en=Classify image;ru=Тегировать изображение
+tags:
+  - vlm
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/classify_image/script.js
+sign: b248ce8f2d4d892535776463332cb6718a52078147f2d9ce8da7bd4ca49296a1
+arrange:
+  x: 530
+  y: 390
+groups:
+  inputs: {}
 inputs:
   image:
-    featured: true
     order: 1
-    required: true
     title: en=Image;ru=Изображение
     type: image
-  labels:
-    default: '{ "girl": "girl on photo", "male": "male on photo" }'
-    order: 2
     required: true
+    featured: true
+  labels:
+    order: 2
+    title: en=Labels;ru=Теги
+    type: json
+    required: true
+    default: '{ "girl": "girl on photo", "male": "male on photo" }'
     schema:
       id: image-labels
-    title: en=Labels;ru=Теги
-    type: json
 outputs:
   labels:
-    featured: true
     title: en=Labels;ru=Теги
     type: json
+    featured: true
+catalog:
+  _id: classify_image_artworks
+  version: 50
+  category:
+    _id: image_analysis
+    title: en=Image analysis;ru=Анализ изображений
+    icon: image
+    order: 25
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

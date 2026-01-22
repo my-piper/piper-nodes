@@ -1,22 +1,56 @@
+version: 1
+icon: image
+order: 35
+title: en=Image to prompt;ru=Промпт по изображению
+tags:
+  - vlm
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/image_to_prompt/script.js
+arrange:
+  x: 1620
+  y: 2020
+groups:
+  inputs: {}
 inputs:
   image:
-    featured: true
     order: 1
-    required: true
     title: en=Image;ru=Изображение
     type: image
+    required: true
+    featured: true
   type:
-    default: photo
-    enum:
-    - photo|en=Photo;ru=Фото
-    - anime|en=Anime;ru=Аниме
-    - mixed|en=Mixed;ru=Любой
     order: 2
-    required: false
     title: en=Prompt type;ru=Тип описания
     type: string
+    required: false
+    default: photo
+    enum:
+      - photo|en=Photo;ru=Фото
+      - anime|en=Anime;ru=Аниме
+      - mixed|en=Mixed;ru=Любой
 outputs:
   prompt:
-    featured: true
     title: en=Prompt;ru=Подсказка
     type: string
+    featured: true
+catalog:
+  _id: image_to_prompt_artworks
+  version: 50
+  category:
+    _id: image_analysis
+    title: en=Image analysis;ru=Анализ изображений
+    icon: image
+    order: 25
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

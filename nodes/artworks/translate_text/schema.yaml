@@ -1,52 +1,87 @@
+version: 1
+icon: text
+order: 5
+title: en=Translate text;ru=Перевести текст
+tags:
+  - translate
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/translate_text/script.js
+sign: acd11ce1b3cf4f3e51627f8a079f7600b6219c1af5e9d16cdbb5388c5039e06c
+arrange:
+  x: 440
+  y: 100
+groups:
+  inputs: {}
 inputs:
   source:
-    default: auto
-    enum:
-    - auto|en=Auto;ru=Авто
-    - en|en=English;ru=Английский
-    - de|en=German;ru=Немецкий
-    - ru|en=Russian;ru=Русский
-    - es|en=Spanish;ru=Испанский
-    - fr|en=French;ru=Французский
-    - it|en=Italian;ru=Итальянский
-    - pt|en=Portuguese;ru=Португальский
-    - ja|en=Japanese;ru=Японский
-    - ko|en=Korean;ru=Корейский
-    - hi|en=Hindi;ru=Хинди
-    - tr|en=Turkish;ru=Турецкий
-    - zh|en=Chinese Simplified;ru=Китайский (упрощённый)
     order: 1
     title: en=Source language;ru=Исходный язык
     type: string
-  target:
-    default: en
+    default: auto
     enum:
-    - en|en=English;ru=Английский
-    - de|en=German;ru=Немецкий
-    - ru|en=Russian;ru=Русский
-    - es|en=Spanish;ru=Испанский
-    - fr|en=French;ru=Французский
-    - it|en=Italian;ru=Итальянский
-    - pt|en=Portuguese;ru=Португальский
-    - ja|en=Japanese;ru=Японский
-    - ko|en=Korean;ru=Корейский
-    - hi|en=Hindi;ru=Хинди
-    - tr|en=Turkish;ru=Турецкий
-    - zh|en=Chinese Simplified;ru=Китайский (упрощённый)
+      - auto|en=Auto;ru=Авто
+      - en|en=English;ru=Английский
+      - de|en=German;ru=Немецкий
+      - ru|en=Russian;ru=Русский
+      - es|en=Spanish;ru=Испанский
+      - fr|en=French;ru=Французский
+      - it|en=Italian;ru=Итальянский
+      - pt|en=Portuguese;ru=Португальский
+      - ja|en=Japanese;ru=Японский
+      - ko|en=Korean;ru=Корейский
+      - hi|en=Hindi;ru=Хинди
+      - tr|en=Turkish;ru=Турецкий
+      - zh|en=Chinese Simplified;ru=Китайский (упрощённый)
+  target:
     order: 2
-    required: true
     title: en=Target;ru=Целевой язык
     type: string
-  text:
-    featured: true
-    multiline: true
-    order: 3
     required: true
+    default: en
+    enum:
+      - en|en=English;ru=Английский
+      - de|en=German;ru=Немецкий
+      - ru|en=Russian;ru=Русский
+      - es|en=Spanish;ru=Испанский
+      - fr|en=French;ru=Французский
+      - it|en=Italian;ru=Итальянский
+      - pt|en=Portuguese;ru=Португальский
+      - ja|en=Japanese;ru=Японский
+      - ko|en=Korean;ru=Корейский
+      - hi|en=Hindi;ru=Хинди
+      - tr|en=Turkish;ru=Турецкий
+      - zh|en=Chinese Simplified;ru=Китайский (упрощённый)
+  text:
+    order: 3
     title: en=Text;ru=Текст
     type: string
+    required: true
+    featured: true
+    multiline: true
 outputs:
   text:
-    featured: true
-    format: markdown
     title: en=Text;ru=Перевод
     type: string
+    format: markdown
+    featured: true
+catalog:
+  _id: translate_text_artworks
+  version: 50
+  category:
+    _id: process_text
+    title: en=Process text;ru=Обработка текста
+    icon: text
+    order: 35
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global

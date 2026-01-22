@@ -1,12 +1,44 @@
+version: 1
+title: en=Remove background;ru=Удалить фон
+tags:
+  - image
+  - en=cheap;ru=дешево
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@e24efd0529f09811fb9d7c1570f5f995772f9836/nodes/artworks/remove_background/script.js
+arrange:
+  x: 2450
+  y: 140
+groups:
+  inputs: {}
 inputs:
   image:
-    featured: true
     order: 1
-    required: true
     title: en=Image;ru=Изображение
     type: image
+    required: true
+    featured: true
 outputs:
   image:
-    featured: true
     title: en=Image;ru=Изображение
     type: image
+    featured: true
+catalog:
+  _id: remove_background_artworks
+  version: 50
+  category:
+    _id: image_processing
+    title: en=Work with images;ru=Работа с изобр.
+    icon: image
+    order: 30
+  package: artworks
+environment:
+  ARTWORKS_USER:
+    title: ArtWorks user
+    description: Signup at https://artworks.ai/
+    type: string
+    scope: global
+  ARTWORKS_PASSWORD:
+    title: ArtWorks password
+    type: string
+    scope: global
