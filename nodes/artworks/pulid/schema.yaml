@@ -6,7 +6,7 @@ tags:
   - en=cheap;ru=дешево
 source: node
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/artworks/pulid/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.4/nodes/artworks/pulid/script.js
 arrange:
   x: 700
   y: 1370

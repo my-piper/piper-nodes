@@ -7,7 +7,7 @@ tags:
   - video-to-video
 source: node
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/fal/videos/vidu_q2/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.4/nodes/fal/videos/vidu_q2/script.js
 arrange:
   x: 1980
   y: 480

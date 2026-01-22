@@ -7,7 +7,7 @@ package: replicate
 title: Seedance 1
 description: Generate videos from text or images using Seedance Lite, Pro and Pro Fast models
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/replicate/videos/seedance_1/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.4/nodes/replicate/videos/seedance_1/script.js
 tags:
   - text-to-video
   - image-to-video

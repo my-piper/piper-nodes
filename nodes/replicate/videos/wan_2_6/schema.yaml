@@ -7,7 +7,7 @@ tags:
   - image-to-video
 source: node
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/replicate/videos/wan_2_6/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.4/nodes/replicate/videos/wan_2_6/script.js
 arrange:
   x: 660
   y: 150

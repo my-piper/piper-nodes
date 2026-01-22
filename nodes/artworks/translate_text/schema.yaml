@@ -7,7 +7,7 @@ tags:
   - en=cheap;ru=дешево
 source: node
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/artworks/translate_text/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.4/nodes/artworks/translate_text/script.js
 sign: acd11ce1b3cf4f3e51627f8a079f7600b6219c1af5e9d16cdbb5388c5039e06c
 arrange:
   x: 440

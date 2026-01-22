@@ -4,7 +4,7 @@ tags:
   - image-to-image
   - en=cheap;ru=дешево
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/artworks/image_to_image/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.4/nodes/artworks/image_to_image/script.js
 arrange:
   x: 1530
   y: 140

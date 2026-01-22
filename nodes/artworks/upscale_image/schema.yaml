@@ -5,7 +5,7 @@ tags:
   - en=cheap;ru=дешево
 source: node
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/artworks/upscale_image/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.4/nodes/artworks/upscale_image/script.js
 arrange:
   x: 2030
   y: 140
