@@ -42,7 +42,7 @@ export async function run({ inputs, state, env }) {
     });
   }
 
-  const results = await artworks.checkState(state);
+  const results = await artworks.checkTask(state);
   if ("__repeat" in results) {
     return results.__repeat;
   }

@@ -81,7 +81,7 @@ export class ArtWorks {
     }
   }
 
-  async cancelTask(id) {
+  async checkTask(id) {
     const { username, password } = this;
     console.debug(`Cancel task ${id}`);
     try {
