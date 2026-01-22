@@ -15,9 +15,10 @@ const COST_PER_SECOND = {
 };
 
 export function costs({ env, inputs }) {
-  if (env.scope.REPLICATE_TOKEN === "user") {
+  if (Replicate.userScope(env)) {
     return 0;
   }
+
   const { mode = "standard", duration = "5", resolution = "720p" } = inputs;
   return COST_PER_SECOND[mode][resolution] * +duration;
 }

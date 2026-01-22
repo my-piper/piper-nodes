@@ -35,12 +35,7 @@ export async function run({ env, inputs, state }) {
   });
 
   if (!state) {
-    const {
-      person,
-      prompt = "Close-up portrait of Harry Potter, detailed, high resolution",
-      upscale,
-      aspectRatio = "9:16",
-    } = inputs;
+    const { person, prompt, upscale, aspectRatio = "9:16" } = inputs;
 
     return await artworks.createTask({
       type: "run-comfy",

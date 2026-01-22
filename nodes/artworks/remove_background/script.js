@@ -8,7 +8,7 @@ export function costs({ env }) {
   return 0.005;
 }
 
-const CHECK_INTERVAL = 3000;
+const CHECK_INTERVAL = 3_000;
 const MAX_ATTEMPTS = 20;
 
 export async function run({ env, inputs, state }) {

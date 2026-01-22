@@ -1,5 +1,5 @@
-import { fal } from "npm:@fal-ai/client@1.2.0";
-import { next, repeat, throwError } from "../../../../utils/node.js";
+import { next } from "../../../../utils/node.js";
+import { Fal } from "../../utils.js";
 
 const PRICE_PER_SECOND = {
   "2_1": { audio_on: 0.05, audio_off: 0.05 },
@@ -8,7 +8,7 @@ const PRICE_PER_SECOND = {
 };
 
 export function costs({ env, inputs }) {
-  if (env.scope.FAL_KEY === "user") {
+  if (Fal.userScope(env)) {
     return 0;
   }
 
@@ -18,9 +18,6 @@ export function costs({ env, inputs }) {
   const cost = prices[generate_audio ? "audio_on" : "audio_off"] * +duration;
   return cost;
 }
-
-const CHECK_INTERVAL = 3_000;
-const MAX_ATTEMPTS = 120;
 
 const MODELS = {
   "2_1": {
@@ -37,13 +34,14 @@ const MODELS = {
   },
 };
 
-export async function run({ env, inputs, state }) {
-  const { FAL_KEY } = env.variables;
-  if (!FAL_KEY) {
-    throwError.fatal("Please, set your API key for Fal AI");
-  }
+const CHECK_INTERVAL = 3_000;
+const MAX_ATTEMPTS = 120;
 
-  fal.config({ credentials: FAL_KEY });
+export async function run({ env, inputs, state }) {
+  const fal = new Fal(env, {
+    checkInterval: CHECK_INTERVAL,
+    maxAttempts: MAX_ATTEMPTS,
+  });
 
   if (!state) {
     const {
@@ -60,7 +58,7 @@ export async function run({ env, inputs, state }) {
 
     const endpoint = image ? MODELS[model].i2v : MODELS[model].t2v;
 
-    const payload = {
+    return await fal.createTask(endpoint, {
       input: {
         prompt,
         image_url: image,
@@ -71,46 +69,17 @@ export async function run({ env, inputs, state }) {
         cfg_scale,
         generate_audio,
       },
-    };
-
-    console.log("Sending request to", endpoint);
-    console.log(JSON.stringify(payload, null, 2));
-
-    const { request_id: task } = await fal.queue.submit(endpoint, payload);
-
-    return repeat({
-      state: { task, endpoint, attempt: 0 },
-      delay: CHECK_INTERVAL,
     });
   }
 
-  const { task, endpoint, attempt = 0 } = state;
-
-  const { status } = await fal.queue.status(endpoint, {
-    requestId: task,
-    logs: true,
-  });
-
-  if (status !== "COMPLETED") {
-    if (attempt >= MAX_ATTEMPTS) {
-      throwError.timeout("Generation timeout exceeded");
-    }
-
-    return repeat({
-      state: { task, endpoint, attempt: attempt + 1 },
-      progress: {
-        total: MAX_ATTEMPTS,
-        processed: attempt,
-      },
-      delay: CHECK_INTERVAL,
-    });
+  const results = await fal.checkTask(state);
+  if ("__repeat" in results) {
+    return results.__repeat;
   }
 
   const {
-    data: {
-      video: { url: video },
-    },
-  } = await fal.queue.result(endpoint, { requestId: task });
+    video: { url: video },
+  } = results;
 
   return next({
     outputs: { video },

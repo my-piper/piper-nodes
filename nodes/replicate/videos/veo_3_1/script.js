@@ -7,9 +7,10 @@ const COST_PER_SECOND = {
 };
 
 export function costs({ env, inputs }) {
-  if (env.scope.REPLICATE_TOKEN === "user") {
+  if (Replicate.userScope(env)) {
     return 0;
   }
+
   const { model = "3_1_fast", duration = "8", generate_audio = true } = inputs;
 
   const prices = COST_PER_SECOND[model];

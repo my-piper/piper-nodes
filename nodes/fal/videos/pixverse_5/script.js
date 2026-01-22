@@ -1,3 +1,6 @@
+import { next } from "../../../../utils/node.js";
+import { Fal } from "../../utils.js";
+
 const PRICING_BASE = {
   "360p": 0.15,
   "540p": 0.15,
@@ -15,8 +18,8 @@ const DURATION_MULTIPLIERS = {
   10: 2.2,
 };
 
-export async function costs({ env, inputs }) {
-  if (env.scope.REPLICATE_TOKEN === "user") {
+export function costs({ env, inputs }) {
+  if (Fal.userScope(env)) {
     return 0;
   }
 
@@ -40,19 +43,19 @@ export async function costs({ env, inputs }) {
   return Math.round(cost * 100) / 100;
 }
 
-const CHECK_INTERVAL = 3000;
-const MAX_RETRIES = 100;
+const MODELS = {
+  t2v: "fal-ai/pixverse/v5.5/text-to-video",
+  i2v: "fal-ai/pixverse/v5.5/image-to-video",
+};
+
+const CHECK_INTERVAL = 3_000;
+const MAX_ATTEMPTS = 100;
 
 export async function run({ env, inputs, state }) {
-  const { repeat, next, throwError, download } = require("@piper/node");
-
-  const { FAL_KEY } = env.variables;
-  if (!FAL_KEY) {
-    throwError.fatal("Please, set your API key for Fal AI");
-  }
-
-  const { fal } = require("@fal-ai/client");
-  fal.config({ credentials: FAL_KEY });
+  const fal = new Fal(env, {
+    checkInterval: CHECK_INTERVAL,
+    maxAttempts: MAX_ATTEMPTS,
+  });
 
   if (!state) {
     const {
@@ -69,13 +72,14 @@ export async function run({ env, inputs, state }) {
       seed,
     } = inputs;
 
-    const payload = {
+    const endpoint = image ? MODELS.i2v : MODELS.t2v;
+
+    return await fal.createTask(endpoint, {
       input: {
         prompt,
         aspect_ratio,
-        ...(!!duration ? { duration: +duration } : {}),
+        ...(duration ? { duration: +duration } : {}),
         resolution,
-        duration,
         image_url: image,
         thinking_type,
         generate_multi_clip_switch,
@@ -84,65 +88,20 @@ export async function run({ env, inputs, state }) {
         style,
         seed,
       },
-    };
-
-    console.log(JSON.stringify(payload, null, 2));
-
-    const endpoint = !!image
-      ? "fal-ai/pixverse/v5.5/image-to-video"
-      : "fal-ai/pixverse/v5.5/text-to-video";
-
-    try {
-      const { request_id: task } = await fal.queue.submit(endpoint, payload);
-
-      return repeat({
-        state: { task, endpoint },
-        delay: CHECK_INTERVAL,
-      });
-    } catch (e) {
-      const message = e.message || String(e);
-      throwError.fatal(`Failed to submit request: ${message}`);
-    }
-  }
-  const { task, endpoint, retries = 0 } = state;
-
-  try {
-    const { status } = await fal.queue.status(endpoint, {
-      requestId: task,
-      logs: true,
     });
-
-    switch (status) {
-      case "COMPLETED":
-        break;
-      case "IN_PROGRESS":
-      case "IN_QUEUE":
-      default:
-        if (retries >= MAX_RETRIES) {
-          throwError.fatal("Generation timeout exceeded");
-        }
-        return repeat({
-          state: { task, endpoint, retries: retries + 1 },
-          progress: {
-            total: MAX_RETRIES,
-            processed: retries,
-          },
-          delay: CHECK_INTERVAL,
-        });
-    }
-
-    const {
-      data: {
-        video: { url },
-      },
-    } = await fal.queue.result(endpoint, { requestId: task });
-    const { data: video } = await download(url);
-    return next({
-      outputs: { video },
-      costs: await costs({ env, inputs }),
-    });
-  } catch (e) {
-    const message = e.message || String(e);
-    throwError.fatal(`Failed to get result: ${message}`);
   }
+
+  const results = await fal.checkTask(state);
+  if ("__repeat" in results) {
+    return results.__repeat;
+  }
+
+  const {
+    video: { url: video },
+  } = results;
+
+  return next({
+    outputs: { video },
+    costs: costs({ env, inputs }),
+  });
 }

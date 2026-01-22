@@ -2,7 +2,7 @@ import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
 export function costs({ env }) {
-  if (env.scope.REPLICATE_TOKEN === "user") {
+  if (Replicate.userScope(env)) {
     return 0;
   }
   return 0.08;

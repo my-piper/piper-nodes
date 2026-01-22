@@ -9,7 +9,7 @@ const { REPLICATE_TOKEN } = await load({
 
 import { run } from "./script.js";
 
-Deno.test("Seedance 1: text to video 720p", async () => {
+Deno.test("Seedance 1: text to video 480p", async () => {
   const {
     costs,
     outputs: { video },
@@ -24,7 +24,7 @@ Deno.test("Seedance 1: text to video 720p", async () => {
       mode: "lite",
       prompt: "a beautiful sunset over the ocean with waves",
       duration: 3,
-      resolution: "720p",
+      resolution: "480p",
       aspect_ratio: "16:9",
       camera_fixed: true,
       seed: 42,

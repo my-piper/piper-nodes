@@ -20,7 +20,7 @@ const COST_PER_SECOND = {
 };
 
 export function costs({ env, inputs }) {
-  if (env.scope.REPLICATE_TOKEN === "user") {
+  if (Replicate.userScope(env)) {
     return 0;
   }
 

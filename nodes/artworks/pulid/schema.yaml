@@ -26,7 +26,7 @@ inputs:
     required: true
     featured: true
     multiline: true
-    default: Close-up portrait of Harry Potter
+    default: Close-up portrait of Harry Potter, detailed, high resolution
   upscale:
     order: 3
     title: en=Upscale;ru=Качество

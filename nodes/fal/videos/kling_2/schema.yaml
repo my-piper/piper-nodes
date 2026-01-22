@@ -6,7 +6,7 @@ tags:
   - image-to-video
 source: node
 execution: regular
-script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/replicate/videos/kling_2/script.js
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.3/nodes/fal/videos/kling_2/script.js
 arrange:
   x: 690
   y: 500

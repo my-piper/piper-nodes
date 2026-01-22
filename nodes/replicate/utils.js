@@ -27,6 +27,10 @@ export class Replicate {
     };
   }
 
+  static userScope(env) {
+    return env.scope.REPLICATE_TOKEN === "user";
+  }
+
   async createTask(endpoint, payload) {
     const { version, checkInterval: delay } = this.options;
     const url = [BASE_URL, version, endpoint].join("/");

@@ -44,7 +44,6 @@ export async function run({ env, inputs, state }) {
       seed,
       batchSize,
       // SDXL
-      styles,
       templates,
     } = inputs;
 
@@ -81,7 +80,7 @@ export async function run({ env, inputs, state }) {
                 styles: ["Fooocus Sharp", "Fooocus Pony", "Fooocus V2"],
               };
             default:
-              return styles?.length > 0 ? { styles } : { styles };
+              return {};
           }
         })(),
         sharpness,

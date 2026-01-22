@@ -81,32 +81,7 @@ export class ArtWorks {
     }
   }
 
-  async checkTask(id) {
-    const { username, password } = this;
-    console.debug(`Cancel task ${id}`);
-    try {
-      const response = await fetch(this.getUrl(`tasks/${id}/cancel`), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${btoa(`${username}:${password}`)}`,
-        },
-      });
-
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        const { errors } = data;
-        if (errors?.length > 0) {
-          throwError.fatal(errors.join(", "));
-        }
-        throwError.fatal(response.statusText);
-      }
-    } catch (e) {
-      throwError.fatal(e.message);
-    }
-  }
-
-  async checkState(state) {
+  async checkTask(state) {
     const { task, attempt = 0, startedAt } = state;
     console.log(`Check task ${attempt} ${task}`);
 
@@ -170,5 +145,16 @@ export class ArtWorks {
       default:
         throwError.fatal("Wrong task status");
     }
+  }
+
+  async cancelTask(id) {
+    const { username, password } = this;
+    await fetch(this.getUrl(`tasks/${id}/cancel`), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+      },
+    });
   }
 }

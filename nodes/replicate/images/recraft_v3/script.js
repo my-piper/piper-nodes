@@ -2,7 +2,7 @@ import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
 export function costs({ env }) {
-  if (env.scope.REPLICATE_TOKEN === "user") {
+  if (Replicate.userScope(env)) {
     return 0;
   }
   return { costs: 0.04, details: "en=Price is fixed;ru=Цена фиксированна" };
