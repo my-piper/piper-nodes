@@ -10,11 +10,11 @@
   --color-graphite-400: #222222;
   --color-graphite-500: #1d1d1d;
   --color-graphite-600: #111111;
-  
+
   --color-primary: #00d1d1;
   --color-green: #18e09a;
   --color-red: #f95741;
-  
+
   /* Custom font family */
   --font-family-sans: "Inter", sans-serif;
 }
@@ -30,7 +30,126 @@
 
 /* Custom component styles */
 @layer components {
-  /* Add your custom component styles here */
+  /* Range slider component using Tailwind design tokens */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  /* Track styles */
+  input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    background: var(--color-graphite-200);
+    border-radius: var(--radius-sm);
+  }
+
+  input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    background: var(--color-graphite-200);
+    border-radius: var(--radius-sm);
+    border: none;
+  }
+
+  /* Thumb styles */
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--color-graphite-75);
+    cursor: pointer;
+    border-radius: calc(infinity * 1px);
+    margin-top: -7px;
+    transition: background var(--default-transition-duration)
+      var(--default-transition-timing-function);
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    background: var(--color-graphite-50);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--color-graphite-75);
+    cursor: pointer;
+    border-radius: calc(infinity * 1px);
+    border: none;
+    transition: background var(--default-transition-duration)
+      var(--default-transition-timing-function);
+  }
+
+  input[type="range"]::-moz-range-thumb:hover {
+    background: var(--color-graphite-50);
+  }
+
+  /* Focus styles for accessibility */
+  input[type="range"]:focus {
+    outline: none;
+  }
+
+  input[type="range"]:focus::-webkit-slider-thumb {
+    background: var(--color-graphite-50);
+  }
+
+  input[type="range"]:focus::-moz-range-thumb {
+    background: var(--color-graphite-50);
+  }
+
+  /* Checkbox component using Tailwind design tokens */
+  input[type="checkbox"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid var(--color-graphite-200);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-graphite-500);
+    cursor: pointer;
+    position: relative;
+    transition: all var(--default-transition-duration)
+      var(--default-transition-timing-function);
+  }
+
+  input[type="checkbox"]:hover {
+    background-color: var(--color-graphite-400);
+    border-color: var(--color-graphite-100);
+  }
+
+  input[type="checkbox"]:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid var(--color-graphite-600);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--color-graphite-600),
+      0 0 0 4px var(--color-primary);
+  }
+
+  input[type="checkbox"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 /* Custom utility styles */
