@@ -363,8 +363,13 @@
               const inputs = {};
               for (const [key, input] of Object.entries(meta.node.inputs)) {
                 const value = piper.inputs[key];
-                if (!!value && ["string", "image"].includes(input.type)) {
-                  inputs[key] = piper.inputs[key];
+                switch (input.type) {
+                  case "string":
+                    inputs[key] = value || "Sample Text";
+                    break;
+                  case "image":
+                    inputs[key] = value || "https://placehold.co/600x600";
+                    break;
                 }
               }
               return inputs;
@@ -399,8 +404,7 @@
                     };
                     break;
                   case "image":
-                    const url =
-                      piper.inputs[key] || "https://placehold.co/600x400";
+                    const url = piper.inputs[key];
                     const { width, height } = await loadImage(url);
                     config.layers[key] = {
                       type: "image",
