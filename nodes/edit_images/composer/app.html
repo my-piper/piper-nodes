@@ -171,6 +171,12 @@
             class="px-3 py-2 bg-graphite-500 text-white border border-graphite-200 rounded focus:bg-graphite-400 focus:border-graphite-100 focus:outline-none"
           />
         </label>
+        <button
+          @click="resetImageDimensions"
+          class="px-2 py-1.5 bg-graphite-400 text-white border border-graphite-200 rounded hover:bg-graphite-300 hover:border-graphite-100 transition-colors text-xs"
+        >
+          Reset
+        </button>
         <label class="flex items-center gap-2 text-sm cursor-pointer">
           <input
             type="checkbox"
@@ -407,6 +413,8 @@
                       y: 50,
                       width,
                       height,
+                      originalWidth: width,
+                      originalHeight: height,
                       order: 0,
                     };
                     break;
@@ -569,6 +577,28 @@
             selectedLayer.value = layers[index];
           };
 
+          const resetImageDimensions = async () => {
+            if (!selectedLayer.value || selectedLayer.value.type !== "image") {
+              return;
+            }
+
+            // Find the layer key to get the image URL
+            const layerKey = Object.keys(layers).find(
+              (key) => layers[key] === selectedLayer.value
+            );
+            if (!layerKey || !inputs[layerKey]) {
+              return;
+            }
+
+            // Load the image to get real dimensions
+            const { width, height } = await loadImage(inputs[layerKey]);
+            selectedLayer.value.width = width;
+            selectedLayer.value.height = height;
+            selectedLayer.value.originalWidth = width;
+            selectedLayer.value.originalHeight = height;
+            originalAspectRatio.value = width / height;
+          };
+
           return {
             DEBUG,
             canvas,
@@ -586,6 +616,7 @@
             startGuideResize,
             startHorizontalGuideResize,
             selectLayer,
+            resetImageDimensions,
           };
         },
       });
