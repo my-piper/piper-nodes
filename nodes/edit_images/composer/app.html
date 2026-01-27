@@ -363,13 +363,8 @@
               const inputs = {};
               for (const [key, input] of Object.entries(meta.node.inputs)) {
                 const value = piper.inputs[key];
-                switch (input.type) {
-                  case "string":
-                    inputs[key] = value || "Sample Text";
-                    break;
-                  case "image":
-                    inputs[key] = value || "https://placehold.co/600x600";
-                    break;
+                if (!!value && ["string", "image"].includes(input.type)) {
+                  inputs[key] = piper.inputs[key];
                 }
               }
               return inputs;
