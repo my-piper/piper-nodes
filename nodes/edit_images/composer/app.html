@@ -374,7 +374,12 @@
           const config = reactive(
             await (async () => {
               const { meta, inputs } = piper;
-              const config = JSON.parse(inputs.config);
+              const config = !!inputs.config
+                ? JSON.parse(inputs.config)
+                : {
+                    layers: {},
+                    canvas: { width: 800, height: 600 },
+                  };
               for (const [key, value] of Object.entries(meta.node.inputs)) {
                 if (!!config.layers[key]) {
                   continue;
@@ -394,7 +399,8 @@
                     };
                     break;
                   case "image":
-                    const url = piper.inputs[key];
+                    const url =
+                      piper.inputs[key] || "https://placehold.co/600x400";
                     const { width, height } = await loadImage(url);
                     config.layers[key] = {
                       type: "image",
