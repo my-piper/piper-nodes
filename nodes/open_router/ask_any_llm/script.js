@@ -68,7 +68,7 @@ export async function run({ inputs, env }) {
     model = "qwen/qwen3-vl-8b-instruct",
     instructions,
     question,
-    image,
+    images,
     answerFormat,
     temperature,
     max_tokens,
@@ -93,18 +93,20 @@ export async function run({ inputs, env }) {
 
   let content = question;
 
-  if (image) {
+  if (images?.length > 0) {
     content = [
       {
         type: "text",
         text: question,
       },
-      {
-        type: "image_url",
-        image_url: {
-          url: await imageToBase64(image),
-        },
-      },
+      ...(await Promise.all(
+        images.map(async (image) => ({
+          type: "image_url",
+          image_url: {
+            url: await imageToBase64(image),
+          },
+        }))
+      )),
     ];
   }
 
