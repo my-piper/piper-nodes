@@ -9,7 +9,7 @@ const { REPLICATE_TOKEN } = await load({
 
 import { run } from "./script.js";
 
-Deno.test("Omni Human: image + audio to video", async () => {
+Deno.test("Omni Human Lipsync: image + audio to video", async () => {
   const {
     costs,
     outputs: { video },

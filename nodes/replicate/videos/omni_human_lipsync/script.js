@@ -7,7 +7,7 @@ export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;
   }
-  // Estimate ~5 seconds average output
+  // TODO: fetch actual video length
   return COST_PER_SECOND * 5;
 }
 
