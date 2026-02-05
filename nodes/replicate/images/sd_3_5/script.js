@@ -1,6 +1,9 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// medium - https://replicate.com/stability-ai/stable-diffusion-3.5-medium
+// large - https://replicate.com/stability-ai/stable-diffusion-3.5-large
+
 export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;

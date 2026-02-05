@@ -1,6 +1,8 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// model - https://replicate.com/minimax/image-01
+
 export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;

@@ -1,6 +1,9 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// seedream_4 - https://replicate.com/bytedance/seedream-4
+// seedream_4_5 - https://replicate.com/bytedance/seedream-4.5
+
 export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;

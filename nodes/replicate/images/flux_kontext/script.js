@@ -1,6 +1,11 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// fast - https://replicate.com/prunaai/flux-kontext-fast
+// dev - https://replicate.com/black-forest-labs/flux-kontext-dev-lora
+// pro - https://replicate.com/black-forest-labs/flux-kontext-pro
+// max - https://replicate.com/black-forest-labs/flux-kontext-max
+
 export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;

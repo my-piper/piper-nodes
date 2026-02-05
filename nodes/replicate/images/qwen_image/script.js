@@ -1,11 +1,13 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// qwen-image - https://replicate.com/qwen/qwen-image
+
 export function costs({ env }) {
   if (Replicate.userScope(env)) {
     return 0;
   }
-  return 0.03;
+  return 0.025;
 }
 
 const CHECK_INTERVAL = 2_000;

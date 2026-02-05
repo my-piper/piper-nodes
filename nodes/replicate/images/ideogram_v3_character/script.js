@@ -1,6 +1,8 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// model - https://replicate.com/ideogram-ai/ideogram-character
+
 export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;

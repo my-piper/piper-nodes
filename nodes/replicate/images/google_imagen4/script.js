@@ -1,6 +1,10 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// imagen-4-fast - https://replicate.com/google/imagen-4-fast
+// imagen-4 - https://replicate.com/google/imagen-4
+// imagen-4-ultra - https://replicate.com/google/imagen-4-ultra
+
 export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;

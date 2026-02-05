@@ -1,6 +1,8 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// model - https://replicate.com/recraft-ai/recraft-vectorize
+
 export function costs({ env }) {
   if (Replicate.userScope(env)) {
     return 0;

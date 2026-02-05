@@ -1,19 +1,25 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// standard - https://replicate.com/runwayml/gen4-image
+// turbo - https://replicate.com/runwayml/gen4-image-turbo
+
 export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;
   }
-  const { model = "standard" } = inputs;
-  switch (model) {
-    case "turbo":
-      return 0.05;
-    case "standard":
-      return 0.08;
-    default:
-      return 0.08;
+  const { model = "standard", resolution = "1080p" } = inputs;
+
+  if (model === "turbo") {
+    switch (resolution) {
+      case "1080p":
+        return 0.08;
+      case "720p":
+      default:
+        return 0.05;
+    }
   }
+  return 0.03;
 }
 
 const CHECK_INTERVAL = 2_000;

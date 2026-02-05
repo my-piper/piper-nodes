@@ -1,6 +1,10 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// balanced - https://replicate.com/ideogram-ai/ideogram-v3-balanced
+// quality - https://replicate.com/ideogram-ai/ideogram-v3-quality
+// turbo - https://replicate.com/ideogram-ai/ideogram-v3-turbo
+
 export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;

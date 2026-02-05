@@ -1,6 +1,8 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// model - https://replicate.com/google/nano-banana-pro
+
 export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;
@@ -9,11 +11,11 @@ export function costs({ env, inputs }) {
   const { resolution = "2K" } = inputs;
   switch (resolution) {
     case "4K":
-      return 0.24;
+      return 0.3;
     case "1K":
     case "2K":
     default:
-      return 0.14;
+      return 0.15;
   }
 }
 

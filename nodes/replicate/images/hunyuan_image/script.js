@@ -1,6 +1,9 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
+// hunyuan-2.1 - https://replicate.com/tencent/hunyuan-image-2.1
+// hunyuan-3 - https://replicate.com/tencent/hunyuan-image-3
+
 export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;

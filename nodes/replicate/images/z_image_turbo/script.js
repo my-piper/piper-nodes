@@ -1,11 +1,30 @@
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
-export function costs({ env }) {
+// model - https://replicate.com/prunaai/z-image-turbo
+
+export function costs({ env, inputs }) {
   if (Replicate.userScope(env)) {
     return 0;
   }
-  return 0.01;
+
+  const { target_resolution = 1, width = 1024, height = 1024 } = inputs ?? {};
+
+  const w = Number(width) || 1024;
+  const h = Number(height) || 1024;
+  const megapixels = (w * h) / 1_000_000;
+
+  const PRICE_PER_MP = {
+    0.5: 0.0025,
+    1: 0.005,
+    2: 0.01,
+    3: 0.015,
+    4: 0.02,
+  };
+
+  const perMp = PRICE_PER_MP[target_resolution] ?? PRICE_PER_MP[1];
+  const cost = megapixels * perMp;
+  return Number(cost.toFixed(6));
 }
 
 const CHECK_INTERVAL = 1_000;
