@@ -1,6 +1,7 @@
+
 version: 1
-title: Sora 2
-description: Generate high-quality videos from text descriptions or images using OpenAI's Sora 2 model
+title: Sora 2 / Sora 2 Pro
+description: Generate high-quality videos from text descriptions or images using OpenAI's Sora 2 or Sora 2 Pro model
 thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
 tags:
   - text-to-video
@@ -20,6 +21,16 @@ groups:
       order: 2
       title: en=Advanced settings;ru=Дополнительные настройки
 inputs:
+  model:
+    order: 0
+    title: en=Model;ru=Модель
+    description: en=Choose Sora 2 or Sora 2 Pro;ru=Выберите Sora 2 или Sora 2 Pro
+    group: main
+    type: string
+    default: sora-2
+    enum:
+      - sora-2|en=Sora 2;ru=Sora 2
+      - sora-2-pro|en=Sora 2 Pro;ru=Sora 2 Pro
   prompt:
     order: 1
     title: en=Prompt;ru=Промпт
@@ -58,8 +69,18 @@ inputs:
     enum:
       - portrait|en=Portrait (720x1280);ru=Вертикальное (720x1280)
       - landscape|en=Landscape (1280x720);ru=Горизонтальное (1280x720)
+  resolution:
+    order: 5
+    title: en=Resolution;ru=Разрешение
+    description: en=Resolution quality. Standard is 720p, high is 1024p;ru=Качество разрешения. Стандарт — 720p, высокое — 1024p
+    group: main
+    type: string
+    default: standard
+    enum:
+      - standard|en=Standard (720p);ru=Стандартное (720p)
+      - high|en=High (1024p);ru=Высокое (1024p)
   openai_api_key:
-    order: 0
+    order: 6
     title: en=OpenAI API Key;ru=Ключ OpenAI API
     description: en=Optional: Your OpenAI API key. If you use your own OpenAI API key, you will be charged directly by OpenAI;ru=Опционально: Ваш ключ OpenAI API. Если вы используете свой ключ, вас будут заряжать напрямую OpenAI
     group: advanced
