@@ -43,7 +43,8 @@ Deno.test("Sora 2: text to video 8 seconds landscape", async () => {
       },
     },
     inputs: {
-      prompt: "a majestic eagle soaring over snowy mountains with cinematic quality",
+      prompt:
+        "a majestic eagle soaring over snowy mountains with cinematic quality",
       seconds: 8,
       aspect_ratio: "landscape",
     },
@@ -53,24 +54,27 @@ Deno.test("Sora 2: text to video 8 seconds landscape", async () => {
   expect(costs).toBe(0.14);
 });
 
-Deno.test("Sora 2: text to video 12 seconds with default settings", async () => {
-  const {
-    costs,
-    outputs: { video },
-  } = await runNode(run, {
-    env: {
-      scope: {},
-      variables: {
-        REPLICATE_TOKEN,
+Deno.test(
+  "Sora 2: text to video 12 seconds with default settings",
+  async () => {
+    const {
+      costs,
+      outputs: { video },
+    } = await runNode(run, {
+      env: {
+        scope: {},
+        variables: {
+          REPLICATE_TOKEN,
+        },
       },
-    },
-    inputs: {
-      prompt: "a person dancing in a crowded city street with vibrant lights",
-      seconds: 12,
-      aspect_ratio: "landscape",
-    },
-  });
-  console.log("Generated video URL:", video);
-  expect(video).toMatch(/^https/);
-  expect(costs).toBe(0.21);
-});
+      inputs: {
+        prompt: "a person dancing in a crowded city street with vibrant lights",
+        seconds: 12,
+        aspect_ratio: "landscape",
+      },
+    });
+    console.log("Generated video URL:", video);
+    expect(video).toMatch(/^https/);
+    expect(costs).toBe(0.21);
+  }
+);

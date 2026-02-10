@@ -48,7 +48,10 @@ export async function run({ env, inputs, state }) {
       input.openai_api_key = openai_api_key;
     }
 
-    return await replicate.createTask("models/openai/sora-2/predictions", input);
+    return await replicate.createTask(
+      "models/openai/sora-2/predictions",
+      input
+    );
   }
 
   const results = await replicate.checkTask(state);
