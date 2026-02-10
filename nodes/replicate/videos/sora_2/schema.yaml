@@ -1,0 +1,72 @@
+version: 1
+title: Sora 2
+description: Generate high-quality videos from text descriptions or images using OpenAI's Sora 2 model
+thumbnail: https://huggingface.co/PiperMy/Pipelines/resolve/main/assets/logos/replicate_logo.svg
+tags:
+  - text-to-video
+  - image-to-video
+source: node
+execution: regular
+script: https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@v2.0.4/nodes/replicate/videos/sora_2/script.js
+arrange:
+  x: 660
+  y: 250
+groups:
+  inputs:
+    main:
+      order: 1
+      title: en=Main settings;ru=Основные настройки
+    advanced:
+      order: 2
+      title: en=Advanced settings;ru=Дополнительные настройки
+inputs:
+  prompt:
+    order: 1
+    title: en=Prompt;ru=Промпт
+    description: en=A text description of the video to generate;ru=Текстовая подсказка для генерации видео
+    group: main
+    type: string
+    required: true
+    featured: true
+    multiline: true
+    default: a cat walking in a sunny meadow
+  seconds:
+    order: 2
+    title: en=Duration;ru=Длительность
+    description: en=Duration of the video in seconds;ru=Длительность видео в секундах
+    group: main
+    type: integer
+    default: 4
+    enum:
+      - 4|en=4 seconds;ru=4 секунды
+      - 8|en=8 seconds;ru=8 секунд
+      - 12|en=12 seconds;ru=12 секунд
+  input_reference:
+    order: 3
+    title: en=Reference Image;ru=Исходное изображение
+    description: en=An optional image to use as the first frame of the video. The image must be the same aspect ratio as the video;ru=Опциональное изображение для первого кадра видео. Изображение должно иметь то же соотношение сторон
+    group: main
+    type: image
+    required: false
+  aspect_ratio:
+    order: 4
+    title: en=Aspect Ratio;ru=Соотношение сторон
+    description: en=Aspect ratio of the video. Portrait is 720x1280, landscape is 1280x720;ru=Соотношение сторон видео. Вертикальное 720x1280, горизонтальное 1280x720
+    group: main
+    type: string
+    default: portrait
+    enum:
+      - portrait|en=Portrait (720x1280);ru=Вертикальное (720x1280)
+      - landscape|en=Landscape (1280x720);ru=Горизонтальное (1280x720)
+  openai_api_key:
+    order: 0
+    title: en=OpenAI API Key;ru=Ключ OpenAI API
+    description: en=Optional: Your OpenAI API key. If you use your own OpenAI API key, you will be charged directly by OpenAI;ru=Опционально: Ваш ключ OpenAI API. Если вы используете свой ключ, вас будут заряжать напрямую OpenAI
+    group: advanced
+    type: password
+    required: false
+    writeOnly: true
+outputs:
+  video:
+    type: video
+    title: en=Generated Video;ru=Сгенерированное видео
