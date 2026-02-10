@@ -1,4 +1,3 @@
-
 import { next } from "../../../../utils/node.js";
 import { Replicate } from "../../utils.js";
 
@@ -73,7 +72,11 @@ export async function run({ env, inputs, state }) {
     } = inputs;
 
     // Автокоррекция параметров
-    ({ seconds, aspect_ratio, resolution } = autoCorrectParams(model, { seconds, aspect_ratio, resolution }));
+    ({ seconds, aspect_ratio, resolution } = autoCorrectParams(model, {
+      seconds,
+      aspect_ratio,
+      resolution,
+    }));
 
     const input = {
       prompt,
