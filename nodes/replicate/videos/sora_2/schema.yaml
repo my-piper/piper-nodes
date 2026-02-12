@@ -82,7 +82,7 @@ inputs:
   openai_api_key:
     order: 6
     title: en=OpenAI API Key;ru=Ключ OpenAI API
-    description: en=Optional: Your OpenAI API key. If you use your own OpenAI API key, you will be charged directly by OpenAI;ru=Опционально: Ваш ключ OpenAI API. Если вы используете свой ключ, вас будут заряжать напрямую OpenAI
+    description: en=Your OpenAI API key. If you use your own OpenAI API key, you will be charged directly by OpenAI;ru=Ваш ключ OpenAI API. Если вы используете свой ключ, вас будут заряжать напрямую OpenAI
     group: advanced
     type: password
     required: false
