@@ -5,7 +5,7 @@ export function costs({ env }) {
   if (Replicate.userScope(env)) {
     return 0;
   }
-  return 0.04;
+  return 0.039;
 }
 
 const CHECK_INTERVAL = 2_000;

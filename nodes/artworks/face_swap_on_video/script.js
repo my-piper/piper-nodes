@@ -5,7 +5,7 @@ export function costs({ env }) {
   if (env.scope.ARTWORKS_USER === "user") {
     return 0;
   }
-  return 0.005;
+  return 0.01;
 }
 
 const CHECK_INTERVAL = 5_000;

@@ -87,9 +87,12 @@ Deno.test("Ask Any LLM: With system instructions", async () => {
 Deno.test("Ask Any LLM: Vision model with image", async () => {
   const result = await runNode(run, {
     inputs: {
-      question: "What do you see in this image?",
+      question: "What do you see in these images?",
       model: "qwen/qwen3-vl-8b-instruct",
-      image: "https://picsum.photos/800/600",
+      images: [
+        "https://picsum.photos/800/600",
+        "https://picsum.photos/800/600",
+      ],
       answerFormat: "text",
     },
     env: {

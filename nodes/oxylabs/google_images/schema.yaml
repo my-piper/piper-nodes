@@ -1,0 +1,87 @@
+version: 0
+title: Google images
+execution: protracted
+script: |
+  import { next } from "https://cdn.jsdelivr.net/gh/my-piper/piper-nodes@main/utils/node.js";
+
+  export async function run({ inputs }) {
+    const { celebrity_name } = inputs;
+
+    /*
+      {
+        "results": [
+            {
+                "content": {
+                    "url": "https://www.google.nl/search?q=Michel+Cymes&uule=w+CAIQICILbmV0aGVybGFuZHM&gl=nl&hl=nl&udm=2",
+                    "results": {
+                        "organic": [
+                            {
+                                "pos": 1,
+                                "link": "https://www.imdb.com/name/nm1682659/",
+                                "image": "data:image/jpeg;base64,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",
+                                "title": "Michel Cymès - IMDb",
+                                "domain": "IMDb",
+                                "pos_overall": 1
+                            },
+      */
+
+    const response = await fetch("https://realtime.oxylabs.io/v1/queries", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          "Basic " + Buffer.from("piper_mNO5v:hcdO9q3F4s6N_").toString("base64"),
+      },
+      body: JSON.stringify({
+        source: "google_search",
+        domain: "nl",
+        query: celebrity_name,
+        parse: true,
+        context: [
+          {
+            key: "tbm",
+            value: "isch",
+          },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Oxylabs error ${response.status}: ${errorText}`);
+    }
+
+    const data = await response.json();
+
+    const {
+      results: [
+        {
+          content: {
+            results: { organic: images },
+          },
+        },
+      ],
+    } = data;
+
+    return next({ outputs: { images: images.slice(0, 5).map(({ image }) => image) } });
+  }
+sign: e167755aa6a9eb1cff11d2baa25beca0efa63065a9edbadd224cb5b86ee7b32b
+arrange:
+  x: 1400
+  y: 860
+inputs:
+  query:
+    title: Query
+    type: string
+    required: true
+    featured: true
+outputs:
+  images:
+    title: Images
+    type: image[]
+    featured: true
+environment:
+  OXYLABS_AUTH:
+    title: Oxylabs Authentication
+    type: string
+    scope: global
