@@ -82,6 +82,5 @@ outputs:
     featured: true
 environment:
   OXYLABS_AUTH:
-    title: Oxylabs Authentication
     type: string
     scope: global

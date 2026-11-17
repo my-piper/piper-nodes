@@ -445,7 +445,6 @@ catalog:
   package: openrouter
 environment:
   OPENROUTER_API_KEY:
-    title: OpenRouter API Key
     description: Get your key from https://openrouter.ai/keys
     type: string
     scope: global

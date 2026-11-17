@@ -153,11 +153,9 @@ catalog:
   package: artworks
 environment:
   ARTWORKS_USER:
-    title: ArtWorks user
     description: Signup at https://artworks.ai/
     type: string
     scope: global
   ARTWORKS_PASSWORD:
-    title: ArtWorks password
     type: string
     scope: global
