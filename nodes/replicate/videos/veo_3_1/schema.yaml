@@ -105,7 +105,6 @@ catalog:
   package: replicate
 environment:
   REPLICATE_TOKEN:
-    title: Replicate token
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to get your API token
     type: string
     scope: global

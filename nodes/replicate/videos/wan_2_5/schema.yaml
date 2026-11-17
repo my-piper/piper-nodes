@@ -118,7 +118,6 @@ catalog:
   package: replicate
 environment:
   REPLICATE_TOKEN:
-    title: Replicate token
     description: Get your token from https://replicate.com/account/api-tokens
     type: string
     scope: global

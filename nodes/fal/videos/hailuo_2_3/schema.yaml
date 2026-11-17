@@ -74,7 +74,6 @@ catalog:
   package: fal
 environment:
   FAL_KEY:
-    title: Fal AI Key
     description: Go to [Fal AI](https://fal.ai/dashboard/keys) to get your API key
     type: string
     scope: global

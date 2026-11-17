@@ -240,7 +240,6 @@ catalog:
   package: replicate
 environment:
   REPLICATE_TOKEN:
-    title: Replicate Token
     description: Go to [Replicate](https://replicate.com/account/api-tokens) to take a keys
     type: string
     scope: global

@@ -90,12 +90,10 @@ catalog:
   package: artworks
 environment:
   ARTWORKS_USER:
-    title: ArtWorks user
     description: Signup at https://artworks.ai/ (not required for Qwen3-VL)
     type: string
     scope: global
   ARTWORKS_PASSWORD:
-    title: ArtWorks password
     description: Not required for Qwen3-VL
     type: string
     scope: global
